@@ -19,13 +19,15 @@ Consta de una aplicacion web usando Django, permite la venta de productos modula
 1. Clona el repositorio:
 ```bash
 git clone https://github.com/paocespedes-bit/Capstone-.git
-cd Capstone-/Fase_2/Evidencias_Proyecto```
-
+cd Capstone-/Fase_2/Evidencias_Proyecto
+```
 2. Crea y activa un entorno virtual:
-```python -m venv venv
-venv\Scripts\activate````
-
+```
+python -m venv venv
+venv\Scripts\activate
+````
 3. Instala las dependencias:
-```pip install -r requirements.txt```
-
+```
+pip install -r requirements.txt
+```
 
