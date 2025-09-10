@@ -9,7 +9,8 @@ Consta de una aplicacion web usando Django, permite la venta de productos modula
 
 ## Requisitos
 
-- Python 3.13 - Entorno virtual (VirtualENV) - Dependencias Listadas en 
+- Python 3.13 - Entorno virtual (VirtualENV)
+- Dependencias Listadas en 
 `requirements.txt`
 
 ## Instalacion
