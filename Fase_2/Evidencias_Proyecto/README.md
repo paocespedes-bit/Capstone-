@@ -23,6 +23,7 @@ cd Capstone-/Fase_2/Evidencias_Proyecto
 ```
 2. Crea y activa un entorno virtual:
 ```
+pip install virtualenv
 python -m venv venv
 venv\Scripts\activate
 ````
