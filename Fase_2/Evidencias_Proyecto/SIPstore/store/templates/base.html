@@ -8,32 +8,81 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <!--! Estilo -->
     <link rel="stylesheet" href="{% static 'style/base.css' %}" />
+    {% block link %}{% endblock %}
+    <!--! Para los estilos -->
+
     <title>{% block title %}SIPstore{% endblock %}</title>
   </head>
   <body>
     <!-- !Barra de navegacion -->
-    <nav>
-      <div>
-        <a href="#">SIPstore</a>
-        <ul>
-          <li><a href="">b</a></li>
-          <li><a href="">c</a></li>
-          <li><a href="">d</a></li>
-          <li><a href="">f</a></li>
+    <nav class="navbar">
+      <div class="navbar-container">
+        <!-- Logo -->
+        <a href="#" class="logo">
+          <img src="#" alt="SIPstore" />
+        </a>
+
+        <!-- Menú -->
+        <ul class="nav-links">
+          <li><a href="">Home</a></li>
+          <li><a href="">Kit Productos</a></li>
+          <li><a href="">Productos</a></li>
+          <li><a href="">Cotiza Estructura</a></li>
         </ul>
+
+        <!-- Buscador -->
+        <form role="search" class="search-bar">
+          <input type="search" placeholder="Buscar" aria-label="Search" />
+          <button type="submit">🔍</button>
+        </form>
+
+        <!-- Carrito -->
+        <button class="cart-btn">🛒</button>
       </div>
     </nav>
     <!-- !Fin Barra de navegacion -->
 
     <!-- !CUERPO-->
-    <main>{% block content %}{% endblock %}</main>
+    <main class="main">{% block content %}{% endblock %}</main>
 
     <!-- !FIN CUERPO-->
 
     <!-- !Footer-->
-    <footer>hola mundo</footer>
+    <footer>
+      <!-- Parte superior del footer -->
+      <div class="footer-top-a">
+        <!-- Columna 1 -->
+        <div class="footer-col-1">
+          <img class="log" src="#" alt="SIPSTORE" />
+          <p class="parrafo">ubicacion</p>
+        </div>
+        <!-- Columna 2 -->
+        <div class="footer-col-1">
+          <p class="parrafo">Servicios</p>
+          <a class="a-foot" href="#">Kit Productos</a>
+          <a class="a-foot" href="#">Productos</a>
+          <a class="a-foot" href="#">Cotizar productos</a>
+        </div>
+        <!-- Columna 3 -->
+        <div class="footer-col-1">
+          <p class="parrafo">Contacto</p>
+          <p class="parrafo">(icono)telefono </p>
+          <p class="parrafo">(icono)correo</p>
+          <div style="display: flex; gap: 5px; width: 100%">
+            <a class="a-foot" href="#">(icono)redsocial 1</a>
+            <a class="a-foot" href="#">(icono)redsosial 2</a>
+          </div>
+        </div>
+      </div>
+      <!-- Parte inferior del footer -->
+      <div class="footer-bottom">
+        <div style="flex: 1"></div>
+        <p class="parrafo">derechos reservados</p>
+        <div style="flex: 1"></div>
+        <p class="parrafo">medios de pago(iconos)</p>
+        <div style="flex: 1"></div>
+      </div>
+    </footer>
     <!-- !FIN Footer-->
-
-    
   </body>
 </html>

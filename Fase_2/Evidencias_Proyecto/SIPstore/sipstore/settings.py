@@ -15,11 +15,12 @@ SECRET_KEY = 'django-insecure-h8pccql3i)qwzfhzdqj8$f-^a30f^p&b!%nmo+r^j-bsyp1u74
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['.ngrok-free.app']
+ALLOWED_HOSTS = ['127.0.0.1', 'localhost','.ngrok-free.app']
 
 
 # Application definition
 
+# !DEFINIR LAS APLICACIONES
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -107,12 +108,7 @@ USE_TZ = True
 
 # !Archivos estáticos (CSS, JS, imágenes)
 STATIC_URL = 'static/'
-# !Carpeta global de estáticos 
-STATICFILES_DIRS = [
-    BASE_DIR / "static",  
-]
-# !Para el debug = false OJO*
-STATIC_ROOT = BASE_DIR / "staticfiles"
+
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field

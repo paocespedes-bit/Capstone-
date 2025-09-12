@@ -1,0 +1,147 @@
+/* !Navbar  */
+/* General navbar */
+.navbar {
+  border:1px solid #1a1a1a;
+  padding: 10px 20px;
+  
+}
+
+.navbar-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+/* Logo */
+.logo img {
+  height: 40px;
+}
+
+/* Menú */
+.nav-links {
+  list-style: none;
+  display: flex;
+  gap: 20px;
+}
+
+.nav-links a {
+  text-decoration: none;
+  font-weight: 500;
+  transition: color 0.3s ease;
+}
+
+.nav-links a:hover {
+  color: #00bcd4; /* Efecto hover */
+}
+
+/* Buscador */
+.search-bar {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.search-bar input {
+  padding: 5px 10px;
+  border-radius: 20px;
+  border: none;
+  outline: none;
+}
+
+.search-bar button {
+  border:1px solid #00bcd4;
+  padding: 5px 10px;
+  border-radius: 50%;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+.search-bar button:hover {
+  border: 1px solid #0097a7;
+}
+
+/* Carrito */
+.cart-btn {
+  border: 1px solid #00bcd4;
+  padding: 8px 12px;
+  border-radius: 50%;
+  cursor: pointer;
+  font-size: 18px;
+}
+
+.cart-btn:hover {
+  border: 1px solid #0097a7;
+}
+
+/* !contenido */
+.main{
+  height: 40vw;
+  border: 1px solid darkblue;
+}
+
+
+/* !footer */
+
+footer {
+  border: 1px solid rgb(252, 0, 0); /* gris */
+}
+
+.footer-top-a {
+  display: flex;
+  justify-content: space-around;
+  padding: 20px;
+}
+
+.footer-col-1 {
+  border: 1px solid darkblue;
+  padding: 15px;
+  width: 25%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+
+.log {
+  width: 60px;
+  height: 60px;
+  border: 1px solid hotpink;
+  display: block;
+}
+
+.box {
+  border: 1px solid darkblue;
+  padding: 10px;
+  text-align: center;
+}
+
+.parrafo {
+  border: 1px solid tomato;
+  padding: 10px;
+  text-align: center;
+  margin: 0;
+  width: 100%;
+}
+
+.a-foot{
+  display: block;
+  border: 1px solid mediumseagreen;
+  padding: 10px;
+  text-align: center;
+  text-decoration: none;
+  width: 100%;
+}
+
+.footer-bottom {
+  border: 1px solid darkblue;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  padding: 15px;
+  gap: 20px;
+}
+
+.footer-bottom p {
+  flex: 1;
+  margin: 0;
+}
