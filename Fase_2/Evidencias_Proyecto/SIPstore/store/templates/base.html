@@ -1,0 +1,37 @@
+<!-- !Carga de la carpeta estatica -->
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!--! Estilo -->
+    <link rel="stylesheet" href="{% static 'style/base.css' %}" />
+    <title>{% block title %}SIPstore{% endblock %}</title>
+  </head>
+  <body>
+    <!-- !Barra de navegacion -->
+    <nav>
+      <div>
+        <a href="#">SIPstore</a>
+        <ul>
+          <li><a href="">b</a></li>
+          <li><a href="">c</a></li>
+          <li><a href="">d</a></li>
+          <li><a href="">f</a></li>
+        </ul>
+      </div>
+    </nav>
+    <!-- !Fin Barra de navegacion -->
+
+    <!-- !CUERPO-->
+    <main>{% block content %}{% endblock %}</main>
+
+    <!-- !FIN CUERPO-->
+
+    <!-- !Footer-->
+    <footer>hola mundo</footer>
+    <!-- !FIN Footer-->
+  </body>
+</html>

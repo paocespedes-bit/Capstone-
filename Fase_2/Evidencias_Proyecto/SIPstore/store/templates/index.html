@@ -1,23 +1,8 @@
-<!-- !Carga de la carpeta estatica -->
-{% load static %}
-
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!--! Estilo -->
-    <link rel="stylesheet" href="{% static 'style/estilo.css' %}"> 
-    <title>Titulo</title>
-</head>
-<body>
-    <!-- !CUERPO-->
-    
-    <h1>Bienvenido al Desarrollo de SIPstore</h1>
-    <!-- ! Carga de Imagen (gif) -->
-    <img src="{% static 'img/pato.gif' %}" alt="">
-    <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Tempora architecto perspiciatis optio. Voluptatem suscipit nisi, voluptatibus fugit exercitationem beatae animi placeat, voluptates nostrum repellat ducimus nemo incidunt praesentium sequi soluta.</p>
-
-
-</body>
-</html>
+{% extends "base.html"%} {% block title %}Home{% endblock %} {% block content %}
+<p>
+    Lorem ipsum dolor sit amet consectetur adipisicing elit. Architecto,
+    exercitationem accusamus, mollitia tenetur distinctio saepe eos voluptatem
+    eaque, laborum nostrum sint dolor commodi ipsam fugiat quasi soluta adipisci
+    explicabo. Maxime?
+</p>
+{% endblock %}
