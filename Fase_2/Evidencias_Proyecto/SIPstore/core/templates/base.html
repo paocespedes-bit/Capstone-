@@ -7,10 +7,10 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <!--! Estilo -->
-    <link rel="stylesheet" href="{% static 'style/base.css' %}" />
-    {% block link %}{% endblock %}
+    <link rel="stylesheet" href="{% static 'core/style/base.css' %}" />
     <!--! Para los estilos -->
-
+    {% block link %}{% endblock %}
+    <!--! Para los titulos -->
     <title>{% block title %}SIPstore{% endblock %}</title>
   </head>
   <body>

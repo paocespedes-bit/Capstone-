@@ -1,4 +1,12 @@
-{% extends "base.html"%} {% block title %}Home{% endblock %} {% block content %}
+<!-- !agregar base  -->
+{% extends "base.html"%}
+
+<!-- !Blockeo de contenido -->
+{% block content %}
+<div class="tarjetas">
+    <!-- !Incluir tarjetas -->
+    {% include "t_producto.html" %}
+</div>
 <p>
     Lorem ipsum dolor sit amet consectetur adipisicing elit. Architecto,
     exercitationem accusamus, mollitia tenetur distinctio saepe eos voluptatem

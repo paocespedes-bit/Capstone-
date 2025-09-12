@@ -4,9 +4,5 @@ from django.http import HttpResponse
 
 #! Aqui se agregan las views (templates).
 
-def productos(request):
-    return render(request, 'productos.html')
-
-
-
-
+def index(request):
+    return render(request, 'index.html')
