@@ -1,128 +1,82 @@
-body{
+body {
   background-color: #c9d6ff;
   background: linear-gradient(to right, #e2e2e2, #c9d6ff);
   font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  margin: 8px;
 }
 
 /* !Navbar  */
 /* General navbar */
 .navbar {
-  background-color: #008c9e;
   padding: 12px 24px;
-  border-radius: 15px;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+  border-radius: 15px !important;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15) !important;
+  width: 100%;
+  background: #008c9e !important;
 }
 
-.navbar-container {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
+.main-content {
+  margin: 0px !important;
 }
 
-/* Logo */
-.logo img {
-  height: 40px;
+main.container {
+  max-width: 100% !important;
+  padding-left: 0 !important;
+  padding-right: 0 !important;
 }
 
-/* Menú */
-.nav-links {
-  list-style: none;
-  display: flex;
-  gap: 25px;
-  margin: 0;
-  padding: 0;
-}
-
-.nav-links a {
-  text-decoration: none;
-  font-weight: 600;
-  transition: color 0.3s ease;
-  color: #fff;
-  font-size: 16px;
-}
-
-.nav-links a:hover {
-  color: #00bcd4; /* Efecto hover */
-}
-
-/* Buscador */
-.search-bar {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-}
-
-.search-bar input {
-  padding: 6px 12px;
-  border-radius: 20px;
-  border: none;
-  outline: none;
-  font-size: 14px;
-  width: 160px;
-}
-
-.search-bar button {
-  border:1px solid #00bcd4;
-  padding: 5px 10px;
-  border-radius: 50%;
-  cursor: pointer;
-  font-size: 16px;
-}
-
-.search-bar button:hover {
+.container-fluid {
   background-color: #008c9e;
 }
 
-/* Carrito */
-.cart-btn {
-  border: 1px solid #008c9e;
-  padding: 8px 12px;
-  border-radius: 50%;
-  cursor: pointer;
-  font-size: 18px;
+.navbar-collapse {
+  flex-grow: 1;
+  flex-basis: 100%;
 }
 
-.cart-btn:hover {
-  border: 1px solid #008c9e;
-}
 
 /* !contenido */
 .main {
   min-height: 80vh;
-  margin: 20px auto;
-  border-radius: 15px;
+  width: 100% !important;
+  border-radius: 15px !important;
   background-color: #f7fcfd;
-  box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-  padding: 20px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1) !important;
+  margin: 0px !important;
 }
-
 
 /* !footer */
 
-footer {
-  background-color: #0097a7;
-  color: #fff;
-  border-top-left-radius: 15px;
-  border-top-right-radius: 15px;
-  margin-top: 20px;
+.bg-primary {
+    --bs-bg-opacity: 1;
+    background-color: #008c9e !important;
 }
 
-.footer-top-a {
+.col-md-4{
   display: flex;
-  justify-content: space-around;
-  padding: 30px 20px;
-  flex-wrap: wrap;
-  gap: 20px;
-}
-
-.footer-col-1 {
-  padding: 15px;
-  width: 250px;
-  display: flex;
-  flex-direction: column;
+  justify-content: center;
   align-items: center;
+  flex-direction: column;
 }
 
+.py-4{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-direction: column;
+  width: 100%;
+}
+
+.text-md-start{
+  width: 100%;
+}
+
+div {
+  display: flex;
+  align-items: center;
+  flex-direction: row;
+  justify-content: center;
+}
 
 .log {
   width: 60px;
@@ -131,20 +85,12 @@ footer {
   margin-bottom: 10px;
 }
 
-.box {
-  border: 1px solid darkblue;
-  padding: 10px;
-  text-align: center;
-}
-
-.parrafo {
-  text-align: center;
-  margin: 8px 0;
-}
-
 .a-foot {
-  display: block;
-  background-color: rgba(255,255,255,0.1);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background-color: rgba(255, 255, 255, 0.1);
   padding: 10px;
   border-radius: 8px;
   text-align: center;
@@ -152,14 +98,22 @@ footer {
   color: #fff;
   margin: 5px 0;
   transition: background-color 0.3s ease;
+  width: 100%;
+}
+
+.a-foot img {
+  width: 20px; 
+  height: auto; 
+  vertical-align: middle; 
+  margin-right: 6px;
 }
 
 .a-foot:hover {
-  background-color: rgba(255,255,255,0.25);
+  background-color: rgba(255, 255, 255, 0.25);
 }
 
 .footer-bottom {
-  border-top: 1px solid rgba(255,255,255,0.3);
+  border-top: 1px solid rgba(255, 255, 255, 0.3);
   display: flex;
   justify-content: space-around;
   align-items: center;
@@ -171,4 +125,15 @@ footer {
 .footer-bottom p {
   margin: 0;
   font-size: 14px;
+}
+/* Media query para pantallas más pequeñas */
+@media (max-width: 991.2px) and (max-height: 742.4px) {
+  .navbar-collapse {
+    flex-grow: 1;
+    flex-basis: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    flex-direction: column;
+  }
 }
