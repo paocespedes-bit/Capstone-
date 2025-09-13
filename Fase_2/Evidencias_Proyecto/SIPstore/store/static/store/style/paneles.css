@@ -1,0 +1,95 @@
+.cat-container{
+    min-height: 100vw;
+}
+
+
+/* Breadcrumb */
+
+.catalogo-breadcrumb {
+  padding: 10px 20px;
+  font-size: 14px;
+  background: #eee;
+  border-bottom: 1px solid #ccc;
+}
+
+.catalogo-breadcrumb a {
+  color: #0073e6;
+  text-decoration: none;
+}
+
+.catalogo-breadcrumb span {
+  margin: 0 5px;
+  color: #555;
+}
+
+/* Layout principal */
+.catalogo-main {
+  display: grid;
+  grid-template-columns: 250px 1fr 250px;
+  gap: 20px;
+  padding: 20px;
+}
+
+/* Sidebar filtros */
+.catalogo-sidebar {
+  border: 1px solid red;
+  padding: 15px;
+  background: #fff;
+}
+
+.catalogo-sidebar h3 {
+  font-size: 16px;
+  margin-bottom: 10px;
+}
+
+.catalogo-sidebar .cat-filter-group {
+  margin-bottom: 20px;
+  border: 1px solid orange;
+  padding: 10px;
+}
+
+/* Contenedor productos */
+.catalogo-products {
+  border: 1px solid blue;
+  padding: 15px;
+  background: #fff;
+}
+
+.catalogo-products h2 {
+  font-size: 18px;
+  margin-bottom: 15px;
+}
+
+.cat-products-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 20px;
+}
+
+/* Card (se incluye desde Django)
+/* Nota: La clase 'card' se asume que está en el archivo "t_paneles.html" y no se ha modificado. */
+/* .card {
+  background: white;
+  padding: 15px;
+  border-radius: 6px;
+  text-align: center;
+  border: 1px solid; base
+}  */
+
+/* Recomendados */
+.catalogo-recomendados {
+  border: 1px solid green;
+  padding: 15px;
+  background: #fff;
+}
+
+.catalogo-recomendados h3 {
+  font-size: 16px;
+  margin-bottom: 10px;
+}
+
+.catalogo-recomendados .cat-recomendados-item {
+  border: 1px solid gray;
+  padding: 10px;
+  margin-bottom: 10px;
+}

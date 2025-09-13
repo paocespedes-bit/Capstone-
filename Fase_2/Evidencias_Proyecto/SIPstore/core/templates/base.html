@@ -14,75 +14,83 @@
     <title>{% block title %}SIPstore{% endblock %}</title>
   </head>
   <body>
-    <!-- !Barra de navegacion -->
-    <nav class="navbar">
-      <div class="navbar-container">
-        <!-- Logo -->
-        <a href="#" class="logo">
-          <img src="#" alt="SIPstore" />
-        </a>
+    <div class="site-container">
 
-        <!-- Menú -->
-        <ul class="nav-links">
-          <li><a href="">Home</a></li>
-          <li><a href="">Kit Productos</a></li>
-          <li><a href="">Productos</a></li>
-          <li><a href="">Cotiza Estructura</a></li>
-        </ul>
+        <!-- !Barra de navegacion -->
+        <nav class="navbar">
+            <div class="navbar-container">
+                <!-- Logo -->
+                <a href="#" class="logo">
+                    <img src="#" alt="SIPstore" />
+                </a>
 
-        <!-- Buscador -->
-        <form role="search" class="search-bar">
-          <input type="search" placeholder="Buscar" aria-label="Search" />
-          <button type="submit">🔍</button>
-        </form>
+                <!-- Menú -->
+                <ul class="nav-links">
+                    <li><a href="{% url 'home' %}">Home</a></li>
+                    <li><a href="">Kit Construccion</a></li>
+                    <li><a href="{% url 'paneles' %}">Paneles SIP</a></li>
+                    <li><a href="">Cotiza Estructura</a></li>
+                </ul>
 
-        <!-- Carrito -->
-        <button class="cart-btn">🛒</button>
-      </div>
-    </nav>
-    <!-- !Fin Barra de navegacion -->
+                <!-- Buscador -->
+                <form role="search" class="search-bar">
+                    <input type="search" placeholder="Buscar" aria-label="Search" />
+                    <button type="submit">🔍</button>
+                </form>
 
-    <!-- !CUERPO-->
-    <main class="main">{% block content %}{% endblock %}</main>
+                <!-- Carrito -->
+                <button class="cart-btn">🛒</button>
+            </div>
+        </nav>
+        <!-- !Fin Barra de navegacion -->
 
-    <!-- !FIN CUERPO-->
+        <!-- !CUERPO-->
+        <main class="main">
+            <!--
+                Este es el bloque principal para el contenido de cada página.
+                Aquí es donde se insertará el código del catálogo o de cualquier
+                otra página que extienda de esta plantilla base.
+            -->
+            {% block content %}{% endblock %}
+        </main>
+        <!-- !FIN CUERPO-->
 
-    <!-- !Footer-->
-    <footer>
-      <!-- Parte superior del footer -->
-      <div class="footer-top-a">
-        <!-- Columna 1 -->
-        <div class="footer-col-1">
-          <img class="log" src="#" alt="SIPSTORE" />
-          <p class="parrafo">ubicacion</p>
-        </div>
-        <!-- Columna 2 -->
-        <div class="footer-col-1">
-          <p class="parrafo">Servicios</p>
-          <a class="a-foot" href="#">Kit Productos</a>
-          <a class="a-foot" href="#">Productos</a>
-          <a class="a-foot" href="#">Cotizar productos</a>
-        </div>
-        <!-- Columna 3 -->
-        <div class="footer-col-1">
-          <p class="parrafo">Contacto</p>
-          <p class="parrafo">(icono)telefono </p>
-          <p class="parrafo">(icono)correo</p>
-          <div style="display: flex; gap: 5px; width: 100%">
-            <a class="a-foot" href="#">(icono)redsocial 1</a>
-            <a class="a-foot" href="#">(icono)redsosial 2</a>
-          </div>
-        </div>
-      </div>
-      <!-- Parte inferior del footer -->
-      <div class="footer-bottom">
-        <div style="flex: 1"></div>
-        <p class="parrafo">derechos reservados</p>
-        <div style="flex: 1"></div>
-        <p class="parrafo">medios de pago(iconos)</p>
-        <div style="flex: 1"></div>
-      </div>
-    </footer>
-    <!-- !FIN Footer-->
+        <!-- !Footer-->
+        <footer>
+            <!-- Parte superior del footer -->
+            <div class="footer-top-a">
+                <!-- Columna 1 -->
+                <div class="footer-col-1">
+                    <img class="log" src="#" alt="SIPSTORE" />
+                    <p class="parrafo">ubicacion</p>
+                </div>
+                <!-- Columna 2 -->
+                <div class="footer-col-1">
+                    <p class="parrafo">Servicios</p>
+                    <a class="a-foot" href="#">Kit Productos</a>
+                    <a class="a-foot" href="#">Productos</a>
+                    <a class="a-foot" href="#">Cotizar productos</a>
+                </div>
+                <!-- Columna 3 -->
+                <div class="footer-col-1">
+                    <p class="parrafo">Contacto</p>
+                    <p class="parrafo">(icono)telefono </p>
+                    <p class="parrafo">(icono)correo</p>
+                    <div style="display: flex; gap: 5px; width: 100%">
+                        <a class="a-foot" href="#">(icono)redsocial 1</a>
+                        <a class="a-foot" href="#">(icono)redsosial 2</a>
+                    </div>
+                </div>
+            </div>
+            <!-- Parte inferior del footer -->
+            <div class="footer-bottom">
+                <div style="flex: 1"></div>
+                <p class="parrafo">derechos reservados</p>
+                <div style="flex: 1"></div>
+                <p class="parrafo">medios de pago(iconos)</p>
+                <div style="flex: 1"></div>
+            </div>
+        </footer>
+        <!-- !FIN Footer-->
   </body>
 </html>

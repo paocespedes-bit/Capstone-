@@ -1,0 +1,78 @@
+<!-- !Base -->
+{% extends "base.html"%}
+{% load static%} 
+<!-- !css -->
+{% block link %}
+<link rel="stylesheet" href="{% static 'store/style/paneles.css' %}">
+{% endblock %}
+<!-- !Titulo -->
+{% block title %}Paneles SIP{% endblock %}
+<!-- !Blockeo de contenido -->
+{% block content %}
+<!-- Breadcrumb -->
+ <div class="cat-container">
+<div class="catalogo-breadcrumb">
+  <a href="{% url 'home' %}">Inicio</a> <span>/</span> <a href="{% url 'paneles' %}">Paneles SIP</a> 
+</div>
+
+<div class="catalogo-main">
+  <aside class="catalogo-sidebar">
+    <h3>Disponibilidad Stock</h3>
+    <div class="cat-filter-group">
+      <label><input type="checkbox" /> En oferta</label><br />
+      <label><input type="checkbox" /> En stock</label>
+    </div>
+
+    <h3>Espesor OSB</h3>
+    <div class="cat-filter-group">
+      <select class="cat-select">
+        <option>Cualquier Espesor OSB</option>
+      </select>
+    </div>
+
+    <h3>Madera de Unión</h3>
+    <div class="cat-filter-group">
+      <select class="cat-select">
+        <option>Cualquier Madera de Unión</option>
+      </select>
+    </div>
+
+    <h3>Tipo OSB</h3>
+    <div class="cat-filter-group">
+      <select class="cat-select">
+        <option>Cualquier Tipo OSB</option>
+      </select>
+    </div>
+
+    <h3>Filtro por Precio</h3>
+    <div class="cat-filter-group">
+      <input type="range" min="34990" max="86590" class="cat-range-input" />
+      <button class="cat-button-filter">Filtrar</button>
+    </div>
+  </aside>
+
+  <section class="catalogo-products">
+    <h2>Paneles SIP</h2>
+    <div class="cat-products-container">
+        {% include "t_paneles.html" %}
+    </div>
+  </section>
+
+  <aside class="catalogo-recomendados">
+    <h3>Más Recomendados</h3>
+    <div class="cat-recomendados-item">
+      <p><strong>REQUINOA 90m2</strong></p>
+      <p>$11.990.000 IVA incl.</p>
+    </div>
+    <div class="cat-recomendados-item">
+      <p><strong>Panel SIP 100 mm</strong></p>
+      <p>$52.290 IVA incl.</p>
+    </div>
+    <div class="cat-recomendados-item">
+      <p><strong>VALDIVIA 120m2</strong></p>
+      <p>$13.490.000 IVA incl.</p>
+    </div>
+  </aside>
+</div>
+</div>
+{% endblock %}
