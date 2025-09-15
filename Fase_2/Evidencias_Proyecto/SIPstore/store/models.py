@@ -19,5 +19,13 @@ class Imagen(models.Model):
     def __str__(self):
         return f"{self.producto.nombre}"
 
+class Inventario(models.Model):
+    producto = models.ForeignKey(Producto, on_delete=models.CASCADE,related_name="inventario")
+    disponible = models.IntegerField(default=0)
+    reserva = models.IntegerField(default=0)
 
+    def __str__(self):
+        return f"{self.producto.nombre}"
+
+# class Comentario()
 

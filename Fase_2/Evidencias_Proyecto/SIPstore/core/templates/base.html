@@ -1,96 +1,151 @@
-<!-- !Carga de la carpeta estatica -->
 {% load static %}
-
 <!DOCTYPE html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <!--! Estilo -->
-    <link rel="stylesheet" href="{% static 'core/style/base.css' %}" />
-    <!--! Para los estilos -->
+
+    <!-- Bootstrap CSS -->
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB"
+      crossorigin="anonymous"
+    />
+    <link rel="stylesheet" href="{% static 'store/style/base.css' %}" />
     {% block link %}{% endblock %}
-    <!--! Para los titulos -->
+
     <title>{% block title %}SIPstore{% endblock %}</title>
   </head>
   <body>
-    <div class="site-container">
+    <!-- Navbar -->
+    <nav
+      class="navbar navbar-expand-lg navbar-dark bg-primary rounded shadow-sm"
+    >
+      <div class="container-fluid">
+        <a class="navbar-brand" href="#">
+          <img
+            src="#"
+            alt="SIPstore"
+            class="d-inline-block align-text-top logo"
+          />
+        </a>
+        <button
+          class="navbar-toggler"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#navbarNav"
+          aria-controls="navbarNav"
+          aria-expanded="false"
+          aria-label="Toggle navigation"
+        >
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+          <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+            <li class="nav-item"><a class="nav-link" href="{% url 'home' %}">Home</a></li>
+            <li class="nav-item">
+              <a class="nav-link" href="#">Kit Productos</a>
+            </li>
+            <li class="nav-item"><a class="nav-link" href="{% url 'paneles' %}">Productos</a></li>
+            <li class="nav-item">
+              <a class="nav-link" href="#">Cotiza Estructura</a>
+            </li>
+          </ul>
+          <form class="d-flex align-items-center" role="search">
+            <input
+              class="form-control me-2"
+              type="search"
+              placeholder="Buscar"
+              aria-label="Search"
+            />
+            <button class="btn btn-outline-light me-2" type="submit">🔍</button>
+            <button class="btn btn-light" type="button">🛒</button>
+          </form>
+        </div>
+      </div>
+    </nav>
 
-        <!-- !Barra de navegacion -->
-        <nav class="navbar">
-            <div class="navbar-container">
-                <!-- Logo -->
-                <a href="#" class="logo">
-                    <img src="#" alt="SIPstore" />
-                </a>
+    <!-- Main Content -->
+    <main class="container my-4">
+      <div class="main p-4 rounded shadow-sm">
+        {% block content %}{% endblock %}
+      </div>
+    </main>
 
-                <!-- Menú -->
-                <ul class="nav-links">
-                    <li><a href="{% url 'home' %}">Home</a></li>
-                    <li><a href="">Kit Construccion</a></li>
-                    <li><a href="{% url 'paneles' %}">Paneles SIP</a></li>
-                    <li><a href="">Cotiza Estructura</a></li>
-                </ul>
-
-                <!-- Buscador -->
-                <form role="search" class="search-bar">
-                    <input type="search" placeholder="Buscar" aria-label="Search" />
-                    <button type="submit">🔍</button>
-                </form>
-
-                <!-- Carrito -->
-                <button class="cart-btn">🛒</button>
+    <!-- Footer -->
+    <footer class="bg-primary text-white mt-4 rounded-top">
+      <div class="container py-4">
+        <div class="row text-center text-md-start">
+          <div class="col-md-4 mb-3">
+            <img src="#" alt="SIPSTORE" class="log mb-2" />
+            <p class="mb-1">Ubicación</p>
+          </div>
+          <div class="col-md-4 mb-3">
+            <p class="fw-bold mb-2">Servicios</p>
+            <a class="a-foot d-block mb-1" href="#">Kit Productos</a>
+            <a class="a-foot d-block mb-1" href="#">Productos</a>
+            <a class="a-foot d-block mb-1" href="#">Cotizar productos</a>
+          </div>
+          <div class="col-md-4 mb-3">
+            <p class="fw-bold mb-2">Contacto</p>
+            <p class="mb-1"><img
+                src="{% static 'store/img/phone.png' %}"
+                alt="Gmail"
+                class="icono me-1"
+                style="
+                  width: 20px;
+                  height: auto;
+                  vertical-align: middle;
+                  margin-right: 6px;
+                "
+              /> +569 6405 74XX</p>
+            <p class="mb-2">
+              <img
+                src="{% static 'store/img/gmail.svg' %}"
+                alt="Gmail"
+                class="icono me-1"
+                style="
+                  width: 20px;
+                  height: auto;
+                  vertical-align: middle;
+                  margin-right: 6px;
+                "
+              />
+              correoejemplo@gmail.com
+            </p>
+            <div
+              class="d-flex justify-content-center justify-content-md-start gap-2"
+            >
+              <a class="a-foot d-flex align-items-center" href="#">
+                <img
+                  src="{% static 'store/img/whatsapp.svg' %}"
+                  alt="WhatsApp"
+                  class="icono me-1"
+                />Whatsapp
+              </a>
+              <a class="a-foot d-flex align-items-center" href="#">
+                <img
+                  src="{% static 'store/img/facebook.svg' %}"
+                  alt="Facebook"
+                  class="icono me-1"
+                />Facebook
+              </a>
             </div>
-        </nav>
-        <!-- !Fin Barra de navegacion -->
+          </div>
+        </div>
+        <div class="row mt-3 border-top pt-3 text-center">
+          <div class="col-12 col-md-6 mb-2 mb-md-0">Derechos reservados</div>
+          <div class="col-12 col-md-6">Medios de pago (iconos)</div>
+        </div>
+      </div>
+    </footer>
 
-        <!-- !CUERPO-->
-        <main class="main">
-            <!--
-                Este es el bloque principal para el contenido de cada página.
-                Aquí es donde se insertará el código del catálogo o de cualquier
-                otra página que extienda de esta plantilla base.
-            -->
-            {% block content %}{% endblock %}
-        </main>
-        <!-- !FIN CUERPO-->
-
-        <!-- !Footer-->
-        <footer>
-            <!-- Parte superior del footer -->
-            <div class="footer-top-a">
-                <!-- Columna 1 -->
-                <div class="footer-col-1">
-                    <img class="log" src="#" alt="SIPSTORE" />
-                    <p class="parrafo">ubicacion</p>
-                </div>
-                <!-- Columna 2 -->
-                <div class="footer-col-1">
-                    <p class="parrafo">Servicios</p>
-                    <a class="a-foot" href="#">Kit Productos</a>
-                    <a class="a-foot" href="#">Productos</a>
-                    <a class="a-foot" href="#">Cotizar productos</a>
-                </div>
-                <!-- Columna 3 -->
-                <div class="footer-col-1">
-                    <p class="parrafo">Contacto</p>
-                    <p class="parrafo">(icono)telefono </p>
-                    <p class="parrafo">(icono)correo</p>
-                    <div style="display: flex; gap: 5px; width: 100%">
-                        <a class="a-foot" href="#">(icono)redsocial 1</a>
-                        <a class="a-foot" href="#">(icono)redsosial 2</a>
-                    </div>
-                </div>
-            </div>
-            <!-- Parte inferior del footer -->
-            <div class="footer-bottom">
-                <div style="flex: 1"></div>
-                <p class="parrafo">derechos reservados</p>
-                <div style="flex: 1"></div>
-                <p class="parrafo">medios de pago(iconos)</p>
-                <div style="flex: 1"></div>
-            </div>
-        </footer>
-        <!-- !FIN Footer-->
+    <!-- Bootstrap JS -->
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI"
+      crossorigin="anonymous"
+    ></script>
   </body>
 </html>
