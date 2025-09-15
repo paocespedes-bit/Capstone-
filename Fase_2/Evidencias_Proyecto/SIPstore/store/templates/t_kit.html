@@ -1,23 +1,22 @@
-{% load static%}
+{% load static%} 
 <!-- !css -->
 {% block link %}
-<link rel="stylesheet" href="{% static 'store/style/tarjeta.css' %}" />
-{% endblock %}
+<link rel="stylesheet" href="{% static 'store/style/tarjeta.css' %}">
+{% endblock %} 
 <!-- !cloqueo de contenido -->
 {% block content %}
 <!-- !Tarjetas de productos -->
-{% for panel in paneles %}
 <div class="contenedor-card">
   <div class="card">
-    {% for img in panel.imagenes.all %}
-    <img src="{{img.imagen.url}}" alt="{{panel.nombre}}" />
-    {% endfor %}
+    <img src="#" alt="Producto" />
     <div class="card-body">
-      <div class="card-title">{{panel.nombre}}</div>
+      <div class="card-title">Nombre Producto</div>
       <div class="stars">★ N°</div>
-      <div class="card-description">Disponible bajo pedido</div>
+      <div class="card-description">
+        Disponible bajo pedido
+      </div>
       <div class="price">
-        ${{panel.precio}}<span style="font-size: 12px">IVA Incl.</span>
+        $999.999 <span style="font-size: 12px">IVA Incl.</span>
       </div>
 
       <div class="actions">
@@ -31,6 +30,4 @@
     </div>
   </div>
 </div>
-{% empty %}
-<p>No hay panles disponibles</p>
-{% endfor %} {% endblock %}
+{% endblock %}
