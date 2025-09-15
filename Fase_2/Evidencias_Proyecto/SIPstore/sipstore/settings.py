@@ -111,6 +111,11 @@ USE_TZ = True
 # !Archivos estáticos (CSS, JS, imágenes)
 STATIC_URL = 'static/'
 
+# !Carpeta statica Global
+STATICFILES_DIRS = [
+    BASE_DIR / 'static',
+]
+
 # !Media para las imagenes
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR,'media')
