@@ -1,12 +1,55 @@
 from django.contrib import admin
-from django.apps import apps
+from django.contrib.contenttypes.admin import GenericTabularInline
+from .models import (
+    Categoria,
+    KitConstruccion,
+    PanelSIP,
+    imagenProducto,
+    Oferta,
+    Comentario
+)
 
-modelos = apps.get_app_config('store').get_models()
+# Para manejar imágenes en la misma página del producto
 
-for modelo in modelos:
-    try:
-        admin.site.register(modelo)
-    except admin.site.AlreadyRegistered:
-        pass
+class ImagenProductoInline(GenericTabularInline):
+    model = imagenProducto
+    extra = 1
 
-# Register your models here.
+# Personalización para el modelo KitConstruccion
+@admin.register(KitConstruccion)
+class KitConstruccionAdmin(admin.ModelAdmin):
+    list_display = ('nombre', 'precio', 'm2', 'dormitorios', 'banos', 'precio_actual')
+    # Permite buscar por nombre y descripción
+    search_fields = ('nombre', 'descripcion')
+    # Permite filtrar por categorías
+    list_filter = ('categorias',)
+    # Muestra las imágenes en la misma página de edición del kit
+    inlines = [ImagenProductoInline]
+    # Muestra los campos en el orden especificado
+    fields = ('nombre', 'precio', 'descripcion', 'm2', 'dormitorios', 'banos', 'categorias')
+
+# Personalización para el modelo PanelSIP
+@admin.register(PanelSIP)
+class PanelSIPAdmin(admin.ModelAdmin):
+    list_display = ('nombre', 'precio', 'espesor', 'largo', 'ancho', 'precio_actual')
+    search_fields = ('nombre', 'tipo_obs', 'madera_union')
+    list_filter = ('categorias',)
+    inlines = [ImagenProductoInline]
+
+# Registro de los modelos restantes, también se puede usar el decorador @admin.register()
+@admin.register(Categoria)
+class CategoriaAdmin(admin.ModelAdmin):
+    list_display = ('nombre',)
+    search_fields = ('nombre',)
+
+@admin.register(Oferta)
+class OfertaAdmin(admin.ModelAdmin):
+    list_display = ('producto', 'precio_oferta', 'porcentaje_dcto', 'fecha_inicio', 'fecha_fin')
+    list_filter = ('fecha_inicio', 'fecha_fin')
+    search_fields = ('producto__nombre',) # Permite buscar por el nombre del producto relacionado
+
+@admin.register(Comentario)
+class ComentarioAdmin(admin.ModelAdmin):
+    list_display = ('autor', 'producto', 'estrellas', 'fecha_comentario')
+    list_filter = ('estrellas', 'fecha_comentario')
+    search_fields = ('autor', 'texto', 'producto__nombre')
