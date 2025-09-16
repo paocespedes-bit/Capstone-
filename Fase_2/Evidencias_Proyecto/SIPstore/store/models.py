@@ -1,4 +1,7 @@
 from django.db import models
+from django.contrib.auth import get_user_model
+
+User = get_user_model()
 
 # !Crear los modelos aqui
 
@@ -61,7 +64,22 @@ class imagenProducto(models.Model):
     def __str__(self):
         return f"Imagen de {self.kit or self.panel}"
 
+#*Inventario
+class Inventario(models.Model):
+    producto = models.OneToOneField('Producto',on_delete=models.CASCADE, related_name='inventario')
+    disponible = models.PositiveIntegerField(default=0)
+    reservado = models.PositiveBigIntegerField(default=0) #! puede servir para pedidos en cuso, si no eliminar
 
+    def __str__(self):
+        return f"stock de {self.producto.nombre}"
+    
+    class Meta:
+        abstract = True
+    
+
+class Oferta(models.Model):
+    Producto = models.ForeignKey('Producto', on_delete=models.CASCADE, related_name='ofertas')
+    precio_oferta =models
 
 
 
