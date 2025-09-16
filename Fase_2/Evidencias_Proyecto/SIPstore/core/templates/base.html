@@ -5,10 +5,16 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
+    <!-- !Icono de pestaña -->
+    <link
+      rel="icon"
+      type="image/x-icon"
+      href="{% static 'img/logoMin.png' %}"
+    />
     <!-- !Bootstrap CSS -->
-    <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
+    <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}" />
     <!-- !Bootstrap Icon  -->
-    <link rel="stylesheet" href="{% static 'css/bootstrap-icons.min.css' %}">
+    <link rel="stylesheet" href="{% static 'css/bootstrap-icons.min.css' %}" />
     <!-- !CSS  -->
     <link rel="stylesheet" href="{% static 'core/style/base.css' %}" />
     {% block link %}{% endblock %}
@@ -21,13 +27,13 @@
       class="navbar navbar-expand-lg navbar-dark bg-primary rounded shadow-sm"
     >
       <div class="container-fluid">
-        <a class="navbar-brand" href="#">
-          <img
-            src="{% static 'img/logoHorizontal.png' %}"
-            alt="SIPstore"
-            class="d-inline-block align-text-top logo"
-          />
-        </a>
+        <img
+          id="nav-logo"
+          src="{% static 'img/logoHorizontal.png' %}"
+          alt="SIPstore"
+          class="d-inline-block align-text-top logo"
+        />
+
         <button
           class="navbar-toggler"
           type="button"
@@ -41,25 +47,38 @@
         </button>
         <div class="collapse navbar-collapse" id="navbarNav">
           <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-            <li class="nav-item"><a class="nav-link" href="{% url 'home' %}">Home</a></li>
             <li class="nav-item">
-              <a class="nav-link" href="#">Kit Productos</a>
+              <a class="nav-link " href="{% url 'home' %}">Inicio</a>
             </li>
-            <li class="nav-item"><a class="nav-link" href="{% url 'paneles' %}">Productos</a></li>
+            
+            <li class="nav-item">
+              <a class="nav-link" href="#">Kit de construccion</a>
+            </li>
+            
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'paneles' %}">Paneles SIP</a>
+            </li>
+            
             <li class="nav-item">
               <a class="nav-link" href="#">Cotiza Estructura</a>
             </li>
           </ul>
-          <form class="d-flex align-items-center" role="search">
-            <input
-              class="form-control me-2"
-              type="search"
-              placeholder="Buscar"
-              aria-label="Search"
-            />
-            <button class="btn btn-outline-light me-2" type="submit"><i class="bi bi-search"></i></button>
-            <button class="btn btn-light" type="button"><i class="bi bi-cart4"></i></button>
-          </form>
+          <!--! Barra busqueda -->
+          
+            <div class="search-wrapper d-flex align-items-center">
+              <div class="search-box">
+                <input
+                  type="text"
+                  class="form-control search-input"
+                  placeholder="Buscar"
+                />
+                <button class="btn btn-primary search-button">
+                  <i class="bi bi-search"></i>
+                </button>
+              </div>
+            </div>
+          
+          <button type="button" class="btn btn-success cart-button"><i class="bi bi-cart3"></i> Carrito</button>
         </div>
       </div>
     </nav>
@@ -76,58 +95,36 @@
       <div class="container py-4">
         <div class="row text-center text-md-start">
           <div class="col-md-4 mb-3">
-            <img src="{% static 'img/logoVertical.png' %}" alt="SIPSTORE" class="log mb-2" />
+            <img
+              src="{% static 'img/logoVertical.png' %}"
+              alt="SIPSTORE"
+              class="log mb-2"
+            />
             <p class="mb-1">Ubicación</p>
           </div>
           <div class="col-md-4 mb-3">
             <p class="fw-bold mb-2">Servicios</p>
-            <a class="a-foot d-block mb-1" href="#">Kit Productos</a>
-            <a class="a-foot d-block mb-1" href="#">Productos</a>
-            <a class="a-foot d-block mb-1" href="#">Cotizar productos</a>
+            <a class="a-foot d-block mb-1" href="#">Kit de Construccion</a>
+            <a class="a-foot d-block mb-1" href="#">Paneles SIP</a>
+            <a class="a-foot d-block mb-1" href="#">Cotizar Estructura</a>
           </div>
           <div class="col-md-4 mb-3">
             <p class="fw-bold mb-2">Contacto</p>
-            <p class="mb-1"><img
-                src="{% static 'store/img/phone.png' %}"
-                alt="Gmail"
-                class="icono me-1"
-                style="
-                  width: 20px;
-                  height: auto;
-                  vertical-align: middle;
-                  margin-right: 6px;
-                "
-              /> +569 6405 74XX</p>
+            <p class="mb-1">
+              <i class="bi bi-telephone-fill"></i> +569 6405 74XX
+            </p>
             <p class="mb-2">
-              <img
-                src="{% static 'store/img/gmail.svg' %}"
-                alt="Gmail"
-                class="icono me-1"
-                style="
-                  width: 20px;
-                  height: auto;
-                  vertical-align: middle;
-                  margin-right: 6px;
-                "
-              />
+              <i class="bi bi-envelope-at-fill"></i>
               correoejemplo@gmail.com
             </p>
             <div
               class="d-flex justify-content-center justify-content-md-start gap-2"
             >
               <a class="a-foot d-flex align-items-center" href="#">
-                <img
-                  src="{% static 'store/img/whatsapp.svg' %}"
-                  alt="WhatsApp"
-                  class="icono me-1"
-                />Whatsapp
+                <i class="bi bi-whatsapp"></i>Whatsapp
               </a>
               <a class="a-foot d-flex align-items-center" href="#">
-                <img
-                  src="{% static 'store/img/facebook.svg' %}"
-                  alt="Facebook"
-                  class="icono me-1"
-                />Facebook
+                <i class="bi bi-facebook"></i>Facebook
               </a>
             </div>
           </div>
