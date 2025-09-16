@@ -1,22 +1,27 @@
-{% load static%} 
+{% load static%}
 <!-- !css -->
 {% block link %}
-<link rel="stylesheet" href="{% static 'store/style/tarjeta.css' %}">
-{% endblock %} 
+<link rel="stylesheet" href="{% static 'store/style/tarjeta.css' %}" />
+{% endblock %}
 <!-- !cloqueo de contenido -->
 {% block content %}
 <!-- !Tarjetas de productos -->
+{% for kit in kits %}
 <div class="contenedor-card">
   <div class="card">
-    <img src="#" alt="Producto" />
+    {% if kit.imagenes.all %}
+    <img src="{{kit.imagenes.first.imagen.url  }}" alt="{{kit.nombre}}" />
+    {% else %}
+    <img src="#" alt="Imagen no disponible" />
+    {% endif %}
     <div class="card-body">
-      <div class="card-title">Nombre Producto</div>
+      <div class="card-title">{{kit.nombre}}</div>
       <div class="stars">★ N°</div>
       <div class="card-description">
         Disponible bajo pedido
       </div>
       <div class="price">
-        $999.999 <span style="font-size: 12px">IVA Incl.</span>
+        ${{kit.precio}} 
       </div>
 
       <div class="actions">
@@ -30,4 +35,6 @@
     </div>
   </div>
 </div>
-{% endblock %}
+{% empty %}
+<p>No kits de construccion disponibles</p>
+{% endfor %} {% endblock %}

@@ -8,17 +8,17 @@ def paneles(request):
     paneles = PanelSIP.objects.all()
     context = {
         'paneles': paneles,
-        # 'kits': kits
+        
     }
     return render(request, 'paneles.html',context)
 
-def catalogo_kits(request):
+def kits(request):
     kits = KitConstruccion.objects.all()
     context = {
-        # 'paneles': paneles,
+        
         'kits': kits
     }
-    return render(request, "t_kit.html",context)
+    return render(request, "kits.html",context)
 
 
 

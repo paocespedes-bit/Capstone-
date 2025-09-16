@@ -52,7 +52,7 @@
             </li>
             
             <li class="nav-item">
-              <a class="nav-link" href="#">Kit de construccion</a>
+              <a class="nav-link" href="{% url 'kits' %}">Kit de construccion</a>
             </li>
             
             <li class="nav-item">
@@ -84,7 +84,7 @@
     </nav>
 
     <!-- Main Content -->
-    <main class="container my-4">
+    <main class="container ">
       <div class="main p-4 rounded shadow-sm">
         {% block content %}{% endblock %}
       </div>
@@ -104,8 +104,8 @@
           </div>
           <div class="col-md-4 mb-3">
             <p class="fw-bold mb-2">Servicios</p>
-            <a class="a-foot d-block mb-1" href="#">Kit de Construccion</a>
-            <a class="a-foot d-block mb-1" href="#">Paneles SIP</a>
+            <a class="a-foot d-block mb-1" href="{% url 'kits' %}">Kit de Construccion</a>
+            <a class="a-foot d-block mb-1" href="{% url 'paneles' %}">Paneles SIP</a>
             <a class="a-foot d-block mb-1" href="#">Cotizar Estructura</a>
           </div>
           <div class="col-md-4 mb-3">

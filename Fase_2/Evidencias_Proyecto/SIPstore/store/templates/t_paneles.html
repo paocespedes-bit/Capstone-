@@ -9,17 +9,19 @@
 {% for panel in paneles %}
 <div class="contenedor-card">
   <div class="card">
-    {% if panel.imagenes.first %}
-        <img src="{{ panel.imagenes.first.imagen.url }}" alt="{{ panel.nombre }}">
+    {% if panel.imagenes.all %}
+    <img src="{{panel.imagenes.first.imagen.url  }}" alt="{{panel.nombre}}" />
     {% else %}
-        <p>no esta disponible</p>
+    <img src="#" alt="Imagen no disponible" />
     {% endif %}
     <div class="card-body">
       <div class="card-title">{{panel.nombre}}</div>
       <div class="stars">★ N°</div>
-      <div class="card-description">Disponible bajo pedido</div>
+      <div class="card-description">
+        Disponible bajo pedido
+      </div>
       <div class="price">
-        ${{panel.precio}}<span style="font-size: 12px">IVA Incl.</span>
+        ${{panel.precio}} 
       </div>
 
       <div class="actions">
@@ -34,5 +36,5 @@
   </div>
 </div>
 {% empty %}
-<p>No hay panles disponibles</p>
+<p>No hay paneles disponibles</p>
 {% endfor %} {% endblock %}

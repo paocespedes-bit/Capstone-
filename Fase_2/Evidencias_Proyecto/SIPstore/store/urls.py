@@ -4,6 +4,6 @@ from . import views
 
 urlpatterns = [
     path('paneles/', views.paneles, name="paneles"),
-    # path('kit/')
+    path('kits/',views.kits,name="kits")
     
 ]
