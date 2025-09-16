@@ -45,7 +45,6 @@ class PaneleSIP(Producto):
     categorias =models.ManyToManyField(Categoria, related_name="paneles")  
 
 # * Imagen 
-
 def ruta_imagen(instance, filename):
     if instance.kit: # !si la imagen es de un kit 
         return f"kit/{filename}"
