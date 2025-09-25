@@ -1,38 +1,25 @@
 <!-- !agregar base  -->
-{% extends "base.html"%}
-{% load static %}
-{% block link %}
+{% extends "base.html"%} {% load static %} {% block link %}
 <!-- !CSS  -->
-    <link rel="stylesheet" href="{% static 'core/style/index.css' %}" />
+<link rel="stylesheet" href="{% static 'core/style/index.css' %}" />
 {% endblock %}
 
 <!-- !Blockeo de contenido -->
 {% block content %}
-<div class="carrusel">
-    {% include "carrusel.html" %}
-</div>
+<div class="carrusel">{% include "carrusel.html" %}</div>
 <div class="tarjetas">
-    <div class="container">
-        <h4>Kits de Construccion</h4>
-        {% include "t_kit.html" with kits=kits %}
-    </div>
-    <div class="container">
-        <h4>Paneles SIP</h4>
-        <!-- !Incluir tarjetas -->
-        {% include "t_paneles.html" with paneles=paneles %}
-    </div>
-    
-    
-<div class="titulo">
-  <h4>Kits de Construccion</h4>
+  <div class="titulo">
+    <h4>Kits de Construccion</h4>
+  </div>
+  <div class="tarjetas1">{% include "t_kit.html" with kits=kits %}</div>
+  <div class="titulo">
+    <h4>Paneles SIP</h4>
+  </div>
+  <div class="tarjetas2">
+    <!-- !Incluir tarjetas -->
+    {% include "t_paneles.html" with paneles=paneles %}
+  </div>
+
+  <p></p>
+  {% endblock %}
 </div>
-<div class="tarjetas1">{% include "t_kit.html" with kits=kits %}</div>
-<div class="titulo">
-  <h4>Paneles SIP</h4>
-</div>
-<div class="tarjetas2">
-  <!-- !Incluir tarjetas -->
-  {% include "t_paneles.html" with paneles=paneles %}
-</div>
-<p></p>
-{% endblock %}
