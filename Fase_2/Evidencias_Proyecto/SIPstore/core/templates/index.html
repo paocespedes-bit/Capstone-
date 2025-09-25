@@ -23,8 +23,16 @@
     </div>
     
     
+<div class="titulo">
+  <h4>Kits de Construccion</h4>
 </div>
-<p>
-    
-</p>
+<div class="tarjetas1">{% include "t_kit.html" with kits=kits %}</div>
+<div class="titulo">
+  <h4>Paneles SIP</h4>
+</div>
+<div class="tarjetas2">
+  <!-- !Incluir tarjetas -->
+  {% include "t_paneles.html" with paneles=paneles %}
+</div>
+<p></p>
 {% endblock %}

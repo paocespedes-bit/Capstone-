@@ -39,7 +39,7 @@ main.container {
   height: auto;
   margin-right: 30px;
 }
-.nav-link{
+.nav-link {
   margin: 0px 10px;
 }
 /* !search bar  */
@@ -53,8 +53,6 @@ main.container {
   border-radius: 50px;
   transition: all 0.3s ease;
 }
-
-
 
 .search-input {
   border-radius: 50px;
@@ -94,15 +92,13 @@ main.container {
   transform: translateY(-50%) scale(1.05);
 }
 
-
-.cart-button{
+.cart-button {
   border-radius: 50px;
-  background-color: rgba(3, 189, 3, 0) ;
+  background-color: rgba(3, 189, 3, 0);
   border: 3px solid rgba(3, 189, 3);
-  
 }
-.cart-button:hover{
-  background-color: rgba(3, 189, 3) ;
+.cart-button:hover {
+  background-color: rgba(3, 189, 3);
   border: 3px solid rgb(3, 218, 3);
 }
 
@@ -196,13 +192,12 @@ div {
   margin: 0;
   font-size: 14px;
 }
-/* Media query para pantallas más pequeñas */
+
 @media (max-width: 991.2px) and (max-height: 742.4px) {
   .navbar-collapse {
     flex-grow: 1;
     flex-basis: 100%;
     display: flex;
-    /* justify-content: center; */
     align-items: flex-start;
     flex-direction: column;
   }
@@ -210,12 +205,194 @@ div {
     width: 150px;
     height: auto;
   }
-  
+
   .search-wrapper {
-  max-width: auto;
-  margin: 0px;
-}
-  .nav-item, .cart-button, .search-wrapper{
+    max-width: auto;
+    margin: 0px;
+  }
+  .nav-item,
+  .cart-button,
+  .search-wrapper {
     margin: 10px 0px;
+  }
+}
+
+.cat-container {
+  min-height: 100vw;
+}
+
+/* Breadcrumb */
+
+.catalogo-breadcrumb {
+  padding: 10px 20px;
+  font-size: 14px;
+  background: #eee;
+  border-bottom: 1px solid #ccc;
+}
+
+.catalogo-breadcrumb a {
+  color: #0073e6;
+  text-decoration: none;
+}
+
+.catalogo-breadcrumb span {
+  margin: 0 5px;
+  color: #555;
+}
+
+/* Layout principal */
+.catalogo-main {
+  display: grid;
+  grid-template-columns: 250px 1fr 250px;
+  gap: 20px;
+  padding: 20px;
+}
+
+/* Sidebar filtros */
+.catalogo-sidebar {
+  border: 1px solid red;
+  padding: 15px;
+  background: #fff;
+}
+
+.catalogo-sidebar h3 {
+  font-size: 16px;
+  margin-bottom: 10px;
+}
+
+.catalogo-sidebar .cat-filter-group {
+  margin-bottom: 20px;
+  border: 1px solid orange;
+  padding: 10px;
+}
+
+/* Contenedor productos */
+.catalogo-products {
+  border: 1px solid blue;
+  padding: 15px;
+  background: #fff;
+}
+
+.catalogo-products h2 {
+  font-size: 18px;
+  margin-bottom: 15px;
+}
+
+.cat-products-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 20px;
+}
+
+/* Card (se incluye desde Django)
+/* Nota: La clase 'card' se asume que está en el archivo "t_paneles.html" y no se ha modificado. */
+/* .card {
+  background: white;
+  padding: 15px;
+  border-radius: 6px;
+  text-align: center;
+  border: 1px solid; base
+}  */
+
+/* Recomendados */
+.catalogo-recomendados {
+  border: 1px solid green;
+  padding: 15px;
+  background: #fff;
+}
+
+.catalogo-recomendados h3 {
+  font-size: 16px;
+  margin-bottom: 10px;
+}
+
+.catalogo-recomendados .cat-recomendados-item {
+  border: 1px solid gray;
+  padding: 10px;
+  margin-bottom: 10px;
+}
+
+.rounded {
+  width: 100%;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-direction: column;
+}
+
+.row {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: row;
+  width: auto;
+}
+
+.row > section.col-12.col-md-9.col-lg-10 {
+  padding: 20px;
+  display: block;
+}
+
+.row > * {
+  flex-shrink: 0;
+  width: auto;
+  max-width: 100%;
+}
+
+.productos {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: row;
+  width: 100%;
+  height: auto;
+}
+
+.mb-4 {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.tarjetas1,
+.tarjetas2 {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+.tarjetas1 .card,
+.tarjetas2 .card {
+  flex: 1 1 250px;
+  max-width: 300px;
+}
+
+.titulo {
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+
+/* Ajustes móviles */
+@media (max-width: 576px) {
+  aside {
+    padding: 10px !important;
+    box-shadow: none;
+  }
+
+  section.col-12 {
+    padding: 10px !important;
+  }
+
+  .card {
+    font-size: 14px;
+  }
+
+  .btn {
+    font-size: 14px;
+    padding: 6px 10px;
   }
 }

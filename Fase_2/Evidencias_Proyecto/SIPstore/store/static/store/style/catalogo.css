@@ -98,6 +98,8 @@
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
   display: flex;
   justify-content: space-between;
+  align-items: flex-start;
+  flex-direction: row;
 }
 
 .row {
@@ -105,16 +107,33 @@
   justify-content: center;
   align-items: center;
   flex-direction: row;
+  width: auto;
 }
 
 .row > section.col-12.col-md-9.col-lg-10 {
   padding: 20px;
-  display: block; /* no lo forces a flex en este nivel */
+  display: block;
+}
+
+.row > * {
+  flex-shrink: 0;
+  width: auto;
+  max-width: 100%;
 }
 
 .productos {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: row;
   width: 100%;
   height: auto;
+}
+
+.mb-4{
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 /* Ajustes móviles */
