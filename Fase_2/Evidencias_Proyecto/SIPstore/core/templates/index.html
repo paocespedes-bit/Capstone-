@@ -9,17 +9,16 @@
 <div class="carrusel">{% include "carrusel.html" %}</div>
 <div class="tarjetas">
   <div class="titulo">
-    <h4>Kits de Construccion</h4>
+    <h1>Kits de Construccion</h1>
   </div>
-  <div class="tarjetas1">{% include "t_kit.html" with kits=kits %}</div>
+  <div class="cards">{% include "t_kit.html" with kits=kits %}</div>
   <div class="titulo">
-    <h4>Paneles SIP</h4>
+    <h1>Paneles SIP</h1>
   </div>
-  <div class="tarjetas2">
+  <div class="cards">
     <!-- !Incluir tarjetas -->
     {% include "t_paneles.html" with paneles=paneles %}
   </div>
-
   <p></p>
   {% endblock %}
 </div>

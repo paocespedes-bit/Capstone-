@@ -1,7 +1,8 @@
+
 .card {
   background: #fff;
   width: 100%;
-  max-width: 280px;
+  max-width: 40vh;
   border: 1px solid #ddd;
   border-radius: 12px;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
@@ -9,30 +10,36 @@
   margin: 0 auto;
   transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
-
-.card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
-} 
-
 .card img {
   width: 100%;
   height: auto;
-  max-height: 250px;
+  max-height: 40vh;
   object-fit: cover;
   display: block;
   border-bottom: 1px solid #ddd;
 }
 
 .card-body {
-  padding: 15px;
+  padding: 5px;
 }
 
 .card-title {
-  font-size: 1rem;
-  font-weight: 600;
-  margin: 10px 0;
+  font-size: medium;
+  font-weight: bold;
+  margin: 4px 0;
 }
+
+
+/* !HOVER */
+.card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+} 
+
+
+
+
+
 
 .stars {
   color: #ffc107;
@@ -94,7 +101,7 @@
   background: #00695c;
 }
 
-@media (max-width: 576px) {
+/* @media (max-width: 576px) {
   .card {
     max-width: 100%;
   }
@@ -111,4 +118,4 @@
   .add-cart {
     width: 100%;
   }
-}
+} */

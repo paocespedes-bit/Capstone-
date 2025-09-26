@@ -1,3 +1,14 @@
-/* .tarjetas{
-    margin: 1.5rem;
-} */
+.tarjetas{
+    margin: 25px 10px;
+}
+
+.titulo h1{
+    font-size: x-large;
+    font-weight: bold;
+    color: #008c9e ;
+    margin-left: 10%;
+}
+
+.cards{
+    padding: 2%;
+}
