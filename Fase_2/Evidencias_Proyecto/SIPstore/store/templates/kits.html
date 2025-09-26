@@ -1,10 +1,16 @@
-{% extends "base.html" %} {% load static %} {% block link %}
+{% extends "base.html" %}
+{% load static %}
+
+{% block link %}
 <link rel="stylesheet" href="{% static 'store/style/catalogo.css' %}" />
-{% endblock %} {% block title %}Kit de Construccion{% endblock %} {% block content %}
+{% endblock %}
+
+{% block title %}Kit de Construccion{% endblock %}
+
+{% block content %}
 <div class="row">
-  <!-- Sidebar filtros -->
-  <aside class="col-12 col-md-3 col-lg-2 bg-light p-3 rounded shadow-sm" style="display: flex;
-  justify-content: center; align-items: flex-start; flex-direction: column;">
+  <!-- Sidebar fijo en escritorio -->
+  <aside class="col-md-3 col-lg-2 d-none d-md-block bg-light p-3 rounded shadow-sm">
     <h5 class="mb-3">Filtros</h5>
 
     <!-- Tipo OSB -->
@@ -46,32 +52,16 @@
     <!-- Recomendados -->
     <h6 class="mt-4">Más recomendados</h6>
     <div class="list-group">
-      <a
-        href="#"
-        class="list-group-item list-group-item-action d-flex align-items-center"
-      >
-        <img
-          src="#"
-          alt=""
-          class="me-2"
-          style="width: 50px; height: auto"
-        />
+      <a href="#" class="list-group-item list-group-item-action d-flex align-items-center">
+        <img src="#" alt="" class="me-2" style="width: 50px; height: auto" />
         <div>
           <small>Panel sip 100 mm - OSB 11,1 LP</small><br />
           <strong>$52.290</strong>
           <span class="small text-muted">IVA incl.</span>
         </div>
       </a>
-      <a
-        href="#"
-        class="list-group-item list-group-item-action d-flex align-items-center"
-      >
-        <img
-          src="#"
-          alt=""
-          class="me-2"
-          style="width: 50px; height: auto"
-        />
+      <a href="#" class="list-group-item list-group-item-action d-flex align-items-center">
+        <img src="#" alt="" class="me-2" style="width: 50px; height: auto" />
         <div>
           <small>Panel sip 150 mm - OSB 11,1 LP</small><br />
           <strong>$65.990</strong>
@@ -82,13 +72,80 @@
   </aside>
 </div>
 
-<!-- Productos -->
-<div class="productos">
-  <section class="col-12 col-md-9 col-lg-10">
-    <h3 class="mb-4">Nuestros Modelos</h3>
-    <div class="row g-4">
-      {% include "t_kit.html" with kits=kits %}
+<!-- Contenido principal -->
+<section class="col-12 col-md-9 col-lg-10">
+  <!-- Botón de filtros SOLO en móvil -->
+  <div class="d-md-none mb-3">
+    <button class="btn btn-outline-dark w-100" data-bs-toggle="offcanvas" data-bs-target="#filtrosOffcanvas">
+      <i class="bi bi-funnel"></i> Mostrar Filtros
+    </button>
+  </div>
+
+  <h3 class="mb-4">Nuestros Modelos</h3>
+  <div class="row g-4">
+    {% include "t_kit.html" with kits=kits %}
+  </div>
+</section>
+
+<!-- Offcanvas: Filtros en móvil -->
+<div class="offcanvas offcanvas-start" tabindex="-1" id="filtrosOffcanvas">
+  <div class="offcanvas-header">
+    <h5 class="offcanvas-title">Filtros</h5>
+    <button type="button" class="btn-close" data-bs-dismiss="offcanvas"></button>
+  </div>
+  <div class="offcanvas-body">
+    <!-- Contenido de filtros (mismo que el aside) -->
+    <div class="mb-3">
+      <label class="form-label">Tipo OSB:</label>
+      <select class="form-select">
+        <option>Cualquier Tipo</option>
+        <option>OSB 11</option>
+        <option>OSB 15</option>
+      </select>
     </div>
-  </section>
+
+    <div class="mb-3">
+      <label class="form-label">Espesor OSB:</label>
+      <select class="form-select">
+        <option>Cualquier Espesor</option>
+      </select>
+    </div>
+
+    <div class="mb-3">
+      <label class="form-label">Madera de unión:</label>
+      <select class="form-select">
+        <option>Cualquier Madera</option>
+      </select>
+    </div>
+
+    <div class="mb-3">
+      <label class="form-label">Precio:</label>
+      <input type="range" min="34990" max="86590" class="form-range" />
+      <div class="d-flex justify-content-between small text-muted">
+        <span>Mínimo</span><span>Máximo</span>
+      </div>
+      <button class="btn btn-primary w-100 mt-2">Filtrar</button>
+    </div>
+
+    <h6 class="mt-4">Más recomendados</h6>
+    <div class="list-group">
+      <a href="#" class="list-group-item list-group-item-action d-flex align-items-center">
+        <img src="#" alt="" class="me-2" style="width: 50px; height: auto" />
+        <div>
+          <small>Panel sip 100 mm - OSB 11,1 LP</small><br />
+          <strong>$52.290</strong>
+          <span class="small text-muted">IVA incl.</span>
+        </div>
+      </a>
+      <a href="#" class="list-group-item list-group-item-action d-flex align-items-center">
+        <img src="#" alt="" class="me-2" style="width: 50px; height: auto" />
+        <div>
+          <small>Panel sip 150 mm - OSB 11,1 LP</small><br />
+          <strong>$65.990</strong>
+          <span class="small text-muted">IVA incl.</span>
+        </div>
+      </a>
+    </div>
+  </div>
 </div>
 {% endblock %}
