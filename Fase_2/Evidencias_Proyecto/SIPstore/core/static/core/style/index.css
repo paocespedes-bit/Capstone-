@@ -3,7 +3,7 @@
 }
 
 .titulo h1{
-    font-size: x-large;
+    font-size: xx-large;
     font-weight: bold;
     color: #008c9e ;
     margin-left: 10%;
@@ -11,4 +11,8 @@
 
 .cards{
     padding: 2%;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between start;
+    align-items: start;
 }
