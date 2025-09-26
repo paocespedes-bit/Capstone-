@@ -108,6 +108,7 @@
   align-items: center;
   flex-direction: row;
   width: auto;
+  height: auto;
 }
 
 .row > section.col-12.col-md-9.col-lg-10 {
@@ -120,6 +121,7 @@
   width: auto;
   max-width: 100%;
 }
+
 
 .productos {
   display: flex;
@@ -134,6 +136,7 @@
   display: flex;
   justify-content: center;
   align-items: center;
+  margin-top: 20px;
 }
 
 /* Ajustes móviles */
@@ -156,3 +159,4 @@
     padding: 6px 10px;
   }
 }
+
