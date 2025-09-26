@@ -8,13 +8,16 @@
 {% block content %}
 <!-- !Tarjetas de productos -->
 {% for kit in kits %}
-<div class="contenedor-card">
-  <div class="card">
+<div class="contenedor-card" data-url="{% url 'paneles' %}">
+  <div class="card" >
     {% if kit.imagenes.all %}
     <img src="{{kit.imagenes.first.imagen.url  }}" alt="{{kit.nombre}}" />
     {% else %}
     <img src="#" alt="Imagen no disponible" />
     {% endif %}
+    <!-- !Oferta  -->
+    <div class="oferta">-10%</div>
+    
     <div class="card-body">
       <div class="card-title">{{kit.nombre}}</div>
       <!-- !Estrellas -->
@@ -23,8 +26,10 @@
       <div class="card-description">
         Disponible bajo pedido
       </div>
-      <div class="price">
-        ${{kit.precio|floatformat:0|intcomma}} 
+      <div class="prices">
+        <p class="price">${{kit.precio|floatformat:0|intcomma}}</p> 
+        <!-- !Precio anterior -->
+        <p class="tachado">${{kit.precio|floatformat:0|intcomma}}</p>
       </div>
 
       <div class="actions">
@@ -36,10 +41,19 @@
         <button class="add-cart">Añadir al Carrito&nbsp;<i class="bi bi-cart3"></i></button>
       </div>
     </div>
+    <div class="expansion">
+      <p class="info"><i class="fa-solid fa-ruler-combined"></i>m²<br>2</p>
+      <p class="info"><i class="fa-solid fa-shower"></i>Baños<br>2</p>
+      <p class="info"><i class="fa-solid fa-bed"></i>Habitaciones<br>2</p>
+    </div>
   </div>
 </div>
 {% empty %}
 <p>No kits de construccion disponibles</p>
 {% endfor %} {% endblock %}
 <!-- ! Para los js  -->
-{% block script %}<script src="{% static 'store/js/mas_menos.js' %}"></script>{% endblock %}
+{% block script %}
+<script src="{% static 'store/js/mas_menos.js' %}"></script>
+<script src="{% static 'store/js/click.js' %}"></script>
+<script src="https://kit.fontawesome.com/acbdc95a40.js" crossorigin="anonymous"></script>
+{% endblock %}
