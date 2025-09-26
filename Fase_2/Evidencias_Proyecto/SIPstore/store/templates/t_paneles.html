@@ -1,4 +1,5 @@
 {% load static%}
+{% load humanize %}
 <!-- !css -->
 {% block link %}
 <link rel="stylesheet" href="{% static 'store/style/tarjeta.css' %}" />
@@ -7,23 +8,31 @@
 {% block content %}
 <!-- !Tarjetas de productos -->
 {% for panel in paneles %}
-<div class="contenedor-card">
+<div class="contenedor-card" data-url="{% url 'paneles' %}">
   <div class="card">
     {% if panel.imagenes.all %}
     <img src="{{panel.imagenes.first.imagen.url  }}" alt="{{panel.nombre}}" />
     {% else %}
     <img src="#" alt="Imagen no disponible" />
     {% endif %}
+    <!-- !Oferta  -->
+    <div class="oferta">-10%</div>
+    <!-- !--------------------- -->
     <div class="card-body">
       <div class="card-title">{{panel.nombre}}</div>
-      <div class="stars">★ N°</div>
+      <!-- !Estrellas -->
+      <div class="stars">★★★★★</div>
+      <!-- !--------------------- -->
       <div class="card-description">
         Disponible bajo pedido
       </div>
-      <div class="price">
-        ${{panel.precio}} 
+      <!-- !precios -->
+      <div class="prices">
+        <p class="price">${{panel.precio|floatformat:0|intcomma}}</p> 
+        <!-- !Precio anterior -->
+        <p class="tachado">${{panel.precio|floatformat:0|intcomma}}</p>
       </div>
-      
+      <!-- !--------------------- -->
       <div class="actions">
         <div class="quantity">
           <button>-</button>
