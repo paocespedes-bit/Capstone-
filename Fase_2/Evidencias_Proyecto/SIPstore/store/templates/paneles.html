@@ -2,47 +2,80 @@
 <link rel="stylesheet" href="{% static 'store/style/paneles.css' %}" />
 {% endblock %} {% block title %}Paneles SIP{% endblock %} {% block content %}
 
-<div class="row">
+<form method="get"
+  <div class="row">
   <!-- Sidebar fijo en escritorio -->
   <aside
     class="col-md-3 col-lg-2 d-none d-md-block bg-light p-3 rounded shadow-sm"
   >
     <h5 class="mb-3">Filtros</h5>
 
+    <input type="text" name="search" class="" placeholder="Buscar" value="{{ search }}">
     <!-- Tipo OSB -->
     <div class="mb-3">
       <label class="form-label">Tipo OSB:</label>
-      <select class="form-select">
-        <option>Cualquier Tipo</option>
-        <option>OSB 11</option>
-        <option>OSB 15</option>
+      <select class="form-select" name="tipo_obs">
+        <option value="">-- Tipo OSB --</option>
+        {% for tipo in tipos_obs %}
+          <option value="{{ tipo }}" {% if tipo == tipo_obs_filtro %}selected{% endif %}>
+              {{ tipo }}
+          </option>
+      {% endfor %}
       </select>
     </div>
 
     <!-- Espesor OSB -->
     <div class="mb-3">
       <label class="form-label">Espesor OSB:</label>
-      <select class="form-select">
-        <option>Cualquier Espesor</option>
+      <select class="form-select" name="Espesor_OSB">
+        <option value="">-- Espesor --</option>
+        {% for e in espesores %}
+          <option value="{{ e }}" {% if e|stringformat:"s" == Espesor_OSB_filtro %}selected{% endif %}>
+              {{ e }} cm
+          </option>
+        {% endfor %}
       </select>
     </div>
 
     <!-- Madera -->
     <div class="mb-3">
       <label class="form-label">Madera de unión:</label>
-      <select class="form-select">
-        <option>Cualquier Madera</option>
+      <select class="form-select" name="madera_union">
+        <option value="">-- Madera de Unión --</option>
+        {% for m in maderas %}
+          <option value="{{ m }}" {% if m == madera_union_filtro %}selected{% endif %}>
+              {{ m }}
+          </option>
+        {% endfor %}
       </select>
     </div>
 
     <!-- Precio -->
     <div class="mb-3">
-      <label class="form-label">Precio:</label>
-      <input type="range" min="34990" max="86590" class="form-range" />
+      <label class="form-label">Precio máximo:</label>
+
+      <input 
+          type="range" 
+          class="form-range"
+          name="precio_max"
+          id="precioSlider"
+          min="{{ precio_min }}" 
+          max="86590"
+          value="{{ precio_max }}"
+          step="1000"
+          oninput="precioOutput.value = this.value"
+      />
+
       <div class="d-flex justify-content-between small text-muted">
-        <span>Mínimo</span><span>Máximo</span>
+          <span>Mínimo: ${{ precio_min }}</span>
+          <span>Máximo: $86.590</span>
       </div>
-      <button class="btn btn-primary w-100 mt-2">Filtrar</button>
+
+      <div class="text-center mt-2">
+          <strong>Seleccionado: $<output id="precioOutput">{{ precio_max }}</output></strong>
+      </div>
+
+      <button type="submit" class="btn btn-primary w-100 mt-2">Filtrar</button>
     </div>
 
     <!-- Recomendados -->
@@ -72,7 +105,8 @@
       </a>
     </div>
   </aside>
-</div>
+  </div>
+</form>
 
 <!-- Contenido principal -->
 <section class="col-12 col-md-9 col-lg-10">
@@ -92,75 +126,111 @@
 </section>
 
 <!-- Offcanvas: Filtros en móvil -->
-<div class="offcanvas offcanvas-start" tabindex="-1" id="filtrosOffcanvas">
-  <div class="offcanvas-header">
-    <h5 class="offcanvas-title">Filtros</h5>
-    <button
-      type="button"
-      class="btn-close"
-      data-bs-dismiss="offcanvas"
-    ></button>
-  </div>
-  <div class="offcanvas-body">
-    <!-- Contenido de filtros (mismo que el aside) -->
-    <div class="mb-3">
+<form method="get"
+  <div class="offcanvas offcanvas-start" tabindex="-1" id="filtrosOffcanvas">
+    <div class="offcanvas-header">
+      <h5 class="offcanvas-title">Filtros</h5>
+      <input type="text" name="search" class="" placeholder="Buscar" value="{{ search }}">
+      <button
+        type="button"
+        class="btn-close"
+        data-bs-dismiss="offcanvas"
+      ></button>
+    </div>
+    <div class="offcanvas-body">
+      <!-- Contenido de filtros (mismo que el aside) -->
+      <div class="mb-3">
       <label class="form-label">Tipo OSB:</label>
-      <select class="form-select">
-        <option>Cualquier Tipo</option>
-        <option>OSB 11</option>
-        <option>OSB 15</option>
+      <select class="form-select" name="tipo_obs">
+        <option value="">-- Tipo OSB --</option>
+        {% for tipo in tipos_obs %}
+          <option value="{{ tipo }}" {% if tipo == tipo_obs_filtro %}selected{% endif %}>
+              {{ tipo }}
+          </option>
+      {% endfor %}
       </select>
     </div>
 
+    <!-- Espesor OSB -->
     <div class="mb-3">
       <label class="form-label">Espesor OSB:</label>
-      <select class="form-select">
-        <option>Cualquier Espesor</option>
+      <select class="form-select" name="Espesor_OSB">
+        <option value="">-- Espesor --</option>
+        {% for e in espesores %}
+          <option value="{{ e }}" {% if e|stringformat:"s" == Espesor_OSB_filtro %}selected{% endif %}>
+              {{ e }} cm
+          </option>
+        {% endfor %}
       </select>
     </div>
 
+    <!-- Madera -->
     <div class="mb-3">
       <label class="form-label">Madera de unión:</label>
-      <select class="form-select">
-        <option>Cualquier Madera</option>
+      <select class="form-select" name="madera_union">
+        <option value="">-- Madera de Unión --</option>
+        {% for m in maderas %}
+          <option value="{{ m }}" {% if m == madera_union_filtro %}selected{% endif %}>
+              {{ m }}
+          </option>
+        {% endfor %}
       </select>
     </div>
 
+    <!-- Precio -->
     <div class="mb-3">
-      <label class="form-label">Precio:</label>
-      <input type="range" min="34990" max="86590" class="form-range" />
+      <label class="form-label">Precio máximo:</label>
+
+      <input 
+          type="range" 
+          class="form-range"
+          name="precio_max"
+          id="precioSlider"
+          min="{{ precio_min }}" 
+          max="86590"
+          value="{{ precio_max }}"
+          step="1000"
+          oninput="precioOutput.value = this.value"
+      />
+
       <div class="d-flex justify-content-between small text-muted">
-        <span>Mínimo</span><span>Máximo</span>
+          <span>Mínimo: ${{ precio_min }}</span>
+          <span>Máximo: $86.590</span>
       </div>
-      <button class="btn btn-primary w-100 mt-2">Filtrar</button>
+
+      <div class="text-center mt-2">
+          <strong>Seleccionado: $<output id="precioOutput">{{ precio_max }}</output></strong>
+      </div>
+
+      <button type="submit" class="btn btn-primary w-100 mt-2">Filtrar</button>
     </div>
 
-    <h6 class="mt-4">Más recomendados</h6>
-    <div class="list-group">
-      <a
-        href="#"
-        class="list-group-item list-group-item-action d-flex align-items-center"
-      >
-        <img src="#" alt="" class="me-2" style="width: 50px; height: auto" />
-        <div>
-          <small>Panel sip 100 mm - OSB 11,1 LP</small><br />
-          <strong>$52.290</strong>
-          <span class="small text-muted">IVA incl.</span>
-        </div>
-      </a>
-      <a
-        href="#"
-        class="list-group-item list-group-item-action d-flex align-items-center"
-      >
-        <img src="#" alt="" class="me-2" style="width: 50px; height: auto" />
-        <div>
-          <small>Panel sip 150 mm - OSB 11,1 LP</small><br />
-          <strong>$65.990</strong>
-          <span class="small text-muted">IVA incl.</span>
-        </div>
-      </a>
+      <h6 class="mt-4">Más recomendados</h6>
+      <div class="list-group">
+        <a
+          href="#"
+          class="list-group-item list-group-item-action d-flex align-items-center"
+        >
+          <img src="#" alt="" class="me-2" style="width: 50px; height: auto" />
+          <div>
+            <small>Panel sip 100 mm - OSB 11,1 LP</small><br />
+            <strong>$52.290</strong>
+            <span class="small text-muted">IVA incl.</span>
+          </div>
+        </a>
+        <a
+          href="#"
+          class="list-group-item list-group-item-action d-flex align-items-center"
+        >
+          <img src="#" alt="" class="me-2" style="width: 50px; height: auto" />
+          <div>
+            <small>Panel sip 150 mm - OSB 11,1 LP</small><br />
+            <strong>$65.990</strong>
+            <span class="small text-muted">IVA incl.</span>
+          </div>
+        </a>
+      </div>
     </div>
   </div>
-</div>
-
+</form>
 {% endblock %}
