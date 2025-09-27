@@ -102,13 +102,17 @@
   flex-direction: row;
 }
 
-
-.mb-3{
+.mb-3 {
   display: block;
 }
 
-
-
+.row > * {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  padding: 15px;
+}
 
 .productos {
   display: flex;
@@ -119,13 +123,12 @@
   height: auto;
 }
 
-.mb-4{
+.mb-4 {
   display: flex;
   justify-content: center;
   align-items: center;
   margin-top: 20px;
 }
-
 
 @media (max-width: 576px) {
   .row.g-4 {
