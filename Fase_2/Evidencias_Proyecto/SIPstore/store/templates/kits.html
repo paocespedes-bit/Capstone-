@@ -5,7 +5,13 @@
 <div class="cuerpo">
   {% include "filtro.html" %}
   <div class="tarjetas">
-    <h3 class="mb-4">Nuestros Modelos</h3>
+    <nav class="nav-breadcrumb" aria-label="breadcrumb">
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="{% url 'home' %}">Inicio</a></li>
+        <li class="breadcrumb-item active" aria-current="page">Kits de Construccion</li>
+      </ol>
+    </nav>
+    <h3 class="titulo-cat">Nuestros Modelos</h3>
     <div class="cards">{% include "t_kit.html" with kits=kits %}</div>
   </div>
 </div>

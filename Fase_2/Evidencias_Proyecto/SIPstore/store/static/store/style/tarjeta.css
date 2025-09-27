@@ -1,6 +1,6 @@
 .contenedor-card{
-  width: 90%;
-  max-width: 40vh;
+  width: 100%;
+  max-width: 35vh;
   /* margin: 0 auto; */
 }
 
@@ -176,7 +176,7 @@
   
   .card {
     width: 95%;
-    height: 45vh;
+    height: 40vh;
     margin: 1vh auto;
   }
   
@@ -206,7 +206,8 @@
     font-size: 0.6em;
   }
   .actions{
-    height: 40%;
+    height: 30%;
+    margin: 0;
   }
   .add-cart {
     font-size: 0.7em;

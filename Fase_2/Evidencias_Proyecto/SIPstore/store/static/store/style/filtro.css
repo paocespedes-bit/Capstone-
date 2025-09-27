@@ -5,7 +5,7 @@
 @media (min-width: 768px) {
   .sidebar {
     display: block;
-    width: 250px;
+    width: 30vh;
     padding: 1rem;
     background-color: #f8f9fa;
     border-radius: 0.25rem;
@@ -67,8 +67,21 @@
 /* Botón filtros en móvil */
 .mobile-filter-btn {
   display: block;
-  margin-bottom: 1rem;
+  margin-bottom: 0.5rem;
+  
 }
+
+.mobile-filter-btn button{
+  width: 100%;
+}
+
+#filtrosOffcanvas{
+  width:80%;
+  padding: 15px;
+  height: 100%;
+  left: 0;
+}
+
 @media (min-width: 768px) {
   .mobile-filter-btn {
     display: none;
