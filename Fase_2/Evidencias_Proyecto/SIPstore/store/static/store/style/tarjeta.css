@@ -1,13 +1,13 @@
 .contenedor-card{
-  width: 100%;
+  width: 95%;
   max-width: 35vh;
-  /* margin: 0 auto; */
+  margin: 1%;
 }
 
 .card {
   background: #fff;
-  width: 95%;
-  height: 65vh;
+  width: 98%;
+  height: 60vh;
   border: 1px solid #ddd;
   border-radius: 12px;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
@@ -88,7 +88,7 @@
   margin: 3px 0px;
   flex-wrap: wrap;
   gap: 10px;
-  height: 40px;
+  height:  5vh;
 }
 
 .quantity {
@@ -103,8 +103,8 @@
   justify-content: center;
   align-items: center;
   border: 2px solid  #008c9e;
-  width: 25px;
-  height: 25px;
+  width: 3vh;
+  height: 3vh;
 }
 
 .custom-icon-btn i{
@@ -131,14 +131,14 @@
   background-color: rgba(3, 189, 3, 0.683);
   border: 2px solid rgba(3, 189, 3);
   font-size: 0.75em;
-  height: 40px;
+  height: 5vh;
 
 }
 
 .expansion{
   display: none;
   justify-content: space-between;
-  padding: 20px;
+  padding: 10px;
   height: auto;
   margin-top: 0.5em;
   border-top: 2px solid #b5b5b5;
@@ -152,6 +152,7 @@
   justify-content: center;
   text-align: center;
   width: 7em;
+  margin: 0;
 }
 
 /* !HOVER */
@@ -171,7 +172,8 @@
 @media (max-width: 700px) {
   .contenedor-card {
     width: 50%;
-    max-width: 23 vh;
+    max-width: 23vh;
+    margin: 0;
   }
   
   .card {
