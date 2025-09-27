@@ -1,62 +1,70 @@
-{% load static%}
+{% load static %}
 {% load humanize %}
 <!-- !css -->
 {% block link %}
 <link rel="stylesheet" href="{% static 'store/style/tarjeta.css' %}" />
 <link rel="stylesheet" href="{% static 'css/all.min.css' %}" />
 {% endblock %}
-<!-- !cloqueo de contenido -->
-{% block content %}
-<!-- !Tarjetas de productos -->
-{% for panel in paneles %}
-<div class="contenedor-card" data-url="{% url 'paneles' %}">
-  <div class="card">
-    {% if panel.imagenes.all %}
-    <img src="{{panel.imagenes.first.imagen.url  }}" alt="{{panel.nombre}}" />
-    {% else %}
-    <img src="#" alt="Imagen no disponible" />
-    {% endif %}
-    <!-- !Oferta  -->
-    <div class="oferta">-10%</div>
-    <!-- !--------------------- -->
-    <div class="card-body">
-      <div class="card-title">{{panel.nombre}}</div>
-      <!-- !Estrellas -->
-      <div class="stars">★★★★★</div>
-      <!-- !--------------------- -->
-      <div class="card-description">
-        Disponible bajo pedido
-      </div>
-      <!-- !precios -->
-      <div class="prices">
-        <p class="price">${{panel.precio|floatformat:0|intcomma}}</p> 
-        <!-- !Precio anterior -->
-        <p class="tachado">${{panel.precio|floatformat:0|intcomma}}</p>
-      </div>
-      <!-- !--------------------- -->
-      <div class="actions">
-        <div class="quantity">
-          <button type="button" class="btn rounded-circle custom-icon-btn"><i class="bi bi-dash-lg"></i></button>
-          <span>1</span>
-          <button type="button" class="btn rounded-circle custom-icon-btn"><i class="bi bi-plus-lg"></i></button>
-        </div>
-        <button class="add-cart">Añadir al Carrito&nbsp;<i class="bi bi-cart3"></i></button>
-      </div>
 
+<!-- !bloque de contenido -->
+{% block content %}
+<div class="container">
+  <div class="row g-4">
+    <!-- !Tarjetas de productos -->
+    {% for panel in paneles %}
+    <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+      <div class="card h-100" data-url="{% url 'paneles' %}">
+        {% if panel.imagenes.all %}
+        <img src="{{ panel.imagenes.first.imagen.url }}" class="card-img-top" alt="{{ panel.nombre }}" />
+        {% else %}
+        <img src="#" class="card-img-top" alt="Imagen no disponible" />
+        {% endif %}
+
+        <!-- !Oferta -->
+        <div class="oferta">-10%</div>
+
+        <div class="card-body">
+          <div class="card-title">{{ panel.nombre }}</div>
+
+          <!-- !Estrellas -->
+          <div class="stars">★★★★★</div>
+
+          <div class="card-description">
+            Disponible bajo pedido
+          </div>
+
+          <!-- !Precios -->
+          <div class="prices">
+            <p class="price">${{ panel.precio|floatformat:0|intcomma }}</p>
+            <p class="tachado">${{ panel.precio|floatformat:0|intcomma }}</p>
+          </div>
+
+          <!-- !Acciones -->
+          <div class="actions">
+            <div class="quantity">
+              <button type="button" class="btn rounded-circle custom-icon-btn"><i class="bi bi-dash-lg"></i></button>
+              <span>1</span>
+              <button type="button" class="btn rounded-circle custom-icon-btn"><i class="bi bi-plus-lg"></i></button>
+            </div>
+            <button class="add-cart">Añadir al Carrito&nbsp;<i class="bi bi-cart3"></i></button>
+          </div>
+        </div>
+
+        <div class="expansion">
+          <p class="info"><i class="fa-solid fa-ruler-combined"></i>Espesor<br>2</p>
+          <p class="info"><i class="fa-solid fa-hammer"></i>Madera de Unión<br>2</p>
+          <p class="info"><i class="fa-solid fa-grip-lines-vertical"></i>Tipo OBS<br>2</p>
+        </div>
+      </div>
     </div>
-    <div class="expansion">
-      <p class="info"><i class="fa-solid fa-ruler-combined"></i>Espesor<br>2</p>
-      <p class="info"><i class="fa-solid fa-hammer"></i>Madera de Union<br>2</p>
-      <p class="info"><i class="fa-solid fa-grip-lines-vertical"></i>Tipo OBS<br>2</p>
-    </div>
-    </div>
+    {% empty %}
+    <p>No hay paneles disponibles</p>
+    {% endfor %}
   </div>
 </div>
-{% empty %}
-<p>No hay paneles disponibles</p>
-{% endfor %} {% endblock %}
+{% endblock %}
+
 {% block script %}
 <script src="{% static 'store/js/mas_menos.js' %}"></script>
 <script src="{% static 'store/js/click.js' %}"></script>
-
 {% endblock %}

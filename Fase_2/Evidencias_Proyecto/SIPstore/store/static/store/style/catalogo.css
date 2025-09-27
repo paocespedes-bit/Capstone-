@@ -132,6 +132,7 @@
   margin-top: 20px;
 }
 
+
 @media (max-width: 576px) {
   .row.g-4 {
     display: flex;

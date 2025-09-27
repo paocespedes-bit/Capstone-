@@ -153,20 +153,22 @@ main.container {
   width: 100%;
 }
 
-.bi-facebook,.bi-whatsapp{
+.bi-facebook,
+.bi-whatsapp {
   font-size: x-large;
 }
 
-.ultimo{
+.ultimo {
   font-size: x-small;
 }
 
-.boton-red{
+.boton-red {
   width: 100%;
   padding: 6px 20px;
 }
 
-.tex,.a-foot{
+.tex,
+.a-foot {
   font-size: smaller;
 }
 
@@ -174,7 +176,7 @@ main.container {
   background-color: rgba(255, 255, 255, 0.25);
 }
 
-.fw-bold{
+.fw-bold {
   font-size: large;
 }
 
@@ -186,7 +188,7 @@ main.container {
     align-items: flex-start;
     flex-direction: column;
   }
-  .nav-link{
+  .nav-link {
     padding: 2px 0px;
     font-size: medium;
   }
@@ -209,4 +211,3 @@ main.container {
 .cat-container {
   min-height: 100vw;
 }
-
