@@ -5,6 +5,8 @@
 .tarjetas {
   padding: 0.5% 1% ;
   width: 100%;
+  
+  justify-content: center;
 }
 .cards {
   width: 100%;
