@@ -1,0 +1,76 @@
+/* Sidebar visible solo en pantallas grandes */
+.sidebar {
+  display: none;
+}
+@media (min-width: 768px) {
+  .sidebar {
+    display: block;
+    width: 250px;
+    padding: 1rem;
+    background-color: #f8f9fa;
+    border-radius: 0.25rem;
+    box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+  }
+}
+
+/* Filtros */
+.filter-group {
+  margin-bottom: 1rem;
+}
+.filter-group label {
+  display: block;
+  margin-bottom: 0.25rem;
+  font-weight: bold;
+}
+.filter-group select,
+.filter-group input[type="range"] {
+  width: 100%;
+}
+.range-labels {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.85rem;
+  color: #6c757d;
+  margin-top: 0.25rem;
+}
+.filter-btn {
+  margin-top: 0.5rem;
+  width: 100%;
+  background: #007bff;
+  color: #fff;
+  border: none;
+  padding: 0.5rem;
+  cursor: pointer;
+  border-radius: 0.25rem;
+}
+
+/* Recomendados */
+.recommended-list {
+  margin-top: 1rem;
+}
+.recommended-item {
+  display: flex;
+  align-items: center;
+  margin-bottom: 0.75rem;
+  text-decoration: none;
+  color: inherit;
+}
+.recommended-item img {
+  width: 50px;
+  height: auto;
+  margin-right: 0.5rem;
+}
+.recommended-item div {
+  font-size: 0.9rem;
+}
+
+/* Botón filtros en móvil */
+.mobile-filter-btn {
+  display: block;
+  margin-bottom: 1rem;
+}
+@media (min-width: 768px) {
+  .mobile-filter-btn {
+    display: none;
+  }
+}
