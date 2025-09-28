@@ -27,7 +27,7 @@
 
 .precio {
   font-size: 1rem;
-  color: #008c9e;
+  color: #008c9e; 
 }
 
 .carrito-resumen {
@@ -49,5 +49,40 @@
   }
   .precio {
     font-size: 0.9rem;
+  }
+}
+
+/* Ajustes responsivos */
+@media (max-width: 768px) {
+  .carrito-container {
+    padding: 10px;
+  }
+
+  .carrito-item {
+    flex-direction: column; /* Apila la imagen, info y precio */
+    text-align: center;
+    align-items: center;
+  }
+
+  .carrito-img {
+    width: 100px;
+    margin-bottom: 10px;
+  }
+
+  .carrito-item .ms-3 {
+    margin-left: 0 !important;
+  }
+
+  .carrito-item .text-end {
+    text-align: center !important;
+    margin-top: 8px;
+  }
+
+  .precio {
+    font-size: 1rem;
+  }
+
+  .carrito-resumen {
+    margin-top: 20px; /* espacio entre lista y resumen */
   }
 }
