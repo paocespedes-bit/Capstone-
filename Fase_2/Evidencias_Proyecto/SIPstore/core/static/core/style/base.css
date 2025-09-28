@@ -123,7 +123,9 @@ main.container {
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1) !important;
   margin-top: 10px;
 }
-
+.cat-container {
+  min-height: 100vw;
+}
 /* !footer */
 
 .bg-primary {
@@ -263,6 +265,13 @@ main.container {
   }
 }
 
-.cat-container {
-  min-height: 100vw;
+@media (max-width: 600px) {
+
+.navbar {
+    padding: 2px 10px;
+  }
+  #nav-logo {
+    width: 150px;
+    height: auto;
+  }
 }
