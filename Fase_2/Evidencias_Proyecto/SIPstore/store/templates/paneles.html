@@ -3,86 +3,19 @@
 
 {% block link %}
 <link rel="stylesheet" href="{% static 'store/style/catalogo.css' %}" />
-{% endblock %}
-
-{% block title %}Paneles SIP{% endblock %}
-
-{% block content %}
-<div class="row">
-  <!-- Sidebar filtros -->
-  <aside class="col-12 col-md-3 col-lg-2 bg-light p-3 rounded shadow-sm d-flex flex-column align-items-start">
-    <h5 class="mb-3">Filtros</h5>
-
-    <form method="get">
-      <!-- Tipo OSB -->
-      <div class="mb-3 w-100">
-        <label class="form-label">Tipo OSB:</label>
-        <select name="tipo_obs" class="form-select">
-          <option value="" {% if request.GET.tipo_osb == "" %}selected{% endif %}>Cualquier Tipo</option>
-          <option value="11" {% if request.GET.tipo_obs == "11" %}selected{% endif %}>OSB 11</option>
-          <option value="15" {% if request.GET.tipo_obs == "15" %}selected{% endif %}>OSB 15</option>
-        </select>
-      </div>
-
-      <!-- Espesor OSB -->
-      <div class="mb-3 w-100">
-        <label class="form-label">Espesor OSB:</label>
-        <select name="espesor" class="form-select">
-          <option value="" {% if request.GET.espesor == "" %}selected{% endif %}>Cualquier Espesor</option>
-          <option value="11" {% if request.GET.espesor == "11" %}selected{% endif %}>11 mm</option>
-          <option value="15" {% if request.GET.espesor == "15" %}selected{% endif %}>15 mm</option>
-        </select>
-      </div>
-
-      <!-- Madera -->
-      <div class="mb-3 w-100">
-        <label class="form-label">Madera de unión:</label>
-        <select name="madera_union" class="form-select">
-          <option value="" {% if request.GET.madera_union == "" %}selected{% endif %}>Cualquier Madera</option>
-          <option value="pino" {% if request.GET.madera_union == "pino" %}selected{% endif %}>Pino</option>
-          <option value="cipres" {% if request.GET.madera_union == "cipres" %}selected{% endif %}>Cipres</option>
-        </select>
-      </div>
-
-      <!-- Precio máximo -->
-      <div class="mb-3 w-100">
-        <label class="form-label">Precio máximo:</label>
-        <input type="number" name="precio_max" class="form-control" value="{{ request.GET.precio_max }}">
-      </div>
-
-      <button type="submit" class="btn btn-primary w-100 mt-2">Filtrar</button>
-    </form>
-
-    <!-- Recomendados -->
-    <h6 class="mt-4">Más recomendados</h6>
-    <div class="list-group w-100">
-      <a href="#" class="list-group-item list-group-item-action d-flex align-items-center">
-        <img src="#" alt="" class="me-2" style="width: 50px; height: auto" />
-        <div>
-          <small>Panel sip 100 mm - OSB 11,1 LP</small><br />
-          <strong>$52.290</strong>
-          <span class="small text-muted">IVA incl.</span>
-        </div>
-      </a>
-      <a href="#" class="list-group-item list-group-item-action d-flex align-items-center">
-        <img src="#" alt="" class="me-2" style="width: 50px; height: auto" />
-        <div>
-          <small>Panel sip 150 mm - OSB 11,1 LP</small><br />
-          <strong>$65.990</strong>
-          <span class="small text-muted">IVA incl.</span>
-        </div>
-      </a>
-    </div>
-  </aside>
-</div>
-
-<!-- Productos -->
-<div class="productos">
-  <section class="col-12 col-md-9 col-lg-10">
-    <h3 class="mb-4">Paneles SIP</h3>
-    <div class="row g-4">
-      {% include "t_paneles.html" with paneles=paneles %}
-    </div>
-  </section>
+<link rel="stylesheet" href="{% static 'store/style/filtro.css' %}" />
+{% endblock %} {% block title %}Paneles SIP{% endblock %} {% block content %}
+<div class="cuerpo">
+  {% include "filtro_pan.html" %}
+  <div class="tarjetas">
+    <nav class="nav-breadcrumb" aria-label="breadcrumb">
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="{% url 'home' %}">Inicio</a></li>
+        <li class="breadcrumb-item active" aria-current="page">Paneles Sip</li>
+      </ol>
+    </nav>
+    <h3 class="titulo-cat">Paneles SIP</h3>
+    <div class="cards">{% include "t_paneles.html" with paneles=paneles %}</div>
+  </div>
 </div>
 {% endblock %}

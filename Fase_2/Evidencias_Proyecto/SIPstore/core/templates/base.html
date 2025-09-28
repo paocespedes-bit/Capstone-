@@ -11,6 +11,8 @@
       type="image/x-icon"
       href="{% static 'img/logoMin.png' %}"
     />
+    <!--! Normalize.css  -->
+    <link rel="stylesheet" href="{% static 'css/normalize.css' %}">
     <!-- !Bootstrap CSS -->
     <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}" />
     <!-- !Bootstrap Icon  -->
@@ -63,7 +65,7 @@
               <a class="nav-link" href="#">Cotiza Estructura</a>
             </li>
           </ul>
-          <!--! Barra busqueda -->
+          <!-- ! Barra busqueda
           
             <div class="search-wrapper d-flex align-items-center">
               <div class="search-box">
@@ -76,21 +78,21 @@
                   <i class="bi bi-search"></i>
                 </button>
               </div>
-            </div>
-          
+            </div> -->
+          <!-- !Boton carrito  -->
           <button type="button" class="btn btn-success cart-button"><i class="bi bi-cart3"></i> Carrito</button>
         </div>
       </div>
     </nav>
 
-    <!-- Main Content -->
-    <main class="container ">
-      <div class="main p-4 rounded shadow-sm">
+    <!-- !Main Content -->
+    <main class="container">
+      <div class="main rounded shadow-sm">
         {% block content %}{% endblock %}
       </div>
     </main>
 
-    <!-- Footer -->
+    <!-- !Footer -->
     <footer class="bg-primary text-white mt-4 rounded-top">
       <div class="container py-4">
         <div class="row text-center text-md-start">
@@ -110,33 +112,34 @@
           </div>
           <div class="col-md-4 mb-3">
             <p class="fw-bold mb-2">Contacto</p>
-            <p class="mb-1">
+            <p class="mb-1 tex">
               <i class="bi bi-telephone-fill"></i> +569 6405 74XX
             </p>
-            <p class="mb-2">
+            <p class="mb-2 tex">
               <i class="bi bi-envelope-at-fill"></i>
               correoejemplo@gmail.com
             </p>
             <div
               class="d-flex justify-content-center justify-content-md-start gap-2"
             >
-              <a class="a-foot d-flex align-items-center" href="#">
+              <a class="a-foot d-flex align-items-center boton-red" href="#">
                 <i class="bi bi-whatsapp"></i>Whatsapp
               </a>
-              <a class="a-foot d-flex align-items-center" href="#">
+              <a class="a-foot d-flex align-items-center boton-red" href="#">
                 <i class="bi bi-facebook"></i>Facebook
               </a>
             </div>
           </div>
         </div>
         <div class="row mt-3 border-top pt-3 text-center">
-          <div class="col-12 col-md-6 mb-2 mb-md-0">Derechos reservados</div>
-          <div class="col-12 col-md-6">Medios de pago (iconos)</div>
+          <div class="col-12 col-md-6 mb-2 mb-md-0 ultimo">Derechos reservados</div>
+          <div class="col-12 col-md-6 ultimo">Medios de pago (iconos)</div>
         </div>
       </div>
     </footer>
 
     <!-- !Bootstrap JS -->
     <script src="{% static 'js/bootstrap.min.js' %}"></script>
+    {% block script %}{% endblock %}
   </body>
 </html>

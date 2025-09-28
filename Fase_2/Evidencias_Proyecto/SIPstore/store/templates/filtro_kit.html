@@ -1,0 +1,154 @@
+{% load static %} {% block link %}
+<!-- !CSS  -->
+{% endblock %} {% block content %}
+<!-- Sidebar fijo en escritorio -->
+<form method="get">
+  <aside class="sidebar">
+    <h5>Filtros</h5>
+
+    <!-- Tipo metros cuadrados -->
+    <div class="filter-group">
+      <label>Metros Cuadrados (m2):</label>
+      <select name="m2">
+        <option value="">-- m2 --</option>
+        {% for m2 in m2 %}
+          <option value="{{ m2 }}" {% if m2 == m2_filtro %}selected{% endif %}>
+              {{ m2 }}
+          </option>
+        {% endfor %}
+      </select>
+    </div>
+
+    <!-- dormitorios -->
+    <div class="filter-group">
+      <label>Cant. Dormitorios:</label>
+      <select name="dormitorios">
+        <option value="">-- dormitorios --</option>
+        {% for dor in dormitorios %}
+          <option value="{{ dor }}" {% if dor == dormitorios_filtro %}selected{% endif %}>
+              {{ dor }}
+          </option>
+        {% endfor %}
+      </select>
+    </div>
+
+    <!-- baños -->
+    <div class="filter-group">
+      <label>Baños:</label>
+      <select name="banos">
+        <option value="">-- Cant. Baños --</option>
+        {% for b in banos %}
+          <option value="{{ b }}" {% if b == banos_filtro %}selected{% endif %}>
+              {{ b }}
+          </option>
+        {% endfor %}
+      </select>
+    </div>
+
+    <!-- Precio -->
+    <div class="filter-group">
+      <label>Precio máximo:</label>
+      <input 
+        type="range" 
+        name="precio_max"
+        min="{{ precio_min }}" 
+        max="999999" 
+        value="{{ precio_max }}"
+        step="10000"
+        oninput="precioOutput.value = this.value"
+      />
+      <div class="range-labels">
+        <span>Mínimo: ${{ precio_min }}</span>
+        <span>Máximo: $999999</span>
+      </div>
+      <div class="text-center">
+        <strong>Seleccionado: $<output id="precioOutput">{{ precio_max }}</output></strong>
+      </div>
+      <button type="submit" class="filter-btn">Filtrar</button>
+    </div>
+  </aside>
+</form>
+
+<!-- Contenido principal -->
+<div class="main-content">
+  <!-- Botón de filtros SOLO en móvil -->
+  <div class="mobile-filter-btn">
+    <button data-bs-toggle="offcanvas" data-bs-target="#filtrosOffcanvas">
+      <i class="bi bi-funnel"></i> Mostrar Filtros
+    </button>
+  </div>
+</div>
+
+<!-- Offcanvas: Filtros en móvil -->
+<form method="get">
+  <div class="offcanvas" id="filtrosOffcanvas" tabindex="-1">
+    <div class="offcanvas-header">
+      <h5>Filtros</h5>
+      <button type="button" class="btn-close" data-bs-dismiss="offcanvas"></button>
+    </div>
+    <div class="offcanvas-body">
+      <!-- Tipo OSB -->
+      <div class="filter-group">
+        <label>Tipo OSB:</label>
+        <select name="tipo_obs">
+          <option value="">-- Tipo OSB --</option>
+          {% for tipo in tipos_obs %}
+            <option value="{{ tipo }}" {% if tipo == tipo_obs_filtro %}selected{% endif %}>
+                {{ tipo }}
+            </option>
+          {% endfor %}
+        </select>
+      </div>
+
+      <!-- Espesor OSB -->
+      <div class="filter-group">
+        <label>Espesor OSB:</label>
+        <select name="espesor_OSB">
+          <option value="">-- Espesor --</option>
+          {% for e in espesores %}
+            <option value="{{ e }}" {% if e|stringformat:"s" == espesor_OSB_filtro %}selected{% endif %}>
+                {{ e }} cm
+            </option>
+          {% endfor %}
+        </select>
+      </div>
+
+      <!-- Madera -->
+      <div class="filter-group">
+        <label>Madera de unión:</label>
+        <select name="madera_union">
+          <option value="">-- Madera de Unión --</option>
+          {% for m in maderas %}
+            <option value="{{ m }}" {% if m == madera_union_filtro %}selected{% endif %}>
+                {{ m }}
+            </option>
+          {% endfor %}
+        </select>
+      </div>
+
+      <!-- Precio -->
+      <div class="filter-group">
+        <label>Precio máximo:</label>
+        <input 
+          type="range" 
+          name="precio_max"
+          min="{{ precio_min }}" 
+          max="{{ precio_max }}" 
+          value="{{ precio_max }}"
+          step="1000"
+          oninput="precioOutputMobile.value = this.value"
+        />
+        <div class="range-labels">
+          <span>Mínimo: ${{ precio_min }}</span>
+          <span>Máximo: {{ precio_max }}</span>
+        </div>
+        <div class="text-center">
+          <strong>Seleccionado: $<output id="precioOutputMobile">{{ precio_max }}</output></strong>
+        </div>
+        <button type="submit" class="filter-btn">Filtrar</button>
+      </div>
+    </div>
+  </div>
+</form>
+
+{% endblock %}

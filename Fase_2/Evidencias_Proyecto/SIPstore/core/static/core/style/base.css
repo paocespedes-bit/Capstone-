@@ -1,7 +1,9 @@
+@import url("https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap");
+
 body {
   background-color: #c9d6ff;
   background: linear-gradient(to right, #e2e2e2, #c9d6ff);
-  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  font-family: "Roboto", sans-serif !important;
   margin: 8px;
 }
 
@@ -39,22 +41,20 @@ main.container {
   height: auto;
   margin-right: 30px;
 }
-.nav-link{
+.nav-link {
   margin: 0px 10px;
+  font-size: large;
 }
 /* !search bar  */
-.search-wrapper {
+/* .search-wrapper {
   max-width: auto;
   margin: 20px auto;
 }
 .search-box {
   position: relative;
-  /* box-shadow: 0 2px 15px rgba(0, 0, 0, 0.05); */
   border-radius: 50px;
   transition: all 0.3s ease;
 }
-
-
 
 .search-input {
   border-radius: 50px;
@@ -92,17 +92,17 @@ main.container {
 .search-button:hover {
   background-color: #0b5ed7;
   transform: translateY(-50%) scale(1.05);
-}
+} */
 
+/* ! boton carrito */
 
-.cart-button{
+.cart-button {
   border-radius: 50px;
-  background-color: rgba(3, 189, 3, 0) ;
+  background-color: rgba(3, 189, 3, 0);
   border: 3px solid rgba(3, 189, 3);
-  
 }
-.cart-button:hover{
-  background-color: rgba(3, 189, 3) ;
+.cart-button:hover {
+  background-color: rgba(3, 189, 3);
   border: 3px solid rgb(3, 218, 3);
 }
 
@@ -115,7 +115,9 @@ main.container {
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1) !important;
   margin-top: 10px;
 }
-
+.cat-container {
+  min-height: 100vw;
+}
 /* !footer */
 
 .bg-primary {
@@ -128,24 +130,6 @@ main.container {
   justify-content: center;
   align-items: center;
   flex-direction: column;
-}
-
-.py-4 {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  flex-direction: column;
-  width: 100%;
-}
-
-.text-md-start {
-  width: 100%;
-}
-
-div {
-  align-items: center;
-  flex-direction: row;
-  justify-content: center;
 }
 
 .log {
@@ -171,51 +155,66 @@ div {
   width: 100%;
 }
 
-.a-foot img {
-  width: 20px;
-  height: auto;
-  vertical-align: middle;
-  margin-right: 6px;
+.bi-facebook,.bi-whatsapp{
+  font-size: x-large;
+}
+
+.ultimo{
+  font-size: x-small;
+}
+
+.boton-red{
+  width: 100%;
+  padding: 6px 20px;
+}
+
+.tex,.a-foot{
+  font-size: smaller;
 }
 
 .a-foot:hover {
   background-color: rgba(255, 255, 255, 0.25);
 }
 
-.footer-bottom {
-  border-top: 1px solid rgba(255, 255, 255, 0.3);
-  display: flex;
-  justify-content: space-around;
-  align-items: center;
-  padding: 15px;
-  flex-wrap: wrap;
-  gap: 10px;
+.fw-bold{
+  font-size: large;
 }
 
-.footer-bottom p {
-  margin: 0;
-  font-size: 14px;
-}
-/* Media query para pantallas más pequeñas */
 @media (max-width: 991.2px) and (max-height: 742.4px) {
   .navbar-collapse {
     flex-grow: 1;
     flex-basis: 100%;
     display: flex;
-    /* justify-content: center; */
     align-items: flex-start;
     flex-direction: column;
+  }
+  .nav-link{
+    padding: 2px 0px;
+    font-size: medium;
   }
   #nav-logo {
     width: 150px;
     height: auto;
   }
-  
+
   .search-wrapper {
-  max-width: auto;
-  margin: 0px;
-}
-  .nav-item, .cart-button, .search-wrapper{
+    max-width: auto;
+    margin: 0px;
+  }
+  .nav-item,
+  .cart-button,
+  .search-wrapper {
     margin: 10px 0px;
+  }
+}
+
+@media (max-width: 600px) {
+
+.navbar {
+    padding: 2px 10px;
+  }
+  #nav-logo {
+    width: 150px;
+    height: auto;
   }
 }

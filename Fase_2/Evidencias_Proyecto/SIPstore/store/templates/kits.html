@@ -3,82 +3,19 @@
 
 {% block link %}
 <link rel="stylesheet" href="{% static 'store/style/catalogo.css' %}" />
-{% endblock %}
-
-{% block title %}Kit de Construcción{% endblock %}
-
-{% block content %}
-<div class="row">
-  <!-- Sidebar filtros -->
-  <aside class="col-12 col-md-3 col-lg-2 bg-light p-3 rounded shadow-sm d-flex flex-column align-items-center">
-    <h5 class="mb-3">Filtros</h5>
-
-    <!-- Tipo OSB -->
-    <div class="mb-3 w-100">
-      <label class="form-label">Tipo OSB:</label>
-      <select  name="tipo_osb" class="form-select">
-        <option value="" {% if request.GET.tipo_osb == "" %}selected{% endif %}>Cualquier Tipo</option>
-        <option value="OSB 11" {% if request.GET.tipo_osb == "OSB 11" %}selected{% endif %}>OSB 11</option>
-        <option value="OSB 15" {% if request.GET.tipo_osb == "OSB 15" %}selected{% endif %}>OSB 15</option>
-      </select>
-    </div>
-
-    <!-- Espesor OSB -->
-    <div class="mb-3 w-100">
-      <label class="form-label">Espesor OSB:</label>
-      <select class="form-select">
-        <option>Cualquier Espesor</option>
-      </select>
-    </div>
-
-    <!-- Madera -->
-    <div class="mb-3 w-100">
-      <label class="form-label">Madera de unión:</label>
-      <select class="form-select">
-        <option>Cualquier Madera</option>
-      </select>
-    </div>
-
-    <!-- Precio -->
-    <div class="mb-3 w-100">
-      <label class="form-label">Precio:</label>
-      <input type="range" min="34990" max="86590" class="form-range" />
-      <div class="d-flex justify-content-between small text-muted">
-        <span>Mínimo</span><span>Máximo</span>
-      </div>
-      <button class="btn btn-primary w-100 mt-2">Filtrar</button>
-    </div>
-
-    <!-- Recomendados -->
-    <h6 class="mt-4 w-100">Más recomendados</h6>
-    <div class="list-group w-100">
-      <a href="#" class="list-group-item list-group-item-action d-flex align-items-center">
-        <img src="{% static 'store/images/panel100.jpg' %}" alt="" class="me-2" style="width: 50px; height: auto" />
-        <div>
-          <small>Panel sip 100 mm - OSB 11,1 LP</small><br />
-          <strong>$52.290</strong>
-          <span class="small text-muted">IVA incl.</span>
-        </div>
-      </a>
-      <a href="#" class="list-group-item list-group-item-action d-flex align-items-center">
-        <img src="{% static 'store/images/panel150.jpg' %}" alt="" class="me-2" style="width: 50px; height: auto" />
-        <div>
-          <small>Panel sip 150 mm - OSB 11,1 LP</small><br />
-          <strong>$65.990</strong>
-          <span class="small text-muted">IVA incl.</span>
-        </div>
-      </a>
-    </div>
-  </aside>
-</div>
-
-<!-- Productos -->
-<div class="productos">
-  <section class="col-12 col-md-9 col-lg-10">
-    <h3 class="mb-4">Kits</h3>
-    <div class="row g-4">
-      {% include "t_kit.html" with kit=kit %}
-    </div>
-  </section>
+<link rel="stylesheet" href="{% static 'store/style/filtro.css' %}" />
+{% endblock %} {% block title %}Kit de Construccion{% endblock %} {% block content %}
+<div class="cuerpo">
+  {% include "filtro_kit.html" %}
+  <div class="tarjetas">
+    <nav class="nav-breadcrumb" aria-label="breadcrumb">
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="{% url 'home' %}">Inicio</a></li>
+        <li class="breadcrumb-item active" aria-current="page">Kits de Construccion</li>
+      </ol>
+    </nav>
+    <h3 class="titulo-cat">Nuestros Modelos</h3>
+    <div class="cards">{% include "t_kit.html" with kits=kits %}</div>
+  </div>
 </div>
 {% endblock %}
