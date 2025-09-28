@@ -2,12 +2,19 @@
 {% load static %}
 
 {% block link %}
-<link rel="stylesheet" href="{% static 'store/style/kit.css' %}">
+<link rel="stylesheet" href="{% static 'store/style/detalles.css' %}">
 {% endblock %}
 
 {% block title %}{{ panel.nombre }}{% endblock %}
 
 {% block content %}
+<nav class="nav-breadcrumb" aria-label="breadcrumb">
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="{% url 'home' %}">Inicio</a></li>
+        <li class="breadcrumb-item"><a href="{% url 'paneles' %}">Paneles Sip</a></li>
+        <li class="breadcrumb-item active" aria-current="page">{{panel.nombre }}</li>
+      </ol>
+    </nav>
 <div class="product-container">
 
   <!-- Imagen principal -->
