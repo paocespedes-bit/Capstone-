@@ -12,7 +12,7 @@
       href="{% static 'img/logoMin.png' %}"
     />
     <!--! Normalize.css  -->
-    <link rel="stylesheet" href="{% static 'css/normalize.css' %}">
+    <link rel="stylesheet" href="{% static 'css/normalize.css' %}" />
     <!-- !Bootstrap CSS -->
     <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}" />
     <!-- !Bootstrap Icon  -->
@@ -50,17 +50,19 @@
         <div class="collapse navbar-collapse" id="navbarNav">
           <ul class="navbar-nav me-auto mb-2 mb-lg-0">
             <li class="nav-item">
-              <a class="nav-link " href="{% url 'home' %}">Inicio</a>
+              <a class="nav-link" href="{% url 'home' %}">Inicio</a>
             </li>
-            
+
             <li class="nav-item">
-              <a class="nav-link" href="{% url 'kits' %}">Kit de construccion</a>
+              <a class="nav-link" href="{% url 'kits' %}"
+                >Kit de construccion</a
+              >
             </li>
-            
+
             <li class="nav-item">
               <a class="nav-link" href="{% url 'paneles' %}">Paneles SIP</a>
             </li>
-            
+
             <li class="nav-item">
               <a class="nav-link" href="#">Cotiza Estructura</a>
             </li>
@@ -80,7 +82,9 @@
               </div>
             </div> -->
           <!-- !Boton carrito  -->
-          <button type="button" class="btn btn-success cart-button"><i class="bi bi-cart3"></i> Carrito</button>
+          <button type="button" class="btn btn-success cart-button">
+            <i class="bi bi-cart3"></i> Carrito
+          </button>
         </div>
       </div>
     </nav>
@@ -106,8 +110,12 @@
           </div>
           <div class="col-md-4 mb-3">
             <p class="fw-bold mb-2">Servicios</p>
-            <a class="a-foot d-block mb-1" href="{% url 'kits' %}">Kit de Construccion</a>
-            <a class="a-foot d-block mb-1" href="{% url 'paneles' %}">Paneles SIP</a>
+            <a class="a-foot d-block mb-1" href="{% url 'kits' %}"
+              >Kit de Construccion</a
+            >
+            <a class="a-foot d-block mb-1" href="{% url 'paneles' %}"
+              >Paneles SIP</a
+            >
             <a class="a-foot d-block mb-1" href="#">Cotizar Estructura</a>
           </div>
           <div class="col-md-4 mb-3">
@@ -132,14 +140,23 @@
           </div>
         </div>
         <div class="row mt-3 border-top pt-3 text-center">
-          <div class="col-12 col-md-6 mb-2 mb-md-0 ultimo">Derechos reservados</div>
+          <div class="col-12 col-md-6 mb-2 mb-md-0 ultimo">
+            Derechos reservados
+          </div>
           <div class="col-12 col-md-6 ultimo">Medios de pago (iconos)</div>
         </div>
       </div>
     </footer>
 
+    <button id="btnTop">↑</button>
+
+    <a id="btnWhats" href="https://wa.me/56964057476" target="_blank">
+      <i class="bi bi-whatsapp"></i>
+    </a>
+
     <!-- !Bootstrap JS -->
     <script src="{% static 'js/bootstrap.min.js' %}"></script>
+    <script src="{% static 'js/whatsapp.js' %}"></script>
     {% block script %}{% endblock %}
   </body>
 </html>
