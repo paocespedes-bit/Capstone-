@@ -20,6 +20,8 @@ def kits(request):
     }
     return render(request, "kits.html",context)
 
+def carrito(request):
+    return render(request, "carrito.html")
 
 
 
