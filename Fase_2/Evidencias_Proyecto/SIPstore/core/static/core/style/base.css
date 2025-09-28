@@ -182,11 +182,6 @@ main.container {
   font-size: large;
 }
 
-body {
-  height: 2000px; /* solo para probar scroll */
-  font-family: Arial, sans-serif;
-}
-
 #btnTop {
   position: fixed;
   bottom: 20px;
