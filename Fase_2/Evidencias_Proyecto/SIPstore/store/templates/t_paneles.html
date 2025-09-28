@@ -9,7 +9,7 @@
 {% block content %}
 <!-- !Tarjetas de productos -->
 {% for panel in paneles %}
-<div class="contenedor-card" data-url="{% url 'paneles' %}">
+<div class="contenedor-card" data-url="{% url 'paneles_detail' panel.pk %}">
   <div class="card">
     {% if panel.imagenes.all %}
     <img src="{{panel.imagenes.first.imagen.url  }}" alt="{{panel.nombre}}" />
@@ -45,9 +45,9 @@
 
     </div>
     <div class="expansion">
-      <p class="info"><i class="fa-solid fa-ruler-combined"></i>Espesor<br>2</p>
-      <p class="info"><i class="fa-solid fa-hammer"></i>Madera de Union<br>2</p>
-      <p class="info"><i class="fa-solid fa-grip-lines-vertical"></i>Tipo OBS<br>2</p>
+      <p class="info"><i class="fa-solid fa-ruler-combined"></i>Espesor<br>{{panel.espesor}}</p>
+      <p class="info"><i class="fa-solid fa-hammer"></i>Madera de Union<br>{{panel.madera_union}}</p>
+      <p class="info"><i class="fa-solid fa-grip-lines-vertical"></i>Tipo OBS<br>{{panel.tipo_obs}}</p>
     </div>
     </div>
   </div>
