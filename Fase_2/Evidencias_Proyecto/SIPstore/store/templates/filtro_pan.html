@@ -22,10 +22,10 @@
     <!-- Espesor OSB -->
     <div class="filter-group">
       <label>Espesor OSB:</label>
-      <select name="Espesor_OSB">
+      <select name="espesor_OSB">
         <option value="">-- Espesor --</option>
         {% for e in espesores %}
-          <option value="{{ e }}" {% if e|stringformat:"s" == Espesor_OSB_filtro %}selected{% endif %}>
+          <option value="{{ e }}" {% if e|stringformat:"s" == espesor_OSB_filtro %}selected{% endif %}>
               {{ e }} cm
           </option>
         {% endfor %}
@@ -103,10 +103,10 @@
       <!-- Espesor OSB -->
       <div class="filter-group">
         <label>Espesor OSB:</label>
-        <select name="Espesor_OSB">
+        <select name="espesor_OSB">
           <option value="">-- Espesor --</option>
           {% for e in espesores %}
-            <option value="{{ e }}" {% if e|stringformat:"s" == Espesor_OSB_filtro %}selected{% endif %}>
+            <option value="{{ e }}" {% if e|stringformat:"s" == espesor_OSB_filtro %}selected{% endif %}>
                 {{ e }} cm
             </option>
           {% endfor %}
