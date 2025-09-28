@@ -1,0 +1,134 @@
+{% load static %} {% block link %}
+<!-- !CSS  -->
+{% endblock %} {% block content %}
+<!-- Sidebar fijo en escritorio -->
+<aside class="sidebar">
+  <h5>Filtros</h5>
+
+  <div class="filter-group">
+    <label>Tipo OSB:</label>
+    <select>
+      <option>Cualquier Tipo</option>
+      <option>OSB 11</option>
+      <option>OSB 15</option>
+    </select>
+  </div>
+
+  <div class="filter-group">
+    <label>Espesor OSB:</label>
+    <select>
+      <option>Cualquier Espesor</option>
+    </select>
+  </div>
+
+  <div class="filter-group">
+    <label>Madera de unión:</label>
+    <select>
+      <option>Cualquier Madera</option>
+    </select>
+  </div>
+
+  <div class="filter-group">
+    <label>Precio:</label>
+    <input type="range" min="34990" max="86590" />
+    <div class="range-labels">
+      <span>Mínimo</span>
+      <span>Máximo</span>
+    </div>
+    <button class="filter-btn">Filtrar</button>
+  </div>
+
+  <!-- !Recomendados? -->
+  <!-- <h6>Más recomendados</h6>
+  <div class="recommended-list">
+    <a href="#" class="recommended-item">
+      <img src="#" alt="Producto" />
+      <div>
+        <small>Panel sip 100 mm - OSB 11,1 LP</small><br />
+        <strong>$52.290</strong> <span>IVA incl.</span>
+      </div>
+    </a>
+    <a href="#" class="recommended-item">
+      <img src="#" alt="Producto" />
+      <div>
+        <small>Panel sip 150 mm - OSB 11,1 LP</small><br />
+        <strong>$65.990</strong> <span>IVA incl.</span>
+      </div>
+    </a>
+  </div> -->
+</aside>
+
+<!-- Contenido principal -->
+<div class="main-content">
+  <!-- Botón de filtros SOLO en móvil -->
+  <div class="mobile-filter-btn">
+    <button data-bs-toggle="offcanvas" data-bs-target="#filtrosOffcanvas">
+      <i class="bi bi-funnel"></i> Mostrar Filtros
+    </button>
+  </div>
+
+  <!-- Aquí iría tu contenido principal -->
+</div>
+
+<!-- Offcanvas: Filtros en móvil -->
+<div class="offcanvas" id="filtrosOffcanvas" tabindex="-1">
+  <div class="offcanvas-header">
+    <h5>Filtros</h5>
+    <button type="button" class="btn-close" data-bs-dismiss="offcanvas"></button>
+  </div>
+  <div class="offcanvas-body">
+    <!-- Reutilizamos el mismo contenido del sidebar -->
+    <div class="filter-group">
+      <label>Tipo OSB:</label>
+      <select>
+        <option>Cualquier Tipo</option>
+        <option>OSB 11</option>
+        <option>OSB 15</option>
+      </select>
+    </div>
+
+    <div class="filter-group">
+      <label>Espesor OSB:</label>
+      <select>
+        <option>Cualquier Espesor</option>
+      </select>
+    </div>
+
+    <div class="filter-group">
+      <label>Madera de unión:</label>
+      <select>
+        <option>Cualquier Madera</option>
+      </select>
+    </div>
+
+    <div class="filter-group">
+      <label>Precio:</label>
+      <input type="range" min="34990" max="86590" />
+      <div class="range-labels">
+        <span>Mínimo</span>
+        <span>Máximo</span>
+      </div>
+      <button class="filter-btn">Filtrar</button>
+    </div>
+    <!-- !Recomendados? -->
+    <!-- <h6>Más recomendados</h6>
+    <div class="recommended-list">
+      <a href="#" class="recommended-item">
+        <img src="#" alt="Producto" />
+        <div>
+          <small>Panel sip 100 mm - OSB 11,1 LP</small><br />
+          <strong>$52.290</strong> <span>IVA incl.</span>
+        </div>
+      </a>
+      <a href="#" class="recommended-item">
+        <img src="#" alt="Producto" />
+        <div>
+          <small>Panel sip 150 mm - OSB 11,1 LP</small><br />
+          <strong>$65.990</strong> <span>IVA incl.</span>
+        </div>
+      </a>
+    </div> -->
+  </div>
+</div>
+    
+{% endblock %}
