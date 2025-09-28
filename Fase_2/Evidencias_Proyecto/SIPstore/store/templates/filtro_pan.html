@@ -6,8 +6,6 @@
   <aside class="sidebar">
     <h5>Filtros</h5>
 
-    <input type="text" name="search" placeholder="Buscar" value="{{ search }}">
-
     <!-- Tipo OSB -->
     <div class="filter-group">
       <label>Tipo OSB:</label>
@@ -86,7 +84,6 @@
   <div class="offcanvas" id="filtrosOffcanvas" tabindex="-1">
     <div class="offcanvas-header">
       <h5>Filtros</h5>
-      <input type="text" name="search" placeholder="Buscar" value="{{ search }}">
       <button type="button" class="btn-close" data-bs-dismiss="offcanvas"></button>
     </div>
     <div class="offcanvas-body">
@@ -136,14 +133,14 @@
           type="range" 
           name="precio_max"
           min="{{ precio_min }}" 
-          max="86590" 
+          max="{{ precio_max }}" 
           value="{{ precio_max }}"
           step="1000"
           oninput="precioOutputMobile.value = this.value"
         />
         <div class="range-labels">
           <span>Mínimo: ${{ precio_min }}</span>
-          <span>Máximo: $86.590</span>
+          <span>Máximo: {{ precio_max }}</span>
         </div>
         <div class="text-center">
           <strong>Seleccionado: $<output id="precioOutputMobile">{{ precio_max }}</output></strong>
