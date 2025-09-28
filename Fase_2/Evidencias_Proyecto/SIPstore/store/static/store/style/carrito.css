@@ -43,23 +43,14 @@
   font-weight: bold;
 }
 
-@media (max-width: 768px) {
-  .carrito-img {
-    width: 70px;
-  }
-  .precio {
-    font-size: 0.9rem;
-  }
-}
 
-/* Ajustes responsivos */
 @media (max-width: 768px) {
   .carrito-container {
     padding: 10px;
   }
 
   .carrito-item {
-    flex-direction: column; /* Apila la imagen, info y precio */
+    flex-direction: column;
     text-align: center;
     align-items: center;
   }
@@ -83,6 +74,6 @@
   }
 
   .carrito-resumen {
-    margin-top: 20px; /* espacio entre lista y resumen */
+    margin-top: 20px;
   }
 }
