@@ -9,7 +9,7 @@
 {% block content %}
 <!-- !Tarjetas de productos -->
 {% for kit in kits %}
-<div class="contenedor-card" data-url="{% url 'paneles' %}">
+<div class="contenedor-card" data-url="{% url 'kit_detail' kit.pk %}">
   <div class="card" >
     {% if kit.imagenes.all %}
     <img src="{{kit.imagenes.first.imagen.url  }}" alt="{{kit.nombre}}" />
@@ -43,9 +43,9 @@
       </div>
     </div>
     <div class="expansion">
-      <p class="info"><i class="fa-solid fa-ruler-combined"></i>m²<br>2</p>
-      <p class="info"><i class="fa-solid fa-shower"></i>Baños<br>2</p>
-      <p class="info"><i class="fa-solid fa-bed"></i>Habitaciones<br>2</p>
+      <p class="info"><i class="fa-solid fa-ruler-combined"></i>m²<br>{{kit.m2}}</p>
+      <p class="info"><i class="fa-solid fa-shower"></i>Baños<br>{{kit.banos}}</p>
+      <p class="info"><i class="fa-solid fa-bed"></i>Habitaciones<br>{{kit.dormitorios}}</p>
     </div>
   </div>
 </div>

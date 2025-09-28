@@ -1,5 +1,5 @@
 from django.db.models import Min, Max
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 from .models import PanelSIP, KitConstruccion
 
 #! Aqui se agregan las views (templates).
@@ -98,6 +98,10 @@ def kits(request):
     return render(request, "kits.html",context)
 
 
-
-
+def kit_detail(request, pk):
+    kit = get_object_or_404(KitConstruccion, pk=pk)
+    return render(request, 'kit_detail.html', {'kit': kit})
+def paneles_detail(request, pk):
+    panel = get_object_or_404(PanelSIP, pk=pk)
+    return render(request, 'paneles_detail.html', {'panel': panel})
 
