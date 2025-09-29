@@ -1,0 +1,40 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- !Icono de pestaña -->
+    <link
+      rel="icon"
+      type="image/x-icon"
+      href="{% static 'img/logoMin.png' %}"
+    />
+    <!--! Normalize.css  -->
+    <link rel="stylesheet" href="{% static 'css/normalize.css' %}" />
+    <!-- !Bootstrap CSS -->
+    <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}" />
+    <!-- !Bootstrap Icon  -->
+    <link rel="stylesheet" href="{% static 'css/bootstrap-icons.min.css' %}" />
+    <!-- !CSS  -->
+    <link rel="stylesheet" href="{% static 'control/style/base_control.css' %}">
+    {% block link %} 
+    {% endblock %}
+    <!-- !Titulo  -->
+    {% block title %}
+    <title>Control</title>
+    {% endblock%}
+
+    
+</head>
+<body>
+    
+
+<p> Lorem ipsum dolor sit amet, consectetur adipisicing elit. Eum modi impedit corporis sit voluptates ut repellendus, tempora molestiae, libero incidunt pariatur iste, quia debitis porro! Iure esse a nemo officia!</p>
+<!-- !Bloqueo de contenido -->
+{% block content %}
+{% endblock%}
+<!-- !-------------------- -->
+
+</body>
+</html>
