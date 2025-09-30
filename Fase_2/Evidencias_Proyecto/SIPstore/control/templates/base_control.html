@@ -23,9 +23,9 @@
     />
     {% block link %} {% endblock %}
     <!-- !Titulo  -->
-    {% block title %}
-    <title>Control</title>
-    {% endblock%}
+    <title>{% block title %}
+    Control
+    {% endblock%}</title>
   </head>
   <body>
     <nav class="navbar navbar-light bg-light d-md-none border-bottom">
@@ -63,17 +63,17 @@
 
           <div class="offcanvas-body d-flex flex-column p-0">
             <div class="logo-placeholder p-3 mb-3">
-              <span class="text-secondary">Logo/Título App</span>
+              <img class="logo-placeholder" src="{% static 'img/logoHorizontal.png' %}" alt="logo">
             </div>
 
             <ul class="nav flex-column mb-auto p-3 custom-sidebar-nav">
               <li>
-                <a href="{% url 'control' %}" class="btn custom-btn active"
+                <a href="{% url 'control' %}" class="btn custom-btn"
                   >Panel Informativo</a
                 >
               </li>
               <li>
-                <a href="#" class="btn custom-btn">Stock</a>
+                <a href="{% url 'stock' %}" class="btn custom-btn">Stock</a>
               </li>
               <li>
                 <a href="#" class="btn custom-btn">Lista de pedidos</a>
@@ -100,11 +100,10 @@
         </button>
       </div>
       <main class="flex-grow-1 bg-light" id="page-content-wrapper">
-        <div class="p-4">
-          <div class="main rounded shadow-sm p-3 bg-white">
+        
+        <div class="main rounded shadow-sm p-3 bg-white">
             <h1 class="mb-4">Bienvenido !!</h1>
             {% block content %}{% endblock %}
-          </div>
         </div>
       </main>
     </div>
