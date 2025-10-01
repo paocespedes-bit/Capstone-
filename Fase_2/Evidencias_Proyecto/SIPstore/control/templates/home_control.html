@@ -2,12 +2,90 @@
 {% load static %}
 
 <!-- !CSS  -->
-{% block link %} 
-<link rel="stylesheet" href="{% static 'control/style/home.css' %}">
+{% block link %}
+<link rel="stylesheet" href="{% static 'control/style/home.css' %}" />
 {% endblock %}
 
 {% block content %}
-<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ipsa adipisci ducimus molestias? Reiciendis officia expedita delectus reprehenderit, laboriosam porro id et accusamus necessitatibus assumenda ea architecto culpa possimus explicabo quisquam.</p>
-{% endblock%}
+  <h1 class="mb-4 fw-bold text-primary">Bienvenido</h1>
 
+  <!-- Gráficos -->
+  <div class="row g-4 mb-4">
+    <div class="col-12 col-md-6 col-lg-4">
+      <div class="card p-3 shadow-sm">
+        <h5>
+          <i class="bi bi-graph-up-arrow me-2"></i>Total ventas del año
+        </h5>
+        <div class="chart-box my-3"></div>
+      </div>
+    </div>
+    <div class="col-12 col-md-6 col-lg-4">
+      <div class="card p-3 shadow-sm">
+        <h5><i class="bi bi-star me-2"></i>TOP 3 productos</h5>
+        <div class="chart-box my-3"></div>
+      </div>
+    </div>
+    <div class="col-12 col-md-6 col-lg-4">
+      <div class="card p-3 shadow-sm">
+        <h5><i class="bi bi-calendar me-2"></i>Ventas del mes</h5>
+        <div class="chart-box my-3"></div>
+      </div>
+    </div>
+  </div>
 
+  <!-- Tabla -->
+  <div class="card shadow-sm p-3">
+    <h4 class="mb-3 text-primary">Pedidos de hoy</h4>
+    <div class="table-responsive">
+      <table class="table table-hover table-striped align-middle">
+        <thead>
+          <tr>
+            <th>ID boleta</th>
+            <th>Fecha de entrega</th>
+            <th>Estado</th>
+            <th>Centro de retiro</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>#100</td>
+            <td>12/12/2025</td>
+            <td><span class="badge bg-warning">En proceso</span></td>
+            <td>Melipilla</td>
+            <td>
+              <button class="btn btn-ver btn-sm">Ver más</button>
+            </td>
+          </tr>
+          <tr>
+            <td>#101</td>
+            <td>12/12/2025</td>
+            <td><span class="badge bg-success">Entregado</span></td>
+            <td>RM</td>
+            <td>
+              <button class="btn btn-ver btn-sm">Ver más</button>
+            </td>
+          </tr>
+          <tr>
+            <td>#102</td>
+            <td>12/12/2025</td>
+            <td><span class="badge bg-danger">Cancelado</span></td>
+            <td>RM</td>
+            <td>
+              <button class="btn btn-ver btn-sm">Ver más</button>
+            </td>
+          </tr>
+          <tr>
+            <td>#103</td>
+            <td>12/12/2025</td>
+            <td><span class="badge bg-warning">En proceso</span></td>
+            <td>Melipilla</td>
+            <td>
+              <button class="btn btn-ver btn-sm">Ver más</button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+{% endblock %}
