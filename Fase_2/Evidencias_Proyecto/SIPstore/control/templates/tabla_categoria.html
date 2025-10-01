@@ -1,0 +1,42 @@
+<div class="table-responsive">
+  <table class="table table-hover table-striped align-middle">
+    <thead class="table">
+      <tr>
+        <th>
+          Nombre
+          <!-- !FILTRO -->
+          <button type="button" class="btn dropdown-toggle dropdown-toggle-split" data-bs-toggle="dropdown"
+            aria-expanded="false">
+          </button>
+          <ul class="dropdown-menu">
+            <li><a class="dropdown-item" href="#">Ordenar A-Z</a></li>
+            <li><a class="dropdown-item" href="#">Ordenar Z-A</a></li>
+            <li>
+              <hr class="dropdown-divider">
+            </li>
+            <li>
+              <form class="d-flex" role="search">
+                <input class="form-control me-2" type="search" placeholder="Buscar" aria-label="Search" />
+                <button class="btn btn-success" type="submit"><i class="bi bi-search"></i></button>
+              </form>
+            </li>
+          </ul>
+          <!-- !------ -->
+        </th>
+        <th class="text-center">Acciones</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for cat in categorias %}
+      <tr>
+        <td>{{ cat.nombre }}</td>
+        <td class="text-center">
+          <button class="btn btn-sm btn-primary" data-bs-toggle="modal"
+            data-bs-target="#modalEditarPanel{{ cat.id }}">Editar</button>
+          <button class="btn btn-sm btn-danger">Eliminar</button>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>

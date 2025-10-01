@@ -1,0 +1,256 @@
+{% load static %}
+{% block link %}
+<link rel="stylesheet" href="{% static 'control/style/tablas.css' %}">
+{% endblock %}
+
+
+<div class="table-responsive">
+  <table class="table table-hover table-striped align-middle">
+    <thead class="table">
+      <tr>
+        <th>ID
+          <!-- !FILTRO -->
+          <button type="button" class="btn dropdown-toggle dropdown-toggle-split" data-bs-toggle="dropdown"
+            aria-expanded="false">
+          </button>
+          <ul class="dropdown-menu">
+            <li><a class="dropdown-item" href="#">Ordenar A-Z</a></li>
+            <li><a class="dropdown-item" href="#">Ordenar Z-A</a></li>
+            <li>
+              <hr class="dropdown-divider">
+            </li>
+            <li>
+              <form class="d-flex" role="search">
+                <input class="form-control me-2" type="search" placeholder="Buscar" aria-label="Search" />
+                <button class="btn btn-success" type="submit"><i class="bi bi-search"></i></button>
+              </form>
+            </li>
+          </ul>
+          <!-- !------ -->
+        </th>
+        <th>
+          Cantidad
+          <!-- !FILTRO -->
+          <button type="button" class="btn dropdown-toggle dropdown-toggle-split" data-bs-toggle="dropdown"
+            aria-expanded="false">
+          </button>
+          <ul class="dropdown-menu">
+            <li><a class="dropdown-item" href="#">Ordenar A-Z</a></li>
+            <li><a class="dropdown-item" href="#">Ordenar Z-A</a></li>
+            <li>
+              <hr class="dropdown-divider">
+            </li>
+            <li>
+                <form class="d-flex" role="search">
+                  <input class="form-control me-2" type="search" placeholder="Buscar" aria-label="Search" />
+                  <button class="btn btn-success" type="submit"><i class="bi bi-search"></i></button>
+                </form>
+            </li>
+          </ul>
+          <!-- !------ -->
+        </th>
+        <th>
+          Nombre
+          <!-- !FILTRO -->
+          <button type="button" class="btn dropdown-toggle dropdown-toggle-split" data-bs-toggle="dropdown"
+            aria-expanded="false">
+          </button>
+          <ul class="dropdown-menu">
+            <li><a class="dropdown-item" href="#">Ordenar A-Z</a></li>
+            <li><a class="dropdown-item" href="#">Ordenar Z-A</a></li>
+            <li>
+              <hr class="dropdown-divider">
+            </li>
+            <li>
+              <form class="d-flex" role="search">
+                <input class="form-control me-2" type="search" placeholder="Buscar" aria-label="Search" />
+                <button class="btn btn-success" type="submit"><i class="bi bi-search"></i></button>
+              </form>
+            </li>
+          </ul>
+          <!-- !------ -->
+        </th>
+        <th>
+          Precio
+          <!-- !FILTRO -->
+          <button type="button" class="btn dropdown-toggle dropdown-toggle-split" data-bs-toggle="dropdown"
+            aria-expanded="false">
+          </button>
+          <ul class="dropdown-menu">
+            <li><a class="dropdown-item" href="#">Ordenar A-Z</a></li>
+            <li><a class="dropdown-item" href="#">Ordenar Z-A</a></li>
+            <li>
+              <hr class="dropdown-divider">
+            </li>
+            <li>
+              <form class="d-flex" role="search">
+                <input class="form-control me-2" type="search" placeholder="Buscar" aria-label="Search" />
+                <button class="btn btn-success" type="submit"><i class="bi bi-search"></i></button>
+              </form>
+            </li>
+          </ul>
+          <!-- !------ -->
+        </th>
+        <th>oferta <!-- !FILTRO -->
+          <button type="button" class="btn dropdown-toggle dropdown-toggle-split" data-bs-toggle="dropdown"
+            aria-expanded="false">
+          </button>
+          <ul class="dropdown-menu">
+            <li><a class="dropdown-item" href="#">Ordenar A-Z</a></li>
+            <li><a class="dropdown-item" href="#">Ordenar Z-A</a></li>
+            <li>
+              <hr class="dropdown-divider">
+            </li>
+            <li>
+              <form class="d-flex" role="search">
+                <input class="form-control me-2" type="search" placeholder="Buscar" aria-label="Search" />
+                <button class="btn btn-success" type="submit"><i class="bi bi-search"></i></button>
+              </form>
+            </li>
+          </ul>
+          <!-- !------ -->
+        </th>
+        <th>
+          Descripcion
+        </th>
+        <th>Tipo OBS<!-- !FILTRO -->
+          <button type="button" class="btn dropdown-toggle dropdown-toggle-split" data-bs-toggle="dropdown"
+            aria-expanded="false">
+          </button>
+          <ul class="dropdown-menu">
+            <li><a class="dropdown-item" href="#">Ordenar A-Z</a></li>
+            <li><a class="dropdown-item" href="#">Ordenar Z-A</a></li>
+            <li>
+              <hr class="dropdown-divider">
+            </li>
+            <li>
+              <form class="d-flex" role="search">
+                <input class="form-control me-2" type="search" placeholder="Buscar" aria-label="Search" />
+                <button class="btn btn-success" type="submit"><i class="bi bi-search"></i></button>
+              </form>
+            </li>
+          </ul>
+          <!-- !------ -->
+        </th>
+        <th>Espesor
+          <!-- !FILTRO -->
+          <button type="button" class="btn dropdown-toggle dropdown-toggle-split" data-bs-toggle="dropdown"
+            aria-expanded="false">
+          </button>
+          <ul class="dropdown-menu">
+            <li><a class="dropdown-item" href="#">Ordenar A-Z</a></li>
+            <li><a class="dropdown-item" href="#">Ordenar Z-A</a></li>
+            <li>
+              <hr class="dropdown-divider">
+            </li>
+            <li>
+              <form class="d-flex" role="search">
+                <input class="form-control me-2" type="search" placeholder="Buscar" aria-label="Search" />
+                <button class="btn btn-success" type="submit"><i class="bi bi-search"></i></button>
+              </form>
+            </li>
+          </ul>
+          <!-- !------ -->
+        </th>
+        <th>Largo
+          <!-- !FILTRO -->
+          <button type="button" class="btn dropdown-toggle dropdown-toggle-split" data-bs-toggle="dropdown"
+            aria-expanded="false">
+          </button>
+          <ul class="dropdown-menu">
+            <li><a class="dropdown-item" href="#">Ordenar A-Z</a></li>
+            <li><a class="dropdown-item" href="#">Ordenar Z-A</a></li>
+            <li>
+              <hr class="dropdown-divider">
+            </li>
+            <li>
+              <form class="d-flex" role="search">
+                <input class="form-control me-2" type="search" placeholder="Buscar" aria-label="Search" />
+                <button class="btn btn-success" type="submit"><i class="bi bi-search"></i></button>
+              </form>
+            </li>
+          </ul>
+          <!-- !------ -->
+        </th>
+        <th>Ancho
+          <!-- !FILTRO -->
+          <button type="button" class="btn dropdown-toggle dropdown-toggle-split" data-bs-toggle="dropdown"
+            aria-expanded="false">
+          </button>
+          <ul class="dropdown-menu">
+            <li><a class="dropdown-item" href="#">Ordenar A-Z</a></li>
+            <li><a class="dropdown-item" href="#">Ordenar Z-A</a></li>
+            <li>
+              <hr class="dropdown-divider">
+            </li>
+            <li>
+              <form class="d-flex" role="search">
+                <input class="form-control me-2" type="search" placeholder="Buscar" aria-label="Search" />
+                <button class="btn btn-success" type="submit"><i class="bi bi-search"></i></button>
+              </form>
+            </li>
+          </ul>
+          <!-- !------ -->
+        </th>
+        <th>Categorías
+          <!-- !FILTRO -->
+          <button type="button" class="btn dropdown-toggle dropdown-toggle-split" data-bs-toggle="dropdown"
+            aria-expanded="false">
+          </button>
+          <ul class="dropdown-menu">
+            <li><a class="dropdown-item" href="#">Ordenar A-Z</a></li>
+            <li><a class="dropdown-item" href="#">Ordenar Z-A</a></li>
+            <li>
+              <hr class="dropdown-divider">
+            </li>
+            <li>
+              <form class="d-flex" role="search">
+                <input class="form-control me-2" type="search" placeholder="Buscar" aria-label="Search" />
+                <button class="btn btn-success" type="submit"><i class="bi bi-search"></i></button>
+              </form>
+            </li>
+          </ul>
+          <!-- !------ -->
+        </th>
+        <th>Imagenes</th>
+        <th class="text-center">Acciones</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for panel in paneles %}
+      <tr>
+        <td>#{{panel.id}}</td>
+        <td>SIN STOCK</td>
+        <td>{{ panel.nombre }}</td>
+        <td>${{ panel.precio_actual }}</td>
+        {% if panel.oferta is blank %}
+        <td>N/A</td>
+        {% else %}
+        <td>{{ panel.oferta }}%</td>
+        {% endif %}
+        <td>{{ panel.descripcion|truncatechars:20 }}...</td>
+        <td>{{panel.tipo_obs}}</td>
+        <td>{{ panel.espesor }}</td>
+        <td>{{ panel.largo }}</td>
+        <td>{{ panel.ancho }}</td>
+        <td>
+          {% for cat in panel.categorias.all %}
+          <span class="badge bg-secondary">{{ cat.nombre }}</span>
+          {% endfor %}
+        </td>
+        <td>imagen</td>
+        <td class="text-center">
+          <button class="btn btn-sm btn-primary">Editar</button>
+          <button class="btn btn-sm btn-danger">Eliminar</button>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+<!-- ! JS -->
+
+{% block script %}
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"></script>
+{% endblock %}
