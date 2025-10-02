@@ -1,4 +1,5 @@
 {% load static %}
+{% load humanize %}
 
 {% block link %}
 <link rel="stylesheet" href="{% static 'control/style/tablas.css' %}">
@@ -53,7 +54,7 @@
           <td>#{{ panel.id }}</td>
           <td>SIN STOCK</td>
           <td>{{ panel.nombre }}</td>
-          <td>${{ panel.precio_actual }}</td>
+          <td>${{ panel.precio_actual|floatformat:0|intcomma }}</td>
           <td>
             {% if panel.oferta %}
             {{ panel.oferta }}%
