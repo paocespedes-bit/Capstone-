@@ -1,20 +1,17 @@
-
 from django import forms
-from .models import Categoria, PanelSIP, KitConstruccion, imagenProducto
+from django.forms import modelformset_factory
+from store.models import Categoria, PanelSIP, KitConstruccion, imagenProducto
 
-# !Formulario Categoría
+# Formulario Categoría
 class CategoriaForm(forms.ModelForm):
     class Meta:
         model = Categoria
         fields = ['nombre']
         widgets = {
-            'nombre': forms.TextInput(attrs={
-                'class': 'form-control',
-                'placeholder': 'Nombre de la categoría'
-            })
+            'nombre': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Nombre de la categoría'})
         }
 
-# !Formulario PanelSIP
+# Formulario PanelSIP
 class PanelSIPForm(forms.ModelForm):
     class Meta:
         model = PanelSIP
@@ -31,7 +28,7 @@ class PanelSIPForm(forms.ModelForm):
             'categorias': forms.CheckboxSelectMultiple()
         }
 
-# !Formulario KitConstruccion
+# Formulario KitConstruccion
 class KitConstruccionForm(forms.ModelForm):
     class Meta:
         model = KitConstruccion
@@ -44,15 +41,5 @@ class KitConstruccionForm(forms.ModelForm):
             'dormitorios': forms.NumberInput(attrs={'class': 'form-control'}),
             'banos': forms.NumberInput(attrs={'class': 'form-control'}),
             'categorias': forms.CheckboxSelectMultiple()
-        }
-
-
-# !Formulario ImagenProducto
-class ImagenProductoForm(forms.ModelForm):
-    class Meta:
-        model = imagenProducto
-        fields = ['imagen']
-        widgets = {
-            'imagen': forms.ClearableFileInput(attrs={'class': 'form-control'})
         }
 
