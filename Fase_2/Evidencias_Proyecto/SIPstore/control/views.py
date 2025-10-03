@@ -7,12 +7,17 @@ def control(request):
     return render(request, 'home_control.html')
 
 def stock(request):
+    # Inicializar formularios vacíos
+    
+
+    # Consultas
     paneles = PanelSIP.objects.all()
     kits = KitConstruccion.objects.all()
     categorias = Categoria.objects.all()
+
     context = {
         'paneles': paneles,
         'kits': kits,
-        'categorias' : categorias,
+        'categorias': categorias,
     }
-    return render(request,'stock.html',context)
+    return render(request, 'stock.html', context)
