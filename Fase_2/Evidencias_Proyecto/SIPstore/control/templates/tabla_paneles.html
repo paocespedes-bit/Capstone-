@@ -74,7 +74,7 @@
           </td>
           <td>
             <button type="button" class="btn btn-primary" data-bs-toggle="modal"
-              data-bs-target="#galeriaProducto_{{ forloop.counter }}">
+              data-bs-target="#galeriaPanel_{{ panel.id }}">
               <i class="bi bi-eye"></i> Ver({{ panel.imagenes.count }})
             </button>
           </td>
@@ -82,7 +82,7 @@
             <button class="btn btn-sm btn-primary">Editar</button>
             <button class="btn btn-sm btn-danger">Eliminar</button>
           </td>
-          {% include 'imagenes.html' with producto=panel contador=forloop.counter only %}
+          {% include 'imagenes.html' %}
         </tr>
         {% endfor %}
       </tbody>
