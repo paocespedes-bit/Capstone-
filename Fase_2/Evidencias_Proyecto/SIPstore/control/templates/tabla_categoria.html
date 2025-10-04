@@ -1,0 +1,25 @@
+<div class="table-responsive">
+  <table class="table table-hover table-striped align-middle">
+    <thead class="table">
+      <tr>
+        <th>
+          Nombre
+          {% include 'filtro_columna.html' with columna_nombre="nombre" %}
+        </th>
+        <th class="text-center">Acciones</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for cat in categorias %}
+      <tr>
+        <td>{{ cat.nombre }}</td>
+        <td class="text-center">
+          <button class="btn btn-sm btn-primary" data-bs-toggle="modal"
+            data-bs-target="#modalEditarPanel{{ cat.id }}">Editar</button>
+          <button class="btn btn-sm btn-danger">Eliminar</button>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>

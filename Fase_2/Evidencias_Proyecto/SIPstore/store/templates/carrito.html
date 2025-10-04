@@ -1,0 +1,73 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block link %}
+<link rel="stylesheet" href="{% static 'store/style/carrito.css' %}" />
+{% endblock %}
+
+{% block title %}Carrito de Compras{% endblock %}
+
+{% block content %}
+<div class="carrito-container row g-4 mt-3">
+  <!-- Lista de productos -->
+  <section class="col-12 col-lg-8">
+    <h3 class="mb-4">Mi Carrito</h3>
+    <div class="carrito-lista">
+      <!-- Producto -->
+      <div class="carrito-item d-flex align-items-center shadow-sm p-3 mb-3 bg-white rounded">
+        <img src="{% static 'img/producto1.jpg' %}" class="carrito-img" alt="Producto">
+        <div class="ms-3 flex-grow-1">
+          <h6 class="mb-1">Panel SIP 100 mm - OSB 11,1 LP</h6>
+          <small class="text-muted">Código: 12345</small>
+          <div class="mt-2 d-flex align-items-center">
+            <input type="number" class="form-control form-control-sm w-auto me-3" min="1" value="1">
+            <button class="btn btn-outline-danger btn-sm"><i class="bi bi-trash"></i> Eliminar</button>
+          </div>
+        </div>
+        <div class="text-end">
+          <p class="fw-bold precio">$52.290</p>
+          <small class="text-muted">IVA incl.</small>
+        </div>
+      </div>
+
+      <!-- Otro producto -->
+      <div class="carrito-item d-flex align-items-center shadow-sm p-3 mb-3 bg-white rounded">
+        <img src="{% static 'img/producto2.jpg' %}" class="carrito-img" alt="Producto">
+        <div class="ms-3 flex-grow-1">
+          <h6 class="mb-1">Kit de construcción básico</h6>
+          <small class="text-muted">Código: 67890</small>
+          <div class="mt-2 d-flex align-items-center">
+            <input type="number" class="form-control form-control-sm w-auto me-3" min="1" value="2">
+            <button class="btn btn-outline-danger btn-sm"><i class="bi bi-trash"></i> Eliminar</button>
+          </div>
+        </div>
+        <div class="text-end">
+          <p class="fw-bold precio">$105.000</p>
+          <small class="text-muted">IVA incl.</small>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Resumen -->
+  <aside class="col-12 col-lg-4">
+    <div class="carrito-resumen shadow-sm bg-white p-4 rounded">
+      <h5 class="mb-3">Resumen de compra</h5>
+      <div class="d-flex justify-content-between mb-2">
+        <span>Productos (3)</span>
+        <span>$157.290</span>
+      </div>
+      <div class="d-flex justify-content-between mb-2">
+        <span>Envío</span>
+        <span>$4.990</span>
+      </div>
+      <hr>
+      <div class="d-flex justify-content-between fw-bold mb-3">
+        <span>Total</span>
+        <span>$162.280</span>
+      </div>
+      <button class="btn btn-success w-100"><i class="bi bi-credit-card"></i> Continuar con la compra</button>
+    </div>
+  </aside>
+</div>
+{% endblock %}

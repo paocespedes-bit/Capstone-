@@ -1,24 +1,32 @@
 <!-- !agregar base  -->
-{% extends "base.html"%} {% load static %} {% block link %}
-<!-- !CSS  -->
-<link rel="stylesheet" href="{% static 'core/style/index.css' %}" />
+{% extends "base.html"%}
+{% load static %}
+
+{% block link %}
+  <!-- !CSS  -->
+  <link rel="stylesheet" href="{% static 'core/style/index.css' %}" />
 {% endblock %}
 
-<!-- !Blockeo de contenido -->
 {% block content %}
-<div class="carrusel">{% include "carrusel.html" %}</div>
+<div class="carrusel">
+  {% include "carrusel.html" %}
+</div>
+
 <div class="tarjetas">
   <div class="titulo">
     <h1>Kits de Construccion</h1>
   </div>
-  <div class="cards">{% include "t_kit.html" with kits=kits %}</div>
+  <div class="cards">
+    {% include "t_kit.html" with kits=kits %}
+  </div>
+
   <div class="titulo">
     <h1>Paneles SIP</h1>
   </div>
   <div class="cards">
-    <!-- !Incluir tarjetas -->
     {% include "t_paneles.html" with paneles=paneles %}
   </div>
+
   <p></p>
-  {% endblock %}
 </div>
+{% endblock %}
