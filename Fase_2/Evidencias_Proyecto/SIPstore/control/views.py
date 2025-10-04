@@ -35,7 +35,7 @@ def crear_categoria(request):
             messages.error(request, 'Por favor corrige los errores del formulario.')
     else:
         form = CategoriaForm()
-    return render(request, 'formularios.html', {'form': form, 'titulo': 'Nueva Categoría'})
+    return render(request, 'tabla_categoria.html', {'form': form, 'titulo': 'Nueva Categoría'})
 
 def crear_panel(request):
     if request.method == 'POST':
@@ -43,14 +43,13 @@ def crear_panel(request):
 
         if panel_form.is_valid():
             panel_form.save()
-
             messages.success(request, 'Panel SIP creado correctamente.')
             return redirect('stock')
     else:
         panel_form = PanelSIPForm()
         
 
-    return render(request, 'formularios.html', {
+    return render(request, 'tabla_paneles.html', {
         'form': panel_form,
         'titulo': 'Nuevo Panel SIP'
     })
@@ -78,10 +77,11 @@ def crear_kit(request):
 def eliminar_categoria(request, pk):
     categoria = get_object_or_404(Categoria, pk=pk)
     if request.method == "POST":
+        nombre = categoria.nombre
         categoria.delete()
-        messages.success(request, 'Categoría eliminada correctamente.')
+        messages.success(request, f'Categoría "{nombre}" eliminada correctamente.')
         return redirect('stock')
-    return redirect('stock')  # por seguridad, si acceden por GET
+    return redirect('stock')
 
 # Eliminar panel
 def eliminar_panel(request, pk):
