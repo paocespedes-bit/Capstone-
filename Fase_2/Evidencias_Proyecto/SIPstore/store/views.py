@@ -2,6 +2,7 @@ from django.db.models import Min, Max
 from django.shortcuts import render, get_object_or_404
 from .models import PanelSIP, KitConstruccion
 
+#! Aqui se agregan las views (templates).
 def paneles(request):
     # filtros desde GET (fíjate que espesor usa el mismo name que el template)
     tipo_obs_filtro = request.GET.get('tipo_obs', '').strip()

@@ -4,18 +4,15 @@
     aria-expanded="false">
 </button>
 <ul class="dropdown-menu">
-
-
+    <li><a class="dropdown-item" href="#">Ordenar A-Z</a></li>
+    <li><a class="dropdown-item" href="#">Ordenar Z-A</a></li>
     <li>
-      <a class="dropdown-item" href="?order={{ columna_nombre }}_asc{% if search %}&search={{ search }}{% endif %}">
-        Ordenar ↑
-      </a>
+        <hr class="dropdown-divider">
     </li>
     <li>
-      <a class="dropdown-item" href="?order={{ columna_nombre }}_desc{% if search %}&search={{ search }}{% endif %}">
-        Ordenar ↓
-      </a>
-
-        <hr class="dropdown-divider">
+        <form class="d-flex" role="search">
+            <input class="form-control me-2" type="search" placeholder="Buscar" aria-label="Search" />
+            <button class="btn btn-success" type="submit"><i class="bi bi-search"></i></button>
+        </form>
     </li>
 </ul>

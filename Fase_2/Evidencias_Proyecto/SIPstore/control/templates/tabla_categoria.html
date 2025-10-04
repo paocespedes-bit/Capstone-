@@ -1,3 +1,4 @@
+{% load static %}
 <div class="table-responsive">
   <table class="table table-hover table-striped align-middle">
     <thead class="table">
@@ -16,10 +17,20 @@
         <td class="text-center">
           <button class="btn btn-sm btn-primary" data-bs-toggle="modal"
             data-bs-target="#modalEditarPanel{{ cat.id }}">Editar</button>
-          <button class="btn btn-sm btn-danger">Eliminar</button>
+          <button type="button" class="btn btn-danger btn-eliminar" 
+                data-bs-toggle="modal" 
+                data-bs-target="#modalEliminar"
+                data-url="{% url 'eliminar_categoria' cat.id %}"
+                data-nombre="{{ cat.nombre }}"
+                data-tipo="Categoría">
+          Eliminar
         </td>
       </tr>
       {% endfor %}
     </tbody>
   </table>
 </div>
+
+{% block script %}
+<link rel="stylesheet" href="{% static 'control/js/action.js' %}">
+{% endblock%}

@@ -15,7 +15,7 @@
     {% if panel.imagenes.all %}
     <img src="{{panel.imagenes.first.imagen.url  }}" alt="{{panel.nombre}}" />
     {% else %}
-    <img src="#" alt="Imagen no disponible" />
+    <img src="{% static 'img/SinImagen.png' %}" alt="Imagen no disponible" />
     {% endif %}
     <!-- !Oferta  -->
     <div class="oferta">-10%</div>

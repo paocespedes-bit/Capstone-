@@ -1,0 +1,86 @@
+<div class="container mt-4">
+  <!-- Modal PanelSIP -->
+  <div class="modal " id="modalPanel" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <form method="POST" action="{% url 'crear_panel' %}" enctype="multipart/form-data" >
+          {% csrf_token %}
+          <div class="modal-header">
+            <h5 class="modal-title">Nuevo Panel SIP</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+          </div>
+          <div class="modal-body">
+            {{ PanelSIPForm.as_p }}
+
+            <h6>Subir imágenes (máx 5)</h6>
+            {{ ImagenFormSet.management_form }}
+            {% for form in ImagenFormSet %}
+            <div class="mb-2">
+              {{ form.imagen.label_tag }}<br>
+              {{ form.imagen }}
+            </div>
+            {% endfor %}
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+            <button type="submit" class="btn btn-primary">Guardar Panel SIP</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal KitConstruccion -->
+  <div class="modal " id="modalKit" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <form method="POST" action="{% url 'crear_kit' %}" enctype="multipart/form-data" >
+          {% csrf_token %}
+          <div class="modal-header">
+            <h5 class="modal-title">Nuevo Kit de Construcción</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+          </div>
+          <div class="modal-body">
+            {{ KitConstruccionForm.as_p }}
+
+            <h6>Subir imágenes (máx 5)</h6>
+            {{ ImagenFormSet.management_form }}
+            {% for form in ImagenFormSet %}
+            <div class="mb-2">
+              {{ form.imagen.label_tag }}<br>
+              {{ form.imagen }}
+            </div>
+            {% endfor %}
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+            <button type="submit" class="btn btn-success">Guardar Kit</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- Modal Categoría -->
+  <div class="modal " id="modalCategoria" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <form method="POST" action="{% url 'crear_categoria' %}">
+          {% csrf_token %}
+          <div class="modal-header">
+            <h5 class="modal-title">Nueva Categoría</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+          </div>
+          <div class="modal-body">
+            {{ CategoriaForm.as_p }}
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+            <button type="submit" class="btn btn-warning">Guardar Categoría</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

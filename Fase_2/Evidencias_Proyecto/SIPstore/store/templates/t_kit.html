@@ -14,7 +14,7 @@
     {% if kit.imagenes.all %}
     <img src="{{kit.imagenes.first.imagen.url  }}" alt="{{kit.nombre}}" />
     {% else %}
-    <img src="#" alt="Imagen no disponible" />
+    <img src="{% static 'img/SinImagen.png' %}" alt="Imagen no disponible" />
     {% endif %}
     <!-- !Oferta  -->
     <div class="oferta">-10%</div>

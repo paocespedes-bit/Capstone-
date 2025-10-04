@@ -1,71 +1,72 @@
-{% extends "base_control.html"%} {% load static %} 
+{% extends "base_control.html"%} {% load static %}
 {% block title %} Inventario {% endblock %}
 <!-- !CSS  -->
 {% block link %} {% endblock %} {% block content %}
 <div class="container-fluid py-4">
-    <!-- Título -->
-    <h2 class="text-center mb-4">Inventario</h2>
+  <!-- Título -->
+  <h2 class="text-center mb-4">Inventario</h2>
 
-    <!-- Tabs -->
-    <ul class="nav nav-tabs" id="inventarioTabs" role="tablist">
-        <li class="nav-item" role="presentation">
-            <button class="nav-link active" id="paneles-tab" data-bs-toggle="tab" data-bs-target="#paneles"
-                type="button" role="tab">
-                Paneles SIP
-            </button>
-        </li>
-        <li class="nav-item" role="presentation">
-            <button class="nav-link" id="kits-tab" data-bs-toggle="tab" data-bs-target="#kits" type="button" role="tab">
-                Kits de Construcción
-            </button>
-        </li>
-        <li class="nav-item" role="presentation">
-            <button class="nav-link" id="cat-tab" data-bs-toggle="tab" data-bs-target="#cat" type="button" role="tab">
-                Categorias
-            </button>
-        </li>
-    </ul>
+  <!-- Tabs -->
+  <ul class="nav nav-tabs" id="inventarioTabs" role="tablist">
+    <li class="nav-item" role="presentation">
+      <button class="nav-link active" id="paneles-tab" data-bs-toggle="tab" data-bs-target="#paneles" type="button"
+        role="tab">
+        Paneles SIP
+      </button>
+    </li>
+    <li class="nav-item" role="presentation">
+      <button class="nav-link" id="kits-tab" data-bs-toggle="tab" data-bs-target="#kits" type="button" role="tab">
+        Kits de Construcción
+      </button>
+    </li>
+    <li class="nav-item" role="presentation">
+      <button class="nav-link" id="cat-tab" data-bs-toggle="tab" data-bs-target="#cat" type="button" role="tab">
+        Categorias
+      </button>
+    </li>
+  </ul>
 
-    <div class="tab-content mt-3" id="inventarioTabsContent">
-        <!-- !Paneles SIP -->
-        <div class="tab-pane fade show active" id="paneles" role="tabpanel">
-            <!-- Botón agregar -->
-            <div class="d-flex justify-content-end mb-2">
-                <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#modalAgregarPanel">
-                    + Agregar Panel
-                </button>
-            </div>
-            <!-- Tabla Paneles -->
-            {% include "tabla_paneles.html" with paneles=paneles %}
-        </div>
-
-        <!-- !Kits de Construcción -->
-        <div class="tab-pane fade" id="kits" role="tabpanel">
-            <!-- Botón agregar -->
-            <div class="d-flex justify-content-end mb-2">
-                <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#modalAgregarKit">
-                    + Agregar Kit
-                </button>
-            </div>
-            <!-- Tabla Kits -->
-            {% include "tabla_kits.html" with kits=kits %}
-        </div>
-
-        <!-- !Categorias -->
-        <div class="tab-pane fade" id="cat" role="tabpanel">
-            <!-- Botón agregar -->
-            <div class="d-flex justify-content-end mb-2">
-                <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#modalAgregarCat">
-                    + Agregar Categoria
-                </button>
-            </div>
-            <!-- Tabla Kits -->
-            {% include "tabla_categoria.html" with categorias=categorias %}
-        </div>
+  <div class="tab-content mt-3" id="inventarioTabsContent">
+    <!-- !Paneles SIP -->
+    <div class="tab-pane  show active" id="paneles" role="tabpanel">
+      <!-- Botón agregar -->
+      <div class="d-flex justify-content-end mb-2">
+        <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#modalPanel">
+          + Nuevo Panel SIP
+        </button>
+      </div>
+      <!-- Tabla Paneles -->
+      {% include "tabla_paneles.html" with paneles=paneles %}
     </div>
+
+    <!-- !Kits de Construcción -->
+    <div class="tab-pane " id="kits" role="tabpanel">
+      <!-- Botón agregar -->
+      <div class="d-flex justify-content-end mb-2">
+        <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#modalKit">
+          + Nuevo Kit de Construcción
+        </button>
+      </div>
+      <!-- Tabla Kits -->
+      {% include "tabla_kits.html" with kits=kits %}
+    </div>
+
+    <!-- !Categorias -->
+    <div class="tab-pane " id="cat" role="tabpanel">
+      <!-- Botón agregar -->
+      <div class="d-flex justify-content-end mb-2">
+        <button type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#modalCategoria">
+          + Nueva Categoría
+        </button>
+      </div>
+      <!-- Tabla Kits -->
+      {% include "tabla_categoria.html" with categorias=categorias %}
+    </div>
+  </div>
 </div>
 
-
+{% include "action.html" %}
 {% include "formularios.html" %}
 {% include "alerta.html" %}
 {% endblock%}
+
