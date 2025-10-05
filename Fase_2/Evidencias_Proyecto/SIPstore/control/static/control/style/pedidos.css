@@ -1,0 +1,94 @@
+/* ======== CONTENEDOR GENERAL ======== */
+.pedidos-container {
+  max-width: 1000px;
+  margin: 2rem auto;
+  font-family: Arial, sans-serif;
+  padding: 1rem;
+}
+
+.pedidos-container h1 {
+  text-align: center;
+  margin-bottom: 1.5rem;
+  font-size: 1.8rem;
+}
+
+/* ======== BARRA DE BÚSQUEDA ======== */
+.search-bar {
+  text-align: right;
+  margin-bottom: 1rem;
+}
+
+.search-bar input {
+  padding: 0.5rem 0.8rem;
+  width: 260px;
+  border: 1px solid #bbb;
+  border-radius: 6px;
+  font-size: 0.95rem;
+}
+
+/* ======== TABLA ======== */
+.tabla-pedidos {
+  width: 100%;
+  border-collapse: collapse;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+}
+
+.tabla-pedidos thead {
+  background: #3a6ea5;
+  color: white;
+}
+
+.tabla-pedidos th,
+.tabla-pedidos td {
+  padding: 0.9rem;
+  text-align: center;
+  border: 1px solid #ddd;
+  font-size: 0.95rem;
+}
+
+.tabla-pedidos tbody tr:nth-child(even) {
+  background: #f7f7f7;
+}
+
+/* ======== BOTÓN "VER MÁS" ======== */
+.btn-ver {
+  display: inline-block;
+  background: #3a6ea5;
+  color: white;
+  padding: 0.4rem 0.9rem;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  text-decoration: none;
+  transition: background 0.2s;
+}
+
+.btn-ver:hover {
+  background: #2a5785;
+}
+
+/* ======== PAGINACIÓN ======== */
+.pagination {
+  margin-top: 1rem;
+  text-align: center;
+}
+
+.pagination a,
+.pagination span {
+  margin: 0 5px;
+  padding: 0.45rem 0.75rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 0.9rem;
+  text-decoration: none;
+  color: #333;
+}
+
+.pagination a:hover {
+  background: #eee;
+}
+
+.pagination .current {
+  background: #3a6ea5;
+  color: white;
+  font-weight: bold;
+}
