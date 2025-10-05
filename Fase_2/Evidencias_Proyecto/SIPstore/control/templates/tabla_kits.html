@@ -74,7 +74,19 @@
                         </button>
                     </td>
                     <td class="text-center">
-                        <button class="btn btn-sm btn-primary">Editar</button>
+                        <button class="btn btn-sm btn-primary btn-editar-kit"
+                                data-bs-toggle="modal"
+                                data-bs-target="#modalEditarKit"
+                                data-id="{{ kit.id }}"
+                                data-nombre="{{ kit.nombre }}"
+                                data-precio="{{ kit.precio }}"
+                                data-descripcion="{{ kit.descripcion }}"
+                                data-m2="{{ kit.m2 }}"
+                                data-dormitorios="{{ kit.dormitorios }}"
+                                data-banos="{{ kit.banos }}"
+                                data-categorias="{{ kit.categorias.all|join:',' }}">
+                            Editar
+                        </button>
                         <button type="button" class="btn btn-danger btn-eliminar" data-bs-toggle="modal"
                             data-bs-target="#modalEliminar" data-url="{% url 'eliminar_kit' kit.id %}"
                             data-nombre="{{ kit.nombre }}" data-tipo="Kit de construcción">

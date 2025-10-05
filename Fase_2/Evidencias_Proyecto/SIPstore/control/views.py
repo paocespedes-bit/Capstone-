@@ -12,6 +12,7 @@ def stock(request):
     paneles = PanelSIP.objects.all()
     kits = KitConstruccion.objects.all()
     categorias = Categoria.objects.all()
+    form_kit = KitConstruccionForm()
 
     context = {
         'paneles': paneles,
@@ -20,6 +21,7 @@ def stock(request):
         'CategoriaForm': CategoriaForm(),
         'PanelSIPForm': PanelSIPForm(),
         'KitConstruccionForm': KitConstruccionForm(),
+        'form_kit': form_kit,
     }
     return render(request, 'stock.html', context)
 
@@ -111,3 +113,28 @@ def editar_categoria(request, pk):
     else:
         form = CategoriaForm(instance=categoria)
     return render(request, 'editar_categoria.html', {'form': form, 'categoria': categoria})
+
+
+def editar_panel(request, pk):
+    panel = get_object_or_404(PanelSIP, pk=pk)
+
+    if request.method == 'POST':
+        form = PanelSIPForm(request.POST, instance=panel)
+        if form.is_valid():
+            form.save()
+            return redirect('stock')  # Ajusta al nombre de la vista que renderiza stock.html
+    else:
+        form = PanelSIPForm(instance=panel)
+
+    return render(request, 'editar_panel.html', {'form': form, 'panel': panel})
+
+def editar_kit(request, pk):
+    kit = get_object_or_404(KitConstruccion, pk=pk)
+    if request.method == "POST":
+        form = KitConstruccionForm(request.POST, instance=kit)
+        if form.is_valid():
+            form.save()
+            return redirect("stock")  # Redirige al inventario
+    else:
+        form = KitConstruccionForm(instance=kit)
+    return render(request, "editar_kit.html", {"form": form})

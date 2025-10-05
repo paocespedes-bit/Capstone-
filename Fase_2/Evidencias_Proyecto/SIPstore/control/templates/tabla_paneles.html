@@ -79,7 +79,11 @@
             </button>
           </td>
           <td class="text-center">
-            <button class="btn btn-sm btn-primary">Editar</button>
+              <button class="btn btn-sm btn-primary" 
+                data-bs-toggle="modal"
+                data-bs-target="#modalEditarPanel_{{ panel.id }}">
+                Editar
+              </button>
             <button type="button" class="btn btn-danger btn-eliminar" data-bs-toggle="modal"
               data-bs-target="#modalEliminar" data-url="{% url 'eliminar_panel' panel.id %}"
               data-nombre="{{ panel.nombre }}" data-tipo="Panel SIP">
