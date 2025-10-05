@@ -42,4 +42,3 @@ class KitConstruccionForm(forms.ModelForm):
             'banos': forms.NumberInput(attrs={'class': 'form-control'}),
             'categorias': forms.CheckboxSelectMultiple()
         }
-

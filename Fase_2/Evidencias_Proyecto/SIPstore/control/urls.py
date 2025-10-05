@@ -10,5 +10,5 @@ urlpatterns = [
     path('categoria/eliminar/<int:pk>/', views.eliminar_categoria, name='eliminar_categoria'),
     path('panel/eliminar/<int:pk>/', views.eliminar_panel, name='eliminar_panel'),
     path('kit/eliminar/<int:pk>/', views.eliminar_kit, name='eliminar_kit'),
-    
+    path('editar-categoria/<int:pk>/', views.editar_categoria, name='editar_categoria'),
 ]

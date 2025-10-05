@@ -100,3 +100,14 @@ def eliminar_kit(request, pk):
         messages.success(request, 'Kit de construcción eliminado correctamente.')
         return redirect('stock')
     return redirect('stock')
+
+def editar_categoria(request, pk):
+    categoria = get_object_or_404(Categoria, pk=pk)
+    if request.method == "POST":
+        form = CategoriaForm(request.POST, instance=categoria)
+        if form.is_valid():
+            form.save()
+            return redirect('stock')  # usa la vista que carga stock.html
+    else:
+        form = CategoriaForm(instance=categoria)
+    return render(request, 'editar_categoria.html', {'form': form, 'categoria': categoria})
