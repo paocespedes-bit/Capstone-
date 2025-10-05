@@ -5,75 +5,102 @@
 <link rel="stylesheet" href="{% static 'control/style/tablas.css' %}">
 {% endblock %}
 
-<div class="container-fluid tabla-kits-container">
-  <h2 class="text-center mb-3">Tabla de Kits</h2>
-
-  <div class="table-responsive">
-    <table class="table table-hover table-striped align-middle">
-      <thead class="table-success text-center">
-        <tr>
-          <th>ID {% include 'filtro_columna.html' with columna_nombre="id" %}</th>
-          <th>Cantidad {% include 'filtro_columna.html' with columna_nombre="cantidad" %}</th>
-          <th>Nombre {% include 'filtro_columna.html' with columna_nombre="nombre" %}</th>
-          <th>Precio {% include 'filtro_columna.html' with columna_nombre="precio" %}</th>
-          <th>Oferta {% include 'filtro_columna.html' with columna_nombre="oferta" %}</th>
-          <th>Descripción</th>
-          <th>m² {% include 'filtro_columna.html' with columna_nombre="m2" %}</th>
-          <th>Dormitorios {% include 'filtro_columna.html' with columna_nombre="dormitorios" %}</th>
-          <th>Baños {% include 'filtro_columna.html' with columna_nombre="banos" %}</th>
-          <th>Categorías {% include 'filtro_columna.html' with columna_nombre="categorias" %}</th>
-          <th>Imágenes</th>
-          <th class="text-center">Acciones</th>
-        </tr>
-      </thead>
-
-      <tbody>
-        {% for kit in kits %}
-        <tr>
-          <td data-label="ID">#{{ kit.id }}</td>
-          <td data-label="Cantidad">SIN STOCK</td>
-          <td data-label="Nombre">{{ kit.nombre }}</td>
-          <td data-label="Precio">${{ kit.precio_actual|floatformat:0|intcomma }}</td>
-          <td data-label="Oferta">
-            {% if kit.oferta %}
-            {{ kit.oferta }}%
-            {% else %}
-            N/A
-            {% endif %}
-          </td>
-          <td data-label="Descripción" title="{{ kit.descripcion }}">{{ kit.descripcion|truncatechars:20 }}...</td>
-          <td data-label="m²">{{ kit.m2 }}</td>
-          <td data-label="Dormitorios">{{ kit.dormitorios }}</td>
-          <td data-label="Baños">{{ kit.banos }}</td>
-          <td data-label="Categorías">
-            {% for cat in kit.categorias.all %}
-            <span class="badge bg-secondary">{{ cat.nombre }}</span>
-            {% empty %}
-            <span class="text-muted">Sin categorías</span>
-            {% endfor %}
-          </td>
-          <td data-label="Imágenes">
-            <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal"
-              data-bs-target="#galeriaProducto_{{ forloop.counter }}">
-              <i class="bi bi-eye"></i> Ver ({{ kit.imagenes.count }})
-            </button>
-          </td>
-          <td data-label="Acciones" class="text-center">
-            <button class="btn btn-sm btn-primary">Editar</button>
-            <button class="btn btn-sm btn-danger">Eliminar</button>
-          </td>
-          {% include 'imagenes.html' with producto=kit contador=forloop.counter only %}
-        </tr>
-        {% empty %}
-        <tr>
-          <td colspan="12" class="text-center text-muted py-3">No hay registros disponibles</td>
-        </tr>
-        {% endfor %}
-      </tbody>
-    </table>
-  </div>
+<div class="container-fluid">
+    <h2>Tabla de Kits</h2>
+    <div class="table-responsive">
+        <table class="table table-hover table-striped align-middle">
+            <thead class="table">
+                <tr>
+                    <th>ID
+                        {% include 'filtro_columna.html' with columna_nombre="id" %}
+                    </th>
+                    <th>Cantidad
+                        {% include 'filtro_columna.html' with columna_nombre="cantidad" %}
+                    </th>
+                    <th>Nombre
+                        {% include 'filtro_columna.html' with columna_nombre="nombre" %}
+                    </th>
+                    <th>Precio
+                        {% include 'filtro_columna.html' with columna_nombre="precio" %}
+                    </th>
+                    <th>Oferta
+                        {% include 'filtro_columna.html' with columna_nombre="oferta" %}
+                    </th>
+                    <th>Descripción</th>
+                    <th>m²
+                        {% include 'filtro_columna.html' with columna_nombre="m2" %}
+                    </th>
+                    <th>Dormitorios
+                        {% include 'filtro_columna.html' with columna_nombre="dormitorios" %}
+                    </th>
+                    <th>Baños
+                        {% include 'filtro_columna.html' with columna_nombre="banos" %}
+                    </th>
+                    <th>Categorías
+                        {% include 'filtro_columna.html' with columna_nombre="categorias" %}
+                    </th>
+                    <th>Imágenes</th>
+                    <th class="text-center">Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for kit in kits %}
+                <tr>
+                    <td>#{{ kit.id }}</td>
+                    <td>SIN STOCK</td>
+                    <td>{{ kit.nombre }}</td>
+                    <td>${{ kit.precio_actual|floatformat:0|intcomma }}</td>
+                    <td>
+                        {% if kit.oferta %}
+                        {{ kit.oferta }}%
+                        {% else %}
+                        N/A
+                        {% endif %}
+                    </td>
+                    <td title="{{ kit.descripcion }}">{{ kit.descripcion|truncatechars:20 }}...</td>
+                    <td>{{ kit.m2 }}</td>
+                    <td>{{ kit.dormitorios }}</td>
+                    <td>{{ kit.banos }}</td>
+                    <td>
+                        {% for cat in kit.categorias.all %}
+                        <span class="badge bg-secondary">{{ cat.nombre }}</span>
+                        {% endfor %}
+                    </td>
+                    <td>
+                        <button type="button" class="btn btn-primary" data-bs-toggle="modal"
+                            data-bs-target="#galeriaKit_{{ kit.id }}">
+                            <i class="bi bi-eye"></i> Ver({{ kit.imagenes.count }})
+                        </button>
+                    </td>
+                    <td class="text-center">
+                        <button class="btn btn-sm btn-primary btn-editar-kit"
+                                data-bs-toggle="modal"
+                                data-bs-target="#modalEditarKit"
+                                data-id="{{ kit.id }}"
+                                data-nombre="{{ kit.nombre }}"
+                                data-precio="{{ kit.precio }}"
+                                data-descripcion="{{ kit.descripcion }}"
+                                data-m2="{{ kit.m2 }}"
+                                data-dormitorios="{{ kit.dormitorios }}"
+                                data-banos="{{ kit.banos }}"
+                                data-categorias="{{ kit.categorias.all|join:',' }}">
+                            Editar
+                        </button>
+                        <button type="button" class="btn btn-danger btn-eliminar" data-bs-toggle="modal"
+                            data-bs-target="#modalEliminar" data-url="{% url 'eliminar_kit' kit.id %}"
+                            data-nombre="{{ kit.nombre }}" data-tipo="Kit de construcción">
+                            Eliminar
+                        </button>
+                    </td>
+                    {% include 'imagenes.html' %}
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
 </div>
 
 {% block script %}
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"></script>
+<script src="{% static 'control/js/eliminar.js' %}"></script>
 {% endblock %}
