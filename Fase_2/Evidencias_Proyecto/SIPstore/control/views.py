@@ -1,7 +1,9 @@
+from email.headerregistry import ContentTypeHeader
+from django.contrib.contenttypes.models import ContentType
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
-from .forms import CategoriaForm, PanelSIPForm, KitConstruccionForm
-from store.models import PanelSIP, KitConstruccion, Categoria
+from .forms import CategoriaForm, PanelSIPForm, KitConstruccionForm, ImagenFormSet
+from store.models import PanelSIP, KitConstruccion, Categoria, imagenProducto
 
 # Views principales
 def control(request):
@@ -42,20 +44,33 @@ def crear_categoria(request):
 def crear_panel(request):
     if request.method == 'POST':
         panel_form = PanelSIPForm(request.POST)
+        imagen_formset = ImagenFormSet(request.POST, request.FILES)
 
-        if panel_form.is_valid():
-            panel_form.save()
+        if panel_form.is_valid() and imagen_formset.is_valid():
+            panel = panel_form.save()
+
+            # Guardar imágenes asociadas
+            for form in imagen_formset:
+                imagen = form.cleaned_data.get('imagen')
+                if imagen:
+                    imagenProducto.objects.create(
+                        imagen=imagen,
+                        content_type=ContentType.objects.get_for_model(panel),
+                        object_id=panel.id
+                    )
+
             messages.success(request, 'Panel SIP creado correctamente.')
             return redirect('stock')
+
     else:
         panel_form = PanelSIPForm()
-        
+        imagen_formset = ImagenFormSet()  # ✅ 5 inputs vacíos garantizados
 
-    return render(request, 'tabla_paneles.html', {
-        'form': panel_form,
-        'titulo': 'Nuevo Panel SIP'
+    return render(request, 'stock.html', {
+        'panel_form': panel_form,
+        'ImagenFormSet': imagen_formset,
+        'paneles': PanelSIP.objects.all(),
     })
-
 
 def crear_kit(request):
     if request.method == 'POST':

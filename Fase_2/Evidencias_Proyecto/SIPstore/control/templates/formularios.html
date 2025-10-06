@@ -10,15 +10,15 @@
             <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
           </div>
           <div class="modal-body">
-            {{ PanelSIPForm.as_p }}
-
+            {{ panel_form.as_p }}
             <h6>Subir imágenes (máx 5)</h6>
+            <!-- 👇 TIP de depuración -->
+            <p>Formset total forms: {{ ImagenFormSet.total_form_count }}</p>
             {{ ImagenFormSet.management_form }}
             {% for form in ImagenFormSet %}
-            <div class="mb-2">
-              {{ form.imagen.label_tag }}<br>
-              {{ form.imagen }}
-            </div>
+              <div class="mb-2">
+                {{ form.as_p }}  <!-- esto genera el label + input de tipo file -->
+              </div>
             {% endfor %}
           </div>
           <div class="modal-footer">
