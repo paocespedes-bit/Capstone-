@@ -13,4 +13,6 @@ urlpatterns = [
     path('editar-categoria/<int:pk>/', views.editar_categoria, name='editar_categoria'),
     path('editar-panel/<int:pk>/', views.editar_panel, name='editar_panel'),
     path('editar-kit/<int:pk>/', views.editar_kit, name='editar_kit'),
+    path('panel/<int:panel_id>/subir-imagenes/', views.subir_imagenes_panel, name='subir_imagenes_panel'),
+    path('eliminar-imagen/<int:imagen_id>/', views.eliminar_imagen, name='eliminar_imagen'),
 ]

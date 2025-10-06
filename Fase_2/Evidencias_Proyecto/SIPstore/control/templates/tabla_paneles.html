@@ -82,12 +82,24 @@
               <button class="btn btn-sm btn-primary" 
                 data-bs-toggle="modal"
                 data-bs-target="#modalEditarPanel_{{ panel.id }}">
-                Editar
-              </button>
+              Editar
+            </button>
             <button type="button" class="btn btn-danger btn-eliminar" data-bs-toggle="modal"
               data-bs-target="#modalEliminar" data-url="{% url 'eliminar_panel' panel.id %}"
               data-nombre="{{ panel.nombre }}" data-tipo="Panel SIP">
               Eliminar
+            </button>
+          </td>
+          <td class="text-center">
+            <h5>Subir imagen para {{ panel.nombre }}</h5>
+            <button type="button" class="btn btn-sm btn-info" data-bs-toggle="modal" data-bs-target="#modalSubirImagenes_{{ panel.id }}">
+              Subir imágenes
+            </button>
+          </td>
+          <td class="text-center">
+            <h5>Eliminar una imagen para {{ panel.nombre }}</h5>
+            <button type="button" class="btn btn-sm btn-info" data-bs-toggle="modal" data-bs-target="#modalEliminarImagenes_{{ panel.id }}">
+              Eliminar imágenes
             </button>
           </td>
           {% include 'imagenes.html' %}

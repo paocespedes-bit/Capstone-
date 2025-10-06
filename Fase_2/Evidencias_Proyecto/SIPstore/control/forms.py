@@ -1,5 +1,4 @@
 from django import forms
-from django.forms import modelformset_factory, inlineformset_factory, formset_factory
 from store.models import Categoria, PanelSIP, KitConstruccion, imagenProducto
 
 
@@ -44,11 +43,11 @@ class KitConstruccionForm(forms.ModelForm):
             'categorias': forms.CheckboxSelectMultiple()
         }
 
-class ImagenForm(forms.Form):
-    imagen = forms.ImageField(
-        required=False,
-        widget=forms.ClearableFileInput(attrs={'class': 'form-control', 'accept': 'image/*'})
-    )
-
-# Creamos un FormSet con 5 inputs vacíos
-ImagenFormSet = formset_factory(ImagenForm, extra=5)
+# Formulario de Imagen (ModelForm normal)
+class ImagenProductoForm(forms.ModelForm):
+    class Meta:
+        model = imagenProducto
+        fields = ['imagen']
+        widgets = {
+            'imagen': forms.ClearableFileInput(attrs={'class': 'form-control'})
+        }

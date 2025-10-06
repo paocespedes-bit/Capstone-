@@ -2,28 +2,48 @@ from email.headerregistry import ContentTypeHeader
 from django.contrib.contenttypes.models import ContentType
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
-from .forms import CategoriaForm, PanelSIPForm, KitConstruccionForm, ImagenFormSet
+from .forms import CategoriaForm, PanelSIPForm, KitConstruccionForm, ImagenProductoForm
 from store.models import PanelSIP, KitConstruccion, Categoria, imagenProducto
 
 # Views principales
 def control(request):
     return render(request, 'home_control.html')
 
+def subir_imagenes_panel(request, panel_id):
+    panel = get_object_or_404(PanelSIP, id=panel_id)
+
+    if request.method == "POST":
+        for imagen in request.FILES.getlist('imagenes'):
+            imagenProducto.objects.create(
+                imagen=imagen,
+                content_type=ContentType.objects.get_for_model(panel),
+                object_id=panel.id
+            )
+        return redirect('stock')  # o a la página que quieras
+
+    return render(request, 'stock.html', {'panel': panel})
+
+def eliminar_imagen(request, imagen_id):
+    imagen = get_object_or_404(imagenProducto, id=imagen_id)
+    panel = imagen.producto  # Instancia real: PanelSIP o KitConstruccion
+
+    if request.method == 'POST':
+        imagen.delete()
+        return redirect('stock')
+
 
 def stock(request):
     paneles = PanelSIP.objects.all()
     kits = KitConstruccion.objects.all()
     categorias = Categoria.objects.all()
-    form_kit = KitConstruccionForm()
 
     context = {
         'paneles': paneles,
         'kits': kits,
         'categorias': categorias,
+        'panel_form': PanelSIPForm(),  # 🔹 aquí el nombre coincide con el template
         'CategoriaForm': CategoriaForm(),
-        'PanelSIPForm': PanelSIPForm(),
         'KitConstruccionForm': KitConstruccionForm(),
-        'form_kit': form_kit,
     }
     return render(request, 'stock.html', context)
 
@@ -44,32 +64,17 @@ def crear_categoria(request):
 def crear_panel(request):
     if request.method == 'POST':
         panel_form = PanelSIPForm(request.POST)
-        imagen_formset = ImagenFormSet(request.POST, request.FILES)
-
-        if panel_form.is_valid() and imagen_formset.is_valid():
-            panel = panel_form.save()
-
-            # Guardar imágenes asociadas
-            for form in imagen_formset:
-                imagen = form.cleaned_data.get('imagen')
-                if imagen:
-                    imagenProducto.objects.create(
-                        imagen=imagen,
-                        content_type=ContentType.objects.get_for_model(panel),
-                        object_id=panel.id
-                    )
-
+        if panel_form.is_valid():
+            panel_form.save()
             messages.success(request, 'Panel SIP creado correctamente.')
             return redirect('stock')
-
     else:
         panel_form = PanelSIPForm()
-        imagen_formset = ImagenFormSet()  # ✅ 5 inputs vacíos garantizados
 
     return render(request, 'stock.html', {
         'panel_form': panel_form,
-        'ImagenFormSet': imagen_formset,
         'paneles': PanelSIP.objects.all(),
+        'categorias': Categoria.objects.all()
     })
 
 def crear_kit(request):
@@ -129,19 +134,29 @@ def editar_categoria(request, pk):
         form = CategoriaForm(instance=categoria)
     return render(request, 'editar_categoria.html', {'form': form, 'categoria': categoria})
 
-
-def editar_panel(request, pk):
-    panel = get_object_or_404(PanelSIP, pk=pk)
+def editar_panel(request, panel_id):
+    panel = get_object_or_404(PanelSIP, id=panel_id)
 
     if request.method == 'POST':
-        form = PanelSIPForm(request.POST, instance=panel)
-        if form.is_valid():
-            form.save()
-            return redirect('stock')  # Ajusta al nombre de la vista que renderiza stock.html
-    else:
-        form = PanelSIPForm(instance=panel)
+        # Guardar datos del panel
+        panel.nombre = request.POST.get('nombre')
+        panel.precio = request.POST.get('precio')
+        panel.descripcion = request.POST.get('descripcion')
+        panel.tipo_obs = request.POST.get('tipo_obs')
+        panel.madera_union = request.POST.get('madera_union')
+        panel.espesor = request.POST.get('espesor')
+        panel.largo = request.POST.get('largo')
+        panel.ancho = request.POST.get('ancho')
+        panel.save()
+        panel.categorias.set(request.POST.getlist('categorias'))
 
-    return render(request, 'editar_panel.html', {'form': form, 'panel': panel})
+        return redirect('stock')
+
+    return render(request, 'stock.html', {
+        'panel_form': None,  # No necesitamos el panel_form aquí
+        'paneles': PanelSIP.objects.all(),
+        'categorias': Categoria.objects.all(),
+    })
 
 def editar_kit(request, pk):
     kit = get_object_or_404(KitConstruccion, pk=pk)

@@ -1,34 +1,25 @@
 <div class="container mt-4">
-  <!-- Modal PanelSIP -->
-  <div class="modal " id="modalPanel" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-lg">
-      <div class="modal-content">
-        <form method="POST" action="{% url 'crear_panel' %}" enctype="multipart/form-data" >
-          {% csrf_token %}
-          <div class="modal-header">
-            <h5 class="modal-title">Nuevo Panel SIP</h5>
-            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-          </div>
-          <div class="modal-body">
-            {{ panel_form.as_p }}
-            <h6>Subir imágenes (máx 5)</h6>
-            <!-- 👇 TIP de depuración -->
-            <p>Formset total forms: {{ ImagenFormSet.total_form_count }}</p>
-            {{ ImagenFormSet.management_form }}
-            {% for form in ImagenFormSet %}
-              <div class="mb-2">
-                {{ form.as_p }}  <!-- esto genera el label + input de tipo file -->
-              </div>
-            {% endfor %}
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
-            <button type="submit" class="btn btn-primary">Guardar Panel SIP</button>
-          </div>
-        </form>
-      </div>
+<!-- Modal Panel SIP -->
+<div class="modal fade" id="modalPanel" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <form method="POST" action="{% url 'crear_panel' %}">
+        {% csrf_token %}
+        <div class="modal-header">
+          <h5 class="modal-title">Nuevo Panel SIP</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+          {{ panel_form.as_p }}
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+          <button type="submit" class="btn btn-primary">Guardar Panel SIP</button>
+        </div>
+      </form>
     </div>
   </div>
+</div>
 
   <!-- Modal KitConstruccion -->
   <div class="modal " id="modalKit" tabindex="-1" aria-hidden="true">
