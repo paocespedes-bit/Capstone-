@@ -1,4 +1,5 @@
 from email.headerregistry import ContentTypeHeader
+from django.urls import reverse
 from django.contrib.contenttypes.models import ContentType
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
@@ -30,12 +31,47 @@ def eliminar_imagen(request, imagen_id):
     if request.method == 'POST':
         imagen.delete()
         return redirect('stock')
+    
+def subir_imagenes_kit(request, kit_id):
+    kit = get_object_or_404(KitConstruccion, id=kit_id)
 
+    if request.method == "POST":
+        for imagen in request.FILES.getlist('imagenes'):
+            imagenProducto.objects.create(
+                imagen=imagen,
+                content_type=ContentType.objects.get_for_model(kit),
+                object_id=kit.id
+            )
+        return redirect('/stock/?tab=kits')  # o a la página que quieras
+
+    return render(request, 'tabla_kits.html', {"kit": kit})
+
+def eliminar_imagen_kit(request, imagen_id):
+    imagen = get_object_or_404(imagenProducto, id=imagen_id)
+    kit = imagen.producto  # Instancia real: PanelSIP o KitConstruccion
+
+    if request.method == 'POST':
+        imagen.delete()
+        return redirect('/stock/?tab=kits')
 
 def stock(request):
     paneles = PanelSIP.objects.all()
     kits = KitConstruccion.objects.all()
     categorias = Categoria.objects.all()
+    ordenar = request.GET.get("ordenar")
+    direccion = request.GET.get("direccion")
+
+    if ordenar:
+        if direccion == "desc":
+            paneles = paneles.order_by(f"-{ordenar}")
+        else:
+            paneles = paneles.order_by(ordenar)
+
+    if ordenar:
+        if direccion == "desc":
+            kits = kits.order_by(f"-{ordenar}")
+        else:
+            kits = kits.order_by(ordenar)
 
     context = {
         'paneles': paneles,
@@ -54,7 +90,7 @@ def crear_categoria(request):
         if form.is_valid():
             form.save()
             messages.success(request, 'Categoría creada correctamente.')
-            return redirect('stock')
+            return redirect('/stock/?tab=cat')
         else:
             messages.error(request, 'Por favor corrige los errores del formulario.')
     else:
@@ -85,7 +121,7 @@ def crear_kit(request):
             kit_form.save()
 
             messages.success(request, 'Kit de construcción creado correctamente.')
-            return redirect('stock')
+            return redirect('/stock/?tab=kits')
     else:
         kit_form = KitConstruccionForm()
 
@@ -102,8 +138,8 @@ def eliminar_categoria(request, pk):
         nombre = categoria.nombre
         categoria.delete()
         messages.success(request, f'Categoría "{nombre}" eliminada correctamente.')
-        return redirect('stock')
-    return redirect('stock')
+        return redirect('/stock/?tab=cat')
+    return redirect('/stock/?tab=cat')
 
 # Eliminar panel
 def eliminar_panel(request, pk):
@@ -120,8 +156,8 @@ def eliminar_kit(request, pk):
     if request.method == "POST":
         kit.delete()
         messages.success(request, 'Kit de construcción eliminado correctamente.')
-        return redirect('stock')
-    return redirect('stock')
+        return redirect('/stock/?tab=kits')
+    return redirect('/stock/?tab=kits')
 
 def editar_categoria(request, pk):
     categoria = get_object_or_404(Categoria, pk=pk)
@@ -129,13 +165,13 @@ def editar_categoria(request, pk):
         form = CategoriaForm(request.POST, instance=categoria)
         if form.is_valid():
             form.save()
-            return redirect('stock')  # usa la vista que carga stock.html
+            return redirect('/stock/?tab=cat')  # usa la vista que carga stock.html
     else:
         form = CategoriaForm(instance=categoria)
     return render(request, 'editar_categoria.html', {'form': form, 'categoria': categoria})
 
-def editar_panel(request, panel_id):
-    panel = get_object_or_404(PanelSIP, id=panel_id)
+def editar_panel(request, pk):
+    panel = get_object_or_404(PanelSIP, pk=pk)
 
     if request.method == 'POST':
         # Guardar datos del panel
@@ -164,7 +200,12 @@ def editar_kit(request, pk):
         form = KitConstruccionForm(request.POST, instance=kit)
         if form.is_valid():
             form.save()
-            return redirect("stock")  # Redirige al inventario
+            # Redirige al inventario con query param para la pestaña de kits
+            return redirect(f"{reverse('stock')}?tab=kits")
     else:
         form = KitConstruccionForm(instance=kit)
     return render(request, "editar_kit.html", {"form": form})
+
+
+
+

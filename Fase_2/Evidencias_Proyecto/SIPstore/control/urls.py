@@ -15,4 +15,7 @@ urlpatterns = [
     path('editar-kit/<int:pk>/', views.editar_kit, name='editar_kit'),
     path('panel/<int:panel_id>/subir-imagenes/', views.subir_imagenes_panel, name='subir_imagenes_panel'),
     path('eliminar-imagen/<int:imagen_id>/', views.eliminar_imagen, name='eliminar_imagen'),
+    path('kit/<int:kit_id>/subir-imagenes/', views.subir_imagenes_kit, name='subir_imagenes_kit'),
+    path("kit/eliminar-imagen/<int:imagen_id>/", views.eliminar_imagen_kit, name="eliminar_imagen_kit"),
+
 ]

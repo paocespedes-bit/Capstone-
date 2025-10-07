@@ -33,15 +33,6 @@
           </div>
           <div class="modal-body">
             {{ KitConstruccionForm.as_p }}
-
-            <h6>Subir imágenes (máx 5)</h6>
-            {{ ImagenFormSet.management_form }}
-            {% for form in ImagenFormSet %}
-            <div class="mb-2">
-              {{ form.imagen.label_tag }}<br>
-              {{ form.imagen }}
-            </div>
-            {% endfor %}
           </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
