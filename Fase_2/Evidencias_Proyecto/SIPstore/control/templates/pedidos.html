@@ -10,12 +10,12 @@
 
   <h1>Lista de pedidos</h1>
 
-  <!-- Barra de búsqueda -->
+  <!-- !buscar  -->
   <div class="search-bar">
     <input type="text" id="search" placeholder="🔍 Buscar...">
   </div>
 
-  <!-- Tabla de pedidos -->
+  <!-- !tabla de pedidos  -->
   <table class="tabla-pedidos">
     <thead>
       <tr>
@@ -45,7 +45,7 @@
     </tbody>
   </table>
 
-  <!-- Paginación -->
+  <!-- !paginacion  -->
   <div class="pagination">
     {% if pedidos.has_previous %}
       <a href="?page={{ pedidos.previous_page_number }}">&laquo; Anterior</a>

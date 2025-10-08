@@ -1,0 +1,102 @@
+{% load static %}
+{% load humanize %}
+
+{% block link %}
+<link rel="stylesheet" href="{% static 'control/style/tablas.css' %}">
+{% endblock %}
+
+<div class="container-fluid">
+  <h2>Tabla de Paneles</h2>
+  <div class="table-responsive mb-5">
+    <table class="table table-hover table-striped align-middle">
+      <thead class="table">
+        <tr>
+          <th>ID
+            {% include 'filtro_columna.html' with columna_nombre="id" %}
+          </th>
+          <th>Cantidad
+            {% include 'filtro_columna.html' with columna_nombre="cantidad" %}
+          </th>
+          <th>Nombre
+            {% include 'filtro_columna.html' with columna_nombre="nombre" %}
+          </th>
+          <th>Precio
+            {% include 'filtro_columna.html' with columna_nombre="precio" %}
+          </th>
+          <th>Oferta
+            {% include 'filtro_columna.html' with columna_nombre="oferta" %}
+          </th>
+          <th>Descripción</th>
+          <th>Tipo OBS
+            {% include 'filtro_columna.html' with columna_nombre="tipo_obs" %}
+          </th>
+          <th>Espesor
+            {% include 'filtro_columna.html' with columna_nombre="espesor" %}
+          </th>
+          <th>Largo
+            {% include 'filtro_columna.html' with columna_nombre="largo" %}
+          </th>
+          <th>Ancho
+            {% include 'filtro_columna.html' with columna_nombre="ancho" %}
+          </th>
+          <th>Categorías
+            {% include 'filtro_columna.html' with columna_nombre="categorias" %}
+          </th>
+          <th>Imágenes</th>
+          <th class="text-center">Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for panel in paneles %}
+        <tr>
+          <td>#{{ panel.id }}</td>
+          <td>SIN STOCK</td>
+          <td>{{ panel.nombre }}</td>
+          <td>${{ panel.precio_actual|floatformat:0|intcomma }}</td>
+          <td>
+            {% if panel.oferta %}
+              {{ panel.oferta }}%
+            {% else %}
+              N/A
+            {% endif %}
+          </td>
+          <td title="{{ panel.descripcion }}">{{ panel.descripcion|truncatechars:20 }}...</td>
+          <td>{{ panel.tipo_obs }}</td>
+          <td>{{ panel.espesor }}</td>
+          <td>{{ panel.largo }}</td>
+          <td>{{ panel.ancho }}</td>
+          <td>
+            {% for cat in panel.categorias.all %}
+              <span class="badge bg-secondary">{{ cat.nombre }}</span>
+            {% endfor %}
+          </td>
+          <td>
+            <button type="button" class="btn btn-primary" data-bs-toggle="modal"
+              data-bs-target="#galeriaPanel_{{ panel.id }}">
+              <i class="bi bi-eye"></i> Ver({{ panel.imagenes.count }})
+            </button>
+          </td>
+          <td class="text-center">
+              <button class="btn btn-sm btn-primary" 
+                data-bs-toggle="modal"
+                data-bs-target="#modalEditarPanel_{{ panel.id }}">
+                Editar
+              </button>
+            <button type="button" class="btn btn-danger btn-eliminar" data-bs-toggle="modal"
+              data-bs-target="#modalEliminar" data-url="{% url 'eliminar_panel' panel.id %}"
+              data-nombre="{{ panel.nombre }}" data-tipo="Panel SIP">
+              Eliminar
+            </button>
+          </td>
+          {% include 'imagenes.html' %}
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+
+{% block script %}
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"></script>
+<script src="{% static 'control/js/eliminar.js' %}"></script>
+{% endblock %}

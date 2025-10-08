@@ -1,14 +1,69 @@
-{% extends "base_control.html"%}
+{% extends "base_control.html"%} 
 {% load static %}
 
-{% block title %}
-Stock
-{% endblock %}
-<!-- !CSS  -->
-{% block link %} 
+{% block title %} Inventario {% endblock %}
 
-{% endblock %}
+{% block link %} 
+{# Si tienes estilos específicos para inventario, ponlos aquí #}
+{% endblock %} 
 
 {% block content %}
-<p>STOCK</p>
+<div class="container-fluid py-4 inventario-container">
+    <h2 class="text-center mb-4">Inventario</h2>
+    
+    {% include "alerta.html" %}
+    
+    <ul class="nav nav-tabs justify-content-center flex-wrap" id="inventarioTabs" role="tablist">
+        <li class="nav-item" role="presentation">
+            <button class="nav-link active" id="paneles-tab" data-bs-toggle="tab" data-bs-target="#paneles" type="button" role="tab" aria-selected="true">
+                Paneles SIP
+            </button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="kits-tab" data-bs-toggle="tab" data-bs-target="#kits" type="button" role="tab" aria-selected="false">
+                Kits de Construcción
+            </button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="cat-tab" data-bs-toggle="tab" data-bs-target="#cat" type="button" role="tab" aria-selected="false">
+                Categorías
+            </button>
+        </li>
+    </ul>
+
+    <div class="tab-content mt-3" id="inventarioTabsContent">
+        {# CLAVE: Aseguramos que la primera pestaña tenga 'show active' #}
+        <div class="tab-pane fade show active" id="paneles" role="tabpanel">
+            <div class="d-flex justify-content-end mb-2">
+                <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#modalPanel">
+                    + Nuevo Panel SIP
+                </button>
+            </div>
+            {% include "tabla_paneles.html" with paneles=paneles %}
+        </div>
+
+        {# Mantenemos 'fade' para el efecto de transición #}
+        <div class="tab-pane fade" id="kits" role="tabpanel">
+            <div class="d-flex justify-content-end mb-2">
+                <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#modalKit">
+                    + Nuevo Kit de Construcción
+                </button>
+            </div>
+            {% include "tabla_kits.html" with kits=kits %}
+        </div>
+
+        {# Mantenemos 'fade' para el efecto de transición #}
+        <div class="tab-pane fade" id="cat" role="tabpanel">
+            <div class="d-flex justify-content-end mb-2">
+                <button type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#modalCategoria">
+                    + Nueva Categoría
+                </button>
+            </div>
+            {% include "tabla_categoria.html" with categorias=categorias %}
+        </div>
+    </div>
+</div>
+
+{% include "action.html" %}
+{% include "formularios.html" %}
 {% endblock%}

@@ -1,0 +1,65 @@
+{% load static %}
+<!-- ! Paneles -->
+<div class="modal fade" id="galeriaPanel_{{ panel.id }}" tabindex="-1"
+    aria-labelledby="galeriaPanelLabel_{{ panel.id }}" aria-hidden="true">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <h5 class="modal-title" id="galeriaPanelLabel_{{ panel.id }}">Galería del Producto: {{ panel.nombre }}</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar galería"></button>
+            </div>
+
+            <div class="modal-body">
+                <div class="d-flex flex-wrap justify-content-center gap-3">
+
+                    {% for img in panel.imagenes.all %}
+                    <img **loading="lazy"** src="{{ img.imagen.url }}" alt="Imagen de {{ panel.nombre }}" class="img-thumbnail"
+                        style="max-width: 200px; height: auto;">
+                    {% empty %}
+                    <p class="text-center alert alert-info w-100">Este producto no tiene imágenes asociadas.</p>
+                    {% endfor %}
+
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+
+<!-- !KIT -->
+<div class="modal fade" id="galeriaKit_{{ kit.id }}" tabindex="-1"
+    aria-labelledby="galeriakitLabel_{{ kit.id }}" aria-hidden="true">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <h5 class="modal-title" id="galeriaKitLabel_{{ kit.id }}">Galería del Producto: {{ kit.nombre }}</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar galería"></button>
+            </div>
+
+            <div class="modal-body">
+                <div class="d-flex flex-wrap justify-content-center gap-3">
+
+                    {% for img in kit.imagenes.all %}
+                    <img **loading="lazy"** src="{{ img.imagen.url }}" alt="Imagen de {{ kit.nombre }}" class="img-thumbnail"
+                        style="max-width: 200px; height: auto;">
+                    {% empty %}
+                    <p class="text-center alert alert-info w-100">Este producto no tiene imágenes asociadas.</p>
+                    {% endfor %}
+
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+            </div>
+
+        </div>
+    </div>
+</div>

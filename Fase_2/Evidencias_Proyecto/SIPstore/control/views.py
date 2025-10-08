@@ -6,6 +6,7 @@ from django.shortcuts import render
 def control(request):
     return render(request, 'home_control.html')
 
+
 def stock(request):
     return render(request,'stock.html')
 

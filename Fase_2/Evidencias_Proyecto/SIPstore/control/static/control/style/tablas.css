@@ -1,0 +1,145 @@
+/* =======================
+   ESTILOS GENERALES
+======================= */
+.inventario-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 15px;
+  overflow-x: hidden;
+}
+
+h2 {
+  font-size: 2rem;
+  font-weight: 600;
+  color: #333;
+}
+
+/* =======================
+   BOTONES
+======================= */
+.btn-agregar {
+  font-size: 1rem;
+  padding: 0.6rem 1.2rem;
+  border-radius: 10px;
+  transition: all 0.3s ease;
+}
+
+.btn-agregar:hover {
+  transform: scale(1.05);
+}
+
+/* =======================
+   TABS
+======================= */
+.nav-tabs {
+  border-bottom: 2px solid #ccc;
+}
+
+.nav-tabs .nav-link {
+  font-weight: 500;
+  color: #333;
+  border-radius: 10px 10px 0 0;
+  margin-bottom: -2px;
+}
+
+.nav-tabs .nav-link.active {
+  background-color: #198754;
+  color: white;
+}
+
+/* =======================
+   TABLAS
+======================= */
+.table-responsive {
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.table th,
+.table td {
+  white-space: nowrap;
+  text-align: center;
+  vertical-align: middle;
+}
+
+/* =======================
+   MEDIA QUERIES
+======================= */
+
+/* Tablet */
+@media (max-width: 992px) {
+  h2 {
+    font-size: 1.8rem;
+  }
+
+  .btn-agregar {
+    width: 100%;
+    text-align: center;
+  }
+
+  .d-flex.justify-content-end {
+    justify-content: center !important;
+  }
+}
+
+/* Celular grande */
+@media (max-width: 768px) {
+  h2 {
+    font-size: 1.6rem;
+  }
+
+  .nav-tabs {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .nav-tabs .nav-link {
+    text-align: center;
+    margin: 0.2rem 0;
+  }
+
+  table th,
+  table td {
+    font-size: 0.9rem;
+  }
+}
+
+/* Celular pequeño (modo tarjeta) */
+@media (max-width: 576px) {
+  table thead {
+    display: none; /* Oculta encabezado */
+  }
+
+  table tbody tr {
+    display: block;
+    background: #f8f9fa;
+    border-radius: 10px;
+    margin-bottom: 1rem;
+    padding: 0.75rem;
+    box-shadow: 0 0 8px rgba(0, 0, 0, 0.05);
+  }
+
+  table td {
+    display: flex;
+    justify-content: space-between;
+    padding: 0.4rem 0;
+    border: none;
+    font-size: 0.9rem;
+  }
+
+  table td::before {
+    content: attr(data-label);
+    font-weight: 600;
+    color: #495057;
+  }
+}
+
+.tabla-kits-container {
+  padding-bottom: 2rem;
+}
+
+.table td span.badge {
+  font-size: 0.75rem;
+  margin: 2px;
+}
