@@ -18,6 +18,7 @@ urlpatterns = [
     path('kit/<int:kit_id>/subir-imagenes/', views.subir_imagenes_kit, name='subir_imagenes_kit'),
     path("kit/eliminar-imagen/<int:imagen_id>/", views.eliminar_imagen_kit, name="eliminar_imagen_kit"),
     path('pedidos/',views.pedidos, name='pedidos'),
-    path('pedidos/detail/<int:pk>/', views.pedido_detail, name='pedido_detail')
+    path('pedidos/detail/<int:pk>/', views.pedido_detail, name='pedido_detail'),
+
 
 ]

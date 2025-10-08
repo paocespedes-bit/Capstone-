@@ -215,8 +215,13 @@ def pedidos(request):
     }
     return render(request,'pedidos.html',context)
 
-def pedido_detail(request,pk):
-    pedidos = get_object_or_404(Pedido, pk=pk)
-    return render(request, 'pedido_detail.html', {'pedidos': pedidos})
+def pedido_detail(request, pk):
+    pedido = get_object_or_404(Pedido, pk=pk)
+    detalles = pedido.detalles.all()  
+    return render(request, 'pedido_detail.html', {
+        'pedido': pedido,
+        'detalles': detalles
+    })
+
 
 
