@@ -207,5 +207,9 @@ def editar_kit(request, pk):
     return render(request, "editar_kit.html", {"form": form})
 
 
+def pedidos(request):
+    return render(request,'pedidos.html')
 
+def pedido_detail(request):
+    return render(request,'pedido_detail.html')
 

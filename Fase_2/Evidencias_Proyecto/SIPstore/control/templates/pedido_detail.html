@@ -1,0 +1,107 @@
+{% extends "base_control.html" %}
+{% load static %}
+
+{% block title %}
+Detalles de pedido
+{% endblock %}
+
+{% block link %}
+<link rel="stylesheet" href="{% static 'control/style/pedidos_detail.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="detalle-container">
+
+  <h1>Detalles de pedido con número de boleta #{{ pedido.id }}</h1>
+
+  <!-- !tabla de productos  -->
+  <table class="tabla-productos">
+    <thead>
+      <tr>
+        <th>Producto</th>
+        <th>Imagen</th>
+        <th>Cantidad</th>
+        <th>Valor unitario</th>
+        <th>Total</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for item in pedido.items %}
+      <tr>
+        <td>
+          <strong>{{ item.nombre }}</strong><br>
+          <small>Solicitado por: {{ item.solicitado_por }}</small><br>
+          <small>{{ item.descripcion }}</small>
+        </td>
+        <td>
+          {% if item.imagen %}
+            <img src="{{ item.imagen.url }}" alt="{{ item.nombre }}">
+          {% else %}
+            <span>Sin imagen</span>
+          {% endif %}
+        </td>
+        <td>{{ item.cantidad }}</td>
+        <td>${{ item.valor_unitario|floatformat:0 }}</td>
+        <td>${{ item.total|floatformat:0 }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+
+  <div class="total-box">
+    <h3>Total: <span>${{ pedido.total|floatformat:0 }}</span></h3>
+  </div>
+
+  <!-- !informacion del cliente   -->
+  <div class="detalle-form">
+    <h2>Detalles del pedido</h2>
+
+    <div class="form-row">
+      <label>Nombre completo:</label>
+      <input type="text" value="{{ pedido.nombre_cliente }}" readonly>
+    </div>
+
+    <div class="form-row">
+      <label>RUT:</label>
+      <input type="text" value="{{ pedido.rut }}" readonly>
+    </div>
+
+    <div class="form-row">
+      <label>Número celular:</label>
+      <input type="text" value="{{ pedido.celular }}" readonly>
+    </div>
+
+    <div class="form-row">
+      <label>Correo electrónico:</label>
+      <input type="email" value="{{ pedido.email }}" readonly>
+    </div>
+
+    <div class="form-row">
+      <label>Dirección:</label>
+      <input type="text" value="{{ pedido.direccion }}" readonly>
+    </div>
+
+    <div class="form-row">
+      <label>Centro de retiro:</label>
+      <select disabled>
+        <option selected>{{ pedido.centro_retiro }}</option>
+      </select>
+    </div>
+
+    <div class="form-row">
+      <label>Fecha de retiro:</label>
+      <input type="date" value="{{ pedido.fecha_retiro|date:'Y-m-d' }}" readonly>
+    </div>
+
+    <div class="form-row">
+      <label>Modo de pago:</label>
+      <div class="radio-group">
+        <label><input type="radio" {% if pedido.metodo_pago == 'Tienda' %}checked{% endif %} disabled> Pago en tienda</label>
+        <label><input type="radio" {% if pedido.metodo_pago == 'Webpay' %}checked{% endif %} disabled> Web pay</label>
+      </div>
+    </div>
+
+  </div>
+
+</div>
+{% endblock %}

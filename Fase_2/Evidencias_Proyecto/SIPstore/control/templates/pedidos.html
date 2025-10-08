@@ -1,0 +1,68 @@
+{% extends "base_control.html" %}
+{% load static %}
+
+{% block link %}
+<link rel="stylesheet" href="{% static 'control/style/pedidos.css' %}">
+{% endblock %}
+{% block title %}Lista de pedidos{% endblock %}
+{% block content %}
+<div class="pedidos-container">
+
+  <h1>Lista de pedidos</h1>
+
+  <!-- !buscar  -->
+  <div class="search-bar">
+    <input type="text" id="search" placeholder="🔍 Buscar...">
+  </div>
+
+  <!-- !tabla de pedidos  -->
+  <table class="tabla-pedidos">
+    <thead>
+      <tr>
+        <th>ID boleta</th>
+        <th>Fecha de entrega</th>
+        <th>Estado</th>
+        <th>Centro de retiro</th>
+        <th>Ver más</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for pedido in pedidos %}
+      <tr>
+        <td>#{{ pedido.id }}</td>
+        <td>{{ pedido.fecha_entrega|date:"d/m/Y" }}</td>
+        <td>{{ pedido.estado }}</td>
+        <td>{{ pedido.centro_retiro }}</td>
+        <td>
+          <a href="{% url 'pedido_detail' pedido.id %}" class="btn-ver">Ver más</a>
+        </td>
+      </tr>
+      {% empty %}
+      <tr>
+        <td colspan="5">No hay pedidos disponibles.</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+
+  <!-- !paginacion  -->
+  <div class="pagination">
+    {% if pedidos.has_previous %}
+      <a href="?page={{ pedidos.previous_page_number }}">&laquo; Anterior</a>
+    {% endif %}
+
+    {% for num in pedidos.paginator.page_range %}
+      {% if pedidos.number == num %}
+        <span class="current">{{ num }}</span>
+      {% elif num > pedidos.number|add:'-3' and num < pedidos.number|add:'3' %}
+        <a href="?page={{ num }}">{{ num }}</a>
+      {% endif %}
+    {% endfor %}
+
+    {% if pedidos.has_next %}
+      <a href="?page={{ pedidos.next_page_number }}">Siguiente &raquo;</a>
+    {% endif %}
+  </div>
+
+</div>
+{% endblock %}
