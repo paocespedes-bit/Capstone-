@@ -7,27 +7,6 @@
 {# Si tienes estilos específicos para inventario, ponlos aquí #}
 {% endblock %} 
 
-{% block link %} {% endblock %} {% block content %}
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-    const urlParams = new URLSearchParams(window.location.search);
-    const activeTab = urlParams.get('tab');
-    
-    if (activeTab === 'kits') {
-        const kitsTab = document.getElementById('kits-tab');
-        const kitsPane = new bootstrap.Tab(kitsTab);
-        kitsPane.show(); 
-    }
-
-        if (activeTab === 'cat') {
-        const catTab = document.getElementById('cat-tab');
-        const catPane = new bootstrap.Tab(catTab);
-        catPane.show();
-    }
-
-});
-</script>
-
 {% block content %}
 <div class="container-fluid py-4 inventario-container">
     <h2 class="text-center mb-4">Inventario</h2>
@@ -49,32 +28,6 @@ document.addEventListener('DOMContentLoaded', function() {
             <button class="nav-link" id="cat-tab" data-bs-toggle="tab" data-bs-target="#cat" type="button" role="tab" aria-selected="false">
                 Categorías
             </button>
-        </li>
-    </ul>
-
-
-<div class="container-fluid py-4">
-    <!-- Título -->
-    <h2 class="text-center mb-4">Inventario</h2>
-    <!-- ALERTAS -->
-    {% include "alerta.html" %}
-    <!-- Tabs -->
-    <ul class="nav nav-tabs" id="inventarioTabs" role="tablist">
-        <li class="nav-item" role="presentation">
-        <button class="nav-link active" id="paneles-tab" data-bs-toggle="tab" data-bs-target="#paneles" type="button"
-            role="tab">
-            Paneles SIP
-        </button>
-        </li>
-        <li class="nav-item" role="presentation">
-        <button class="nav-link" id="kits-tab" data-bs-toggle="tab" data-bs-target="#kits" type="button" role="tab">
-            Kits de Construcción
-        </button>
-        </li>
-        <li class="nav-item" role="presentation">
-        <button class="nav-link" id="cat-tab" data-bs-toggle="tab" data-bs-target="#cat" type="button" role="tab">
-            Categorias
-        </button>
         </li>
     </ul>
 

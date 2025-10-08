@@ -121,18 +121,30 @@ editButtons.forEach(button => {
                             Eliminar
                         </button>
                     </td>
-                    <td class="text-center">
-                        <h5>Subir imagen para {{ kit.nombre }}</h5>
-                        <button type="button" class="btn btn-sm btn-info" data-bs-toggle="modal" data-bs-target="#modalSubirImagenesKit_{{ kit.id }}">
-                        Subir imágenes
-                        </button>
-                    </td>
-                    <td class="text-center">
-                        <h5>Eliminar una imagen para {{ kit.nombre }}</h5>
-                        <button type="button" class="btn btn-sm btn-info" data-bs-toggle="modal" data-bs-target="#modalEliminarImagenesKit_{{ kit.id }}">
-                        Eliminar imágenes
-                        </button>
-                    </td>
+                    <td class="text-center align-middle">
+    <div class="d-flex flex-column align-items-center">
+        <h6 class="mb-2">Subir imagen para <strong>{{ kit.nombre }}</strong></h6>
+        <button type="button" 
+                class="btn btn-sm btn-info"
+                data-bs-toggle="modal" 
+                data-bs-target="#modalSubirImagenesKit_{{ kit.id }}">
+            Subir imágenes
+        </button>
+    </div>
+</td>
+
+<td class="text-center align-middle">
+    <div class="d-flex flex-column align-items-center">
+        <h6 class="mb-2">Eliminar imagen de <strong>{{ kit.nombre }}</strong></h6>
+        <button type="button" 
+                class="btn btn-sm btn-danger"
+                data-bs-toggle="modal" 
+                data-bs-target="#modalEliminarImagenesKit_{{ kit.id }}">
+            Eliminar imágenes
+        </button>
+    </div>
+</td>
+
                     {% include 'imagenes.html' %}
                 </tr>
                 {% endfor %}

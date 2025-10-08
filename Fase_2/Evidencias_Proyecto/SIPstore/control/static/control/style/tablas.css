@@ -1,22 +1,16 @@
-/* =======================
-   ESTILOS GENERALES
-======================= */
 .inventario-container {
   max-width: 1200px;
   margin: 0 auto;
   padding: 0 15px;
-  overflow-x: hidden;
 }
 
 h2 {
   font-size: 2rem;
   font-weight: 600;
   color: #333;
+  text-align: center;
 }
 
-/* =======================
-   BOTONES
-======================= */
 .btn-agregar {
   font-size: 1rem;
   padding: 0.6rem 1.2rem;
@@ -28,18 +22,17 @@ h2 {
   transform: scale(1.05);
 }
 
-/* =======================
-   TABS
-======================= */
 .nav-tabs {
   border-bottom: 2px solid #ccc;
+  flex-wrap: wrap;
+  justify-content: center;
 }
 
 .nav-tabs .nav-link {
   font-weight: 500;
   color: #333;
   border-radius: 10px 10px 0 0;
-  margin-bottom: -2px;
+  margin: 0.2rem;
 }
 
 .nav-tabs .nav-link.active {
@@ -47,13 +40,18 @@ h2 {
   color: white;
 }
 
-/* =======================
-   TABLAS
-======================= */
 .table-responsive {
   width: 100%;
   overflow-x: auto;
   -webkit-overflow-scrolling: touch;
+}
+
+.table {
+  width: 100%;
+  margin-bottom: 1rem;
+  background-color: #fff;
+  border-radius: 8px;
+  overflow: hidden;
 }
 
 .table th,
@@ -61,13 +59,14 @@ h2 {
   white-space: nowrap;
   text-align: center;
   vertical-align: middle;
+  padding: 0.75rem;
 }
 
-/* =======================
-   MEDIA QUERIES
-======================= */
+.table td {
+  word-wrap: break-word;
+  white-space: normal;
+}
 
-/* Tablet */
 @media (max-width: 992px) {
   h2 {
     font-size: 1.8rem;
@@ -81,9 +80,13 @@ h2 {
   .d-flex.justify-content-end {
     justify-content: center !important;
   }
+
+  .table th,
+  .table td {
+    font-size: 0.9rem;
+  }
 }
 
-/* Celular grande */
 @media (max-width: 768px) {
   h2 {
     font-size: 1.6rem;
@@ -99,16 +102,20 @@ h2 {
     margin: 0.2rem 0;
   }
 
-  table th,
-  table td {
-    font-size: 0.9rem;
+  .table th,
+  .table td {
+    font-size: 0.85rem;
+    padding: 6px;
   }
 }
 
-/* Celular pequeño (modo tarjeta) */
 @media (max-width: 576px) {
+  .table-responsive {
+    overflow-x: hidden;
+  }
+
   table thead {
-    display: none; /* Oculta encabezado */
+    display: none;
   }
 
   table tbody tr {
@@ -132,14 +139,38 @@ h2 {
     content: attr(data-label);
     font-weight: 600;
     color: #495057;
+    text-transform: capitalize;
   }
-}
-
-.tabla-kits-container {
-  padding-bottom: 2rem;
 }
 
 .table td span.badge {
   font-size: 0.75rem;
   margin: 2px;
+  display: inline-block;
+  word-break: break-word;
+}
+
+.btn {
+  white-space: nowrap;
+}
+
+.btn-subir,
+.btn-eliminar {
+  font-size: 0.8rem !important;
+  padding: 0.3rem 0.6rem !important;
+  border-radius: 8px;
+  font-weight: 500;
+  text-align: center;
+  display: inline-block;
+  min-width: 120px;
+}
+
+
+.texto-subir,
+.texto-eliminar {
+  font-size: 0.85rem;
+  color: #333;
+  font-weight: 500;
+  margin-bottom: 0.2rem;
+  text-align: center;
 }
