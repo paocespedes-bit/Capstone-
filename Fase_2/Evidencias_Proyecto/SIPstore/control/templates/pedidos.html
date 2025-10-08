@@ -32,7 +32,7 @@
         <td>#{{ pedido.id }}</td>
         <td>{{ pedido.fecha_entrega|date:"d/m/Y" }}</td>
         <td>{{ pedido.estado }}</td>
-        <td>{{ pedido.centro_retiro }}</td>
+        <td>{{ pedido.local }}</td>
         <td>
           <a href="{% url 'pedido_detail' pedido.id %}" class="btn-ver">Ver más</a>
         </td>

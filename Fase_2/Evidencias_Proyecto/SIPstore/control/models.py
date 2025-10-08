@@ -33,7 +33,7 @@ class Pedido(models.Model):
     monto_total = models.DecimalField(max_digits=10,decimal_places=2, default=0)
     
     def actualizar_monto_total(self):
-        total = sum(detalle.subtotal for detalle in self.detalls.all())
+        total = sum(detalle.subtotal for detalle in self.detalles.all())
         self.monto_total = total
         self.save()
     
