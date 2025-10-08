@@ -47,22 +47,21 @@
             <img class="logo-placeholder" src="{% static 'img/logoHorizontal.png' %}" alt="logo">
           </div>
 
-            <ul class="nav flex-column mb-auto p-3 custom-sidebar-nav">
-              <li>
-                <a href="{% url 'control' %}" class="btn custom-btn"
-                  >Panel Informativo</a
-                >
-              </li>
-              <li>
-                <a href="{% url 'stock' %}" class="btn custom-btn">Stock</a>
-              </li>
-              <li>
-                <a href="#" class="btn custom-btn">Lista de pedidos</a>
-              </li>
-              <li>
-                <a href="#" class="btn custom-btn">Lista de comentarios</a>
-              </li>
-            </ul>
+          <ul class="nav flex-column mb-auto p-3 custom-sidebar-nav">
+            <li>
+              <a href="{% url 'control' %}" class="btn custom-btn"><i class="bi bi-speedometer2 me-2"></i>Panel
+                Informativo</a>
+            </li>
+            <li>
+              <a href="{% url 'stock' %}" class="btn custom-btn"><i class="bi bi-box-seam me-2"></i>Inventario</a>
+            </li>
+            <li>
+              <a href="#" class="btn custom-btn"><i class="bi bi-receipt me-2"></i>Lista de pedidos</a>
+            </li>
+            <li>
+              <a href="#" class="btn custom-btn"><i class="bi bi-chat-dots me-2"></i>Lista de comentarios</a>
+            </li>
+          </ul>
 
           <ul class="nav flex-column mt-auto p-3 custom-sidebar-bottom">
             <hr class="w-100" />

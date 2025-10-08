@@ -23,6 +23,122 @@
   </div>
 </div>
 
+{% for panel in paneles %}
+<div class="modal fade" id="modalSubirImagenes_{{ panel.id }}" tabindex="-1" aria-labelledby="modalSubirImagenesLabel_{{ panel.id }}" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <form method="post" enctype="multipart/form-data" action="{% url 'subir_imagenes_panel' panel.id %}">
+        {% csrf_token %}
+        <div class="modal-header">
+          <h5 class="modal-title" id="modalSubirImagenesLabel_{{ panel.id }}">
+            Subir imágenes para Panel: {{ panel.nombre }}
+          </h5>
+        </div>
+        <div class="modal-body">
+          {{ form.as_p }}
+          <input type="file" name="imagenes" multiple class="form-control mb-3">
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+          <button type="submit" class="btn btn-primary">Subir imágenes</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+{% endfor %}
+
+{% for panel in paneles %}
+<div class="modal fade" id="modalEliminarImagenes_{{ panel.id }}" tabindex="-1" aria-labelledby="modalEliminarImagenes_{{ panel.id }}" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="modalEliminarImagenes_{{ panel.id }}">
+          Eliminar imágenes del Panel: {{ panel.nombre }}
+        </h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <div class="row">
+          {% for img in panel.imagenes.all %}
+            <div class="col-md-3 text-center mb-2">
+              <img src="{{ img.imagen.url }}" class="img-thumbnail" style="width: 100%; height: auto;">
+              <form method="post" action="{% url 'eliminar_imagen' img.id %}">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-sm btn-danger mt-1">Eliminar</button>
+              </form>
+            </div>
+          {% empty %}
+            <p>No hay imágenes para este panel.</p>
+          {% endfor %}
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+      </div>
+    </div>
+  </div>
+</div>
+{% endfor %}
+
+{% for kit in kits %}
+<div class="modal fade" id="modalSubirImagenesKit_{{ kit.id }}" tabindex="-1" aria-labelledby="modalSubirImagenesKitLabel_{{ kit.id }}" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <form method="post" enctype="multipart/form-data" action="{% url 'subir_imagenes_kit' kit.id %}">
+        {% csrf_token %}
+        <div class="modal-header">
+          <h5 class="modal-title" id="modalSubirImagenesKitLabel_{{ kit.id }}">
+            Subir imágenes para kit: {{ Kit.nombre }}
+          </h5>
+        </div>
+        <div class="modal-body">
+          {{ form.as_p }}
+          <input type="file" name="imagenes" multiple class="form-control mb-3">
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+          <button type="submit" class="btn btn-primary">Subir imágenes</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+{% endfor %}
+
+{% for kit in kits %}
+<div class="modal fade" id="modalEliminarImagenesKit_{{ kit.id }}" tabindex="-1" aria-labelledby="modalEliminarImagenesKit_{{ kit.id }}" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="modalEliminarImagenesKit_{{ kit.id }}">
+          Eliminar imágenes del Kit: {{ kit.nombre }}
+        </h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <div class="row">
+          {% for img in kit.imagenes.all %}
+            <div class="col-md-3 text-center mb-2">
+              <img src="{{ img.imagen.url }}" class="img-thumbnail" style="width: 100%; height: auto;">
+              <form method="post" action="{% url 'eliminar_imagen_kit' img.id %}">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-sm btn-danger mt-1">Eliminar</button>
+              </form>
+            </div>
+          {% empty %}
+            <p>No hay imágenes para este Kit.</p>
+          {% endfor %}
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+      </div>
+    </div>
+  </div>
+</div>
+{% endfor %}
+
 {% for cat in categorias %}
 <div class="modal fade" id="modalEditarPanel{{ cat.id }}" tabindex="-1"
   aria-labelledby="modalEditarPanelLabel{{ cat.id }}" aria-hidden="true">
@@ -51,14 +167,13 @@
 </div>
 {% endfor %}
 
-
 {% if paneles %}
   {% for panel in paneles %}
   <div class="modal fade" id="modalEditarPanel_{{ panel.id }}" tabindex="-1"
     aria-labelledby="modalEditarPanelLabel_{{ panel.id }}" aria-hidden="true">
     <div class="modal-dialog modal-lg">
       <div class="modal-content">
-        <form method="post" action="{% url 'editar_panel' panel.id %}">
+        <form method="post" action="{% url 'editar_panel' panel.id %}" enctype="multipart/form-data">
           {% csrf_token %}
           <div class="modal-header">
             <h5 class="modal-title" id="modalEditarPanelLabel_{{ panel.id }}">
@@ -67,7 +182,7 @@
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
           </div>
           <div class="modal-body">
-            <div class="row g-3">
+            <div class="row g-3 mt-3">
               <div class="col-md-6">
                 <label class="form-label">Nombre</label>
                 <input type="text" name="nombre" class="form-control" value="{{ panel.nombre }}" required>
@@ -100,17 +215,21 @@
                 <label class="form-label">Ancho (cm)</label>
                 <input type="number" step="0.01" name="ancho" class="form-control" value="{{ panel.ancho }}" required>
               </div>
-              <div class="col-md-12">
-                <label class="form-label">Categorías</label>
-                <select name="categorias" class="form-select" multiple>
-                  {% for cat in categorias %}
-                    <option value="{{ cat.id }}"
-                      {% if cat in panel.categorias.all %}selected{% endif %}>
-                      {{ cat.nombre }}
-                    </option>
-                  {% endfor %}
-                </select>
+            <div class="mb-3 mt-3">
+            <label class="form-label">Categorías</label>
+            {% for cat in categorias %}
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" 
+                      name="categorias" 
+                      value="{{ cat.id }}" 
+                      id="cat_{{ panel.id }}_{{ cat.id }}"
+                      {% if cat in panel.categorias.all %}checked{% endif %}>
+                <label class="form-check-label" for="cat_{{ panel.id }}_{{ cat.id }}">
+                  {{ cat.nombre }}
+                </label>
               </div>
+            {% endfor %}
+            </div>
             </div>
           </div>
           <div class="modal-footer">
@@ -125,62 +244,75 @@
 {% endif %}
 
 
-<!-- Modal Editar Kit -->
-<div class="modal fade" id="modalEditarKit" tabindex="-1" aria-labelledby="modalEditarKitLabel" aria-hidden="true">
-  <div class="modal-dialog modal-lg">
-    <div class="modal-content">
-      <form id="formEditarKit" method="post">
-        {% csrf_token %}
-        <div class="modal-header">
-          <h5 class="modal-title" id="modalEditarKitLabel">Editar Kit de Construcción</h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-        </div>
-        <div class="modal-body">
-
-          <!-- Campo oculto para ID del Kit -->
-          <input type="hidden" id="kitId" name="kitId">
-
-          <div class="mb-3">
-            <label class="form-label">Nombre</label>
-            {{ form_kit.nombre }}
+{% if kits %}
+  {% for kit in kits %}
+  <div class="modal fade" id="modalEditarKit_{{ kit.id }}" tabindex="-1"
+      aria-labelledby="modalEditarKitLabel_{{ kit.id }}" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <form method="post" action="{% url 'editar_kit' kit.id %}">
+          {% csrf_token %}
+          <div class="modal-header">
+            <h5 class="modal-title" id="modalEditarKitLabel_{{ kit.id }}">
+              Editar Kit #{{ kit.id }} - {{ kit.nombre }}
+            </h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
           </div>
-
-          <div class="mb-3">
-            <label class="form-label">Precio</label>
-            {{ form_kit.precio }}
-          </div>
-
-          <div class="mb-3">
-            <label class="form-label">Descripción</label>
-            {{ form_kit.descripcion }}
-          </div>
-
-          <div class="row">
-            <div class="col">
-              <label class="form-label">m²</label>
-              {{ form_kit.m2 }}
+          <div class="modal-body">
+            <div class="mb-3">
+              <label class="form-label">Nombre</label>
+              <input type="text" name="nombre" class="form-control"
+                    value="{{ kit.nombre }}" required>
             </div>
-            <div class="col">
-              <label class="form-label">Dormitorios</label>
-              {{ form_kit.dormitorios }}
+            <div class="mb-3">
+              <label class="form-label">Precio</label>
+              <input type="number" step="0.01" name="precio" class="form-control"
+                    value="{{ kit.precio }}" required>
             </div>
-            <div class="col">
-              <label class="form-label">Baños</label>
-              {{ form_kit.banos }}
+            <div class="mb-3">
+              <label class="form-label">Descripción</label>
+              <textarea name="descripcion" class="form-control" rows="2">{{ kit.descripcion }}</textarea>
             </div>
-          </div>
-
-          <div class="mb-3">
+            <div class="row">
+              <div class="col">
+                <label class="form-label">m²</label>
+                <input type="number" name="m2" class="form-control"
+                      value="{{ kit.m2 }}" required>
+              </div>
+              <div class="col">
+                <label class="form-label">Dormitorios</label>
+                <input type="number" name="dormitorios" class="form-control"
+                      value="{{ kit.dormitorios }}" required>
+              </div>
+              <div class="col">
+                <label class="form-label">Baños</label>
+                <input type="number" name="banos" class="form-control"
+                      value="{{ kit.banos }}" required>
+              </div>
+            </div>
+            <div class="mb-3 mt-3">
             <label class="form-label">Categorías</label>
-            {{ form_kit.categorias }}
+            {% for cat in categorias %}
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" 
+                      name="categorias" 
+                      value="{{ cat.id }}" 
+                      id="cat_{{ kit.id }}_{{ cat.id }}"
+                      {% if cat in kit.categorias.all %}checked{% endif %}>
+                <label class="form-check-label" for="cat_{{ kit.id }}_{{ cat.id }}">
+                  {{ cat.nombre }}
+                </label>
+              </div>
+            {% endfor %}
+            </div>
           </div>
-
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-          <button type="submit" class="btn btn-primary">Guardar cambios</button>
-        </div>
-      </form>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+            <button type="submit" class="btn btn-primary">Guardar cambios</button>
+          </div>
+        </form>
+      </div>
     </div>
   </div>
-</div>
+  {% endfor %}
+{% endif %}

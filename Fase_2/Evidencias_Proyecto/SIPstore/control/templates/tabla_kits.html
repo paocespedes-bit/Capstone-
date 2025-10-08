@@ -4,6 +4,35 @@
 {% block link %}
 <link rel="stylesheet" href="{% static 'control/style/tablas.css' %}">
 {% endblock %}
+<script>
+const editButtons = document.querySelectorAll('.btn-editar-kit');
+
+editButtons.forEach(button => {
+    button.addEventListener('click', function() {
+        const kitId = this.dataset.id;
+        const modal = document.getElementById(`modalEditarKit_${kitId}`);
+        const form = modal.querySelector('#formEditarKit');
+
+        // Actualizar la acción del formulario
+        form.action = `/editar-kit/${kitId}/`;
+
+        // Rellenar los inputs
+        form.querySelector('[name="nombre"]').value = this.dataset.nombre;
+        form.querySelector('[name="precio"]').value = this.dataset.precio;
+        form.querySelector('[name="descripcion"]').value = this.dataset.descripcion;
+        form.querySelector('[name="m2"]').value = this.dataset.m2;
+        form.querySelector('[name="dormitorios"]').value = this.dataset.dormitorios;
+        form.querySelector('[name="banos"]').value = this.dataset.banos;
+
+        // Para categorías múltiples
+        const categorias = this.dataset.categorias.split(',');
+        const select = form.querySelector('[name="categorias"]');
+        Array.from(select.options).forEach(option => {
+            option.selected = categorias.includes(option.value);
+        });
+    });
+});
+</script>
 
 <div class="container-fluid">
     <h2>Tabla de Kits</h2>
@@ -75,7 +104,7 @@
                     <td class="text-center">
                         <button class="btn btn-sm btn-primary btn-editar-kit"
                                 data-bs-toggle="modal"
-                                data-bs-target="#modalEditarKit"
+                                data-bs-target="#modalEditarKit_{{ kit.id }}"
                                 data-id="{{ kit.id }}"
                                 data-nombre="{{ kit.nombre }}"
                                 data-precio="{{ kit.precio }}"
@@ -90,6 +119,18 @@
                             data-bs-target="#modalEliminar" data-url="{% url 'eliminar_kit' kit.id %}"
                             data-nombre="{{ kit.nombre }}" data-tipo="Kit de construcción">
                             Eliminar
+                        </button>
+                    </td>
+                    <td class="text-center">
+                        <h5>Subir imagen para {{ kit.nombre }}</h5>
+                        <button type="button" class="btn btn-sm btn-info" data-bs-toggle="modal" data-bs-target="#modalSubirImagenesKit_{{ kit.id }}">
+                        Subir imágenes
+                        </button>
+                    </td>
+                    <td class="text-center">
+                        <h5>Eliminar una imagen para {{ kit.nombre }}</h5>
+                        <button type="button" class="btn btn-sm btn-info" data-bs-toggle="modal" data-bs-target="#modalEliminarImagenesKit_{{ kit.id }}">
+                        Eliminar imágenes
                         </button>
                     </td>
                     {% include 'imagenes.html' %}

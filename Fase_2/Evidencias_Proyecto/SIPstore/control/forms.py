@@ -1,6 +1,6 @@
 from django import forms
-from django.forms import modelformset_factory
 from store.models import Categoria, PanelSIP, KitConstruccion, imagenProducto
+
 
 # Formulario Categoría
 class CategoriaForm(forms.ModelForm):
@@ -41,4 +41,13 @@ class KitConstruccionForm(forms.ModelForm):
             'dormitorios': forms.NumberInput(attrs={'class': 'form-control'}),
             'banos': forms.NumberInput(attrs={'class': 'form-control'}),
             'categorias': forms.CheckboxSelectMultiple()
+        }
+
+# Formulario de Imagen (ModelForm normal)
+class ImagenProductoForm(forms.ModelForm):
+    class Meta:
+        model = imagenProducto
+        fields = ['imagen']
+        widgets = {
+            'imagen': forms.ClearableFileInput(attrs={'class': 'form-control'})
         }
