@@ -70,6 +70,8 @@ editButtons.forEach(button => {
                     </th>
                     <th>Imágenes</th>
                     <th class="text-center">Acciones</th>
+                    <th>+ Imagenes</th>
+                    <th>- Imagenes</th>
                 </tr>
             </thead>
             <tbody>
@@ -122,15 +124,13 @@ editButtons.forEach(button => {
                         </button>
                     </td>
                     <td class="text-center">
-                        <h5>Subir imagen para {{ kit.nombre }}</h5>
                         <button type="button" class="btn btn-sm btn-info" data-bs-toggle="modal" data-bs-target="#modalSubirImagenesKit_{{ kit.id }}">
-                        Subir imágenes
+                        + <i class="bi bi-image-fill"></i>
                         </button>
                     </td>
                     <td class="text-center">
-                        <h5>Eliminar una imagen para {{ kit.nombre }}</h5>
                         <button type="button" class="btn btn-sm btn-info" data-bs-toggle="modal" data-bs-target="#modalEliminarImagenesKit_{{ kit.id }}">
-                        Eliminar imágenes
+                        - <i class="bi bi-image-fill"></i>
                         </button>
                     </td>
                     {% include 'imagenes.html' %}
