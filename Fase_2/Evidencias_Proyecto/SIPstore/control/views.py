@@ -206,6 +206,22 @@ def editar_kit(request, pk):
         form = KitConstruccionForm(instance=kit)
     return render(request, "editar_kit.html", {"form": form})
 
+def pedidos(request):
+    # Trae todos los pedidos
+    todos_pedidos = Pedido.objects.all()
+    context = {
+        'pedidos': todos_pedidos
+    }
+    return render(request, 'pedidos.html', context)
+
+def pedido_detail(request, pedido_id):
+    # Trae un pedido específico por ID
+    pedido = get_object_or_404(Pedido, id=pedido_id)
+    context = {
+        'pedido': pedido
+    }
+    return render(request, 'pedido_detail.html', context)
+
 
 
 
