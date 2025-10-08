@@ -20,7 +20,7 @@ def subir_imagenes_panel(request, panel_id):
                 content_type=ContentType.objects.get_for_model(panel),
                 object_id=panel.id
             )
-        return redirect('stock')  # o a la página que quieras
+        return redirect('stock')  
 
     return render(request, 'stock.html', {'panel': panel})
 
@@ -42,7 +42,7 @@ def subir_imagenes_kit(request, kit_id):
                 content_type=ContentType.objects.get_for_model(kit),
                 object_id=kit.id
             )
-        return redirect('/stock/?tab=kits')  # o a la página que quieras
+        return redirect('/stock/?tab=kits') 
 
     return render(request, 'tabla_kits.html', {"kit": kit})
 
@@ -77,7 +77,7 @@ def stock(request):
         'paneles': paneles,
         'kits': kits,
         'categorias': categorias,
-        'panel_form': PanelSIPForm(),  # 🔹 aquí el nombre coincide con el template
+        'panel_form': PanelSIPForm(),  
         'CategoriaForm': CategoriaForm(),
         'KitConstruccionForm': KitConstruccionForm(),
     }
