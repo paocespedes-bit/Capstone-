@@ -210,6 +210,15 @@ def editar_kit(request, pk):
 
 def pedidos(request):
     pedidos = Pedido.objects.all()
+    ordenar = request.GET.get("ordenar")
+    direccion = request.GET.get("direccion")
+
+    if ordenar:
+        if direccion == "desc":
+            pedidos = pedidos.order_by(f"-{ordenar}")
+        else:
+            pedidos = pedidos.order_by(ordenar)
+
     context = {
         'pedidos' : pedidos   
     }
