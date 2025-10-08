@@ -1,16 +1,11 @@
 {% extends "base_control.html"%} 
-{% extends "base_control.html"%} 
 {% load static %}
-
-{% block title %} Inventario {% endblock %}
 
 {% block title %} Inventario {% endblock %}
 
 {% block link %} 
 {# Si tienes estilos específicos para inventario, ponlos aquí #}
 {% endblock %} 
-
-{% block link %} {% endblock %} {% block content %}
 <script>
 document.addEventListener('DOMContentLoaded', function() {
     const urlParams = new URLSearchParams(window.location.search);
@@ -55,31 +50,6 @@ document.addEventListener('DOMContentLoaded', function() {
         </li>
     </ul>
 
-
-<div class="container-fluid py-4">
-    <!-- Título -->
-    <h2 class="text-center mb-4">Inventario</h2>
-    <!-- ALERTAS -->
-    {% include "alerta.html" %}
-    <!-- Tabs -->
-    <ul class="nav nav-tabs" id="inventarioTabs" role="tablist">
-        <li class="nav-item" role="presentation">
-        <button class="nav-link active" id="paneles-tab" data-bs-toggle="tab" data-bs-target="#paneles" type="button"
-            role="tab">
-            Paneles SIP
-        </button>
-        </li>
-        <li class="nav-item" role="presentation">
-        <button class="nav-link" id="kits-tab" data-bs-toggle="tab" data-bs-target="#kits" type="button" role="tab">
-            Kits de Construcción
-        </button>
-        </li>
-        <li class="nav-item" role="presentation">
-        <button class="nav-link" id="cat-tab" data-bs-toggle="tab" data-bs-target="#cat" type="button" role="tab">
-            Categorias
-        </button>
-        </li>
-    </ul>
 
     <div class="tab-content mt-3" id="inventarioTabsContent">
         {# CLAVE: Aseguramos que la primera pestaña tenga 'show active' #}

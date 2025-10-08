@@ -42,6 +42,8 @@
           </th>
           <th>Imágenes</th>
           <th class="text-center">Acciones</th>
+          <th>+ Imagenes</th>
+          <th>- Imagenes</th>
         </tr>
       </thead>
       <tbody>
@@ -87,15 +89,13 @@
             </button>
           </td>
           <td class="text-center">
-            <h5>Subir imagen para {{ panel.nombre }}</h5>
             <button type="button" class="btn btn-sm btn-info" data-bs-toggle="modal" data-bs-target="#modalSubirImagenes_{{ panel.id }}">
-              Subir imágenes
+              + <i class="bi bi-image-fill"></i>
             </button>
           </td>
           <td class="text-center">
-            <h5>Eliminar una imagen para {{ panel.nombre }}</h5>
             <button type="button" class="btn btn-sm btn-info" data-bs-toggle="modal" data-bs-target="#modalEliminarImagenes_{{ panel.id }}">
-              Eliminar imágenes
+              - <i class="bi bi-image-fill"></i>
             </button>
           </td>
           {% include 'imagenes.html' %}
