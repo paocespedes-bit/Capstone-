@@ -42,6 +42,10 @@ class Pedido(models.Model):
     
 # ! Modelo detalle Pedido
 class DetallePedido(models.Model):
+    METODO =[
+        ('pago_tienda', 'Pago en Tienda'),
+        ('pago_web', 'Pago Web'),
+    ]
     pedido = models.ForeignKey(Pedido, on_delete=models.CASCADE, related_name='detalles')
     content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
     object_id = models.PositiveIntegerField()
@@ -49,6 +53,7 @@ class DetallePedido(models.Model):
     cantidad = models.PositiveIntegerField(default=1)
     precio_unitario = models.DecimalField(max_digits=10,decimal_places=2)
     subtotal = models.DecimalField(max_digits=10,decimal_places=2,editable=False)
+    metodo_pago = models.CharField(max_length=20,choices=METODO ,default='pago_tienda')
     def save(self,*args, **kwargs):
         self.subtotal = self.precio_unitario * self.cantidad
         super().save(*args,**kwargs)
