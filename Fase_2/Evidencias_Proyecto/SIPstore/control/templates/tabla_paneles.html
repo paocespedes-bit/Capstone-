@@ -5,8 +5,6 @@
 <link rel="stylesheet" href="{% static 'control/style/tablas.css' %}">
 {% endblock %}
 
-
-
 <div class="container-fluid">
   <h2>Tabla de Paneles</h2>
   <div class="table-responsive mb-5">
@@ -55,9 +53,9 @@
           <td>${{ panel.precio_actual|floatformat:0|intcomma }}</td>
           <td>
             {% if panel.oferta %}
-            {{ panel.oferta }}%
+              {{ panel.oferta }}%
             {% else %}
-            N/A
+              N/A
             {% endif %}
           </td>
           <td title="{{ panel.descripcion }}">{{ panel.descripcion|truncatechars:20 }}...</td>
@@ -67,7 +65,7 @@
           <td>{{ panel.ancho }}</td>
           <td>
             {% for cat in panel.categorias.all %}
-            <span class="badge bg-secondary">{{ cat.nombre }}</span>
+              <span class="badge bg-secondary">{{ cat.nombre }}</span>
             {% endfor %}
           </td>
           <td>
