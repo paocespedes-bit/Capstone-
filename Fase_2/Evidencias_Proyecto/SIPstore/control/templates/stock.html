@@ -6,6 +6,25 @@
 {% block link %} 
 {# Si tienes estilos específicos para inventario, ponlos aquí #}
 {% endblock %} 
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const activeTab = urlParams.get('tab');
+    
+    if (activeTab === 'kits') {
+        const kitsTab = document.getElementById('kits-tab');
+        const kitsPane = new bootstrap.Tab(kitsTab);
+        kitsPane.show(); 
+    }
+
+        if (activeTab === 'cat') {
+        const catTab = document.getElementById('cat-tab');
+        const catPane = new bootstrap.Tab(catTab);
+        catPane.show();
+    }
+
+});
+</script>
 
 {% block content %}
 <div class="container-fluid py-4 inventario-container">

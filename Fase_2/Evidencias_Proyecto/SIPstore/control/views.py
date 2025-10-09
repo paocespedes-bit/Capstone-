@@ -5,6 +5,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from .forms import CategoriaForm, PanelSIPForm, KitConstruccionForm, ImagenProductoForm
 from store.models import PanelSIP, KitConstruccion, Categoria, imagenProducto
+from .models import Pedido
 
 # Views principales
 def control(request):
@@ -207,5 +208,24 @@ def editar_kit(request, pk):
     return render(request, "editar_kit.html", {"form": form})
 
 
+def pedidos(request):
+    pedidos = Pedido.objects.all()
+    ordenar = request.GET.get("ordenar")
+    direccion = request.GET.get("direccion")
+
+    if ordenar:
+        if direccion == "desc":
+            pedidos = pedidos.order_by(f"-{ordenar}")
+        else:
+            pedidos = pedidos.order_by(ordenar)
+
+    context = {
+        'pedidos' : pedidos   
+    }
+    return render(request,'pedidos.html',context)
+
+def pedido_detail(request,pk):
+    pedidos = get_object_or_404(Pedido, pk=pk)
+    return render(request, 'pedido_detail.html', {'pedidos': pedidos})
 
 

@@ -6,7 +6,7 @@ class DetallePedidoInline(admin.TabularInline):
     model = DetallePedido
     extra = 1
     readonly_fields = ('subtotal',)
-    fields = ('content_type', 'object_id', 'producto', 'cantidad', 'precio_unitario', 'subtotal')
+    fields = ('content_type', 'object_id', 'cantidad', 'precio_unitario', 'subtotal', 'metodo_pago')
     show_change_link = True
 
 # Admin de Local
