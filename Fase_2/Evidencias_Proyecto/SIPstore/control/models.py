@@ -33,9 +33,9 @@ class Pedido(models.Model):
     ubicacion_cli = models.TextField(max_length=800)
     fecha_pedido = models.DateTimeField(default=timezone.now)
     fecha_retiro = models.DateTimeField(blank=True,null=True)
-    estado = models.CharField(max_length=20, choices=ESTADOS,default='pendiente')
+    estado = models.CharField(max_length=20, choices=ESTADOS,default='Pendiente')
     monto_total = models.DecimalField(max_digits=10,decimal_places=2, default=0)
-    metodo_pago = models.CharField(max_length=20,choices=METODO ,default='pago_tienda')
+    metodo_pago = models.CharField(max_length=20,choices=METODO ,default='Pago en Tienda')
     def actualizar_monto_total(self):
         total = sum(detalle.subtotal for detalle in self.detalles.all())
         self.monto_total = total

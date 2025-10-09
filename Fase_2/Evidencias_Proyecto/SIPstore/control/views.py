@@ -225,10 +225,10 @@ def pedidos(request):
     return render(request,'pedidos.html',context)
 
 def pedido_detail(request, pk):
-    pedido = get_object_or_404(Pedido, pk=pk)
-    detalles = pedido.detalles.all()  
+    pedidos = get_object_or_404(Pedido, pk=pk)
+    detalles = pedidos.detalles.all()  
     return render(request, 'pedido_detail.html', {
-        'pedido': pedido,
+        'pedidos': pedidos,
         'detalles': detalles
     })
 
