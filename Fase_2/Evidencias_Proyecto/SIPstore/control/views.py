@@ -227,10 +227,11 @@ def pedidos(request):
 def pedido_detail(request, pk):
     pedidos = get_object_or_404(Pedido, pk=pk)
     detalles = pedidos.detalles.all()  
-    return render(request, 'pedido_detail.html', {
-        'pedidos': pedidos,
+    context ={
+        'pedido': pedidos,
         'detalles': detalles
-    })
+    }
+    return render(request, 'pedido_detail.html', context)
 
 
 
