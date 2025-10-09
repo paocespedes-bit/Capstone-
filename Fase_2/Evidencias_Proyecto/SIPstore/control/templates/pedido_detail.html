@@ -12,9 +12,9 @@ Detalles de pedido
 {% block content %}
 <div class="detalle-container">
 
-  <h1>Detalles de pedido con número de boleta #{{ pedido.id }}</h1>
+  <h1>Detalles del pedido #{{ pedido.id }}</h1>
 
-  <!-- !tabla de productos  -->
+  <!-- Tabla de productos -->
   <table class="tabla-productos">
     <thead>
       <tr>
@@ -26,79 +26,82 @@ Detalles de pedido
       </tr>
     </thead>
     <tbody>
-      {% for item in pedido %}
+      {% for item in detalles %}
       <tr>
         <td>
-          <strong>{{ item.nombre }}</strong><br>
-          <small>Solicitado por: {{ item.solicitado_por }}</small><br>
-          <small>{{ item.descripcion }}</small>
+          <strong>{{ item.producto.nombre }}</strong><br>
+          <small>{{ item.producto.descripcion|default:"Sin descripción" }}</small>
         </td>
         <td>
-          {% if item.imagen %}
-            <img src="{{ item.imagen.url }}" alt="{{ item.nombre }}">
+          {% if item.producto.imagen %}
+            <img src="{{ item.producto.imagen.url }}" alt="{{ item.producto.nombre }}">
           {% else %}
             <span>Sin imagen</span>
           {% endif %}
         </td>
         <td>{{ item.cantidad }}</td>
-        <td>${{ item.valor_unitario|floatformat:0 }}</td>
-        <td>${{ item.total|floatformat:0 }}</td>
+        <td>${{ item.precio_unitario|floatformat:0 }}</td>
+        <td>${{ item.subtotal|floatformat:0 }}</td>
       </tr>
       {% endfor %}
     </tbody>
   </table>
 
   <div class="total-box">
-    <h3>Total: <span>${{ pedido.total|floatformat:0 }}</span></h3>
+    <h3>Total: <span>${{ pedido.monto_total|floatformat:0 }}</span></h3>
   </div>
 
-  <!-- !informacion del cliente   -->
+  <!-- Información del cliente -->
   <div class="detalle-form">
-    <h2>Detalles del pedido</h2>
+    <h2>Datos del cliente</h2>
 
     <div class="form-row">
       <label>Nombre completo:</label>
-      <input type="text" value="{{ pedido.nombre_cliente }}" readonly>
+      <input type="text" value="{{ pedido.comprador }}" readonly>
     </div>
 
     <div class="form-row">
       <label>RUT:</label>
-      <input type="text" value="{{ pedido.rut }}" readonly>
+      <input type="text" value="{{ pedido.rut_cli }}" readonly>
     </div>
 
     <div class="form-row">
-      <label>Número celular:</label>
-      <input type="text" value="{{ pedido.celular }}" readonly>
+      <label>Celular:</label>
+      <input type="text" value="{{ pedido.celular_cli }}" readonly>
     </div>
 
     <div class="form-row">
-      <label>Correo electrónico:</label>
-      <input type="email" value="{{ pedido.email }}" readonly>
+      <label>Correo:</label>
+      <input type="email" value="{{ pedido.correo_cli }}" readonly>
     </div>
 
     <div class="form-row">
       <label>Dirección:</label>
-      <input type="text" value="{{ pedido.direccion }}" readonly>
+      <input type="text" value="{{ pedido.ubicacion_cli }}" readonly>
     </div>
 
     <div class="form-row">
       <label>Centro de retiro:</label>
-      <select disabled>
-        <option selected>{{ pedido.centro_retiro }}</option>
-      </select>
+      <input type="text" value="{{ pedido.local.nombre }}" readonly>
     </div>
 
     <div class="form-row">
       <label>Fecha de retiro:</label>
+      {% if pedido.fecha_retiro %}
       <input type="date" value="{{ pedido.fecha_retiro|date:'Y-m-d' }}" readonly>
+      {% else %}
+      <input type="text" value="Aún no asignada" readonly>
+      {% endif %}
     </div>
 
     <div class="form-row">
-      <label>Modo de pago:</label>
-      <div class="radio-group">
-        <label><input type="radio" {% if pedido.metodo_pago == 'Tienda' %}checked{% endif %} disabled> Pago en tienda</label>
-        <label><input type="radio" {% if pedido.metodo_pago == 'Webpay' %}checked{% endif %} disabled> Web pay</label>
-      </div>
+      <label>Metodo de pago:</label>
+      <input type="text" value="{{ pedido.metodo_pago }}" readonly>
+    </div>
+
+    <div class="form-row">
+      <label>Estado del pedido:</label>
+      <input type="text" value="{{ pedido.estado }}" readonly>
     </div>
 
   </div>
