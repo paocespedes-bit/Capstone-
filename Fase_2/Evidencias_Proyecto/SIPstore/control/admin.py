@@ -6,7 +6,7 @@ class DetallePedidoInline(admin.TabularInline):
     model = DetallePedido
     extra = 1
     readonly_fields = ('subtotal',)
-    fields = ('content_type', 'object_id', 'cantidad', 'precio_unitario', 'subtotal')
+    fields = ('content_type', 'object_id', 'cantidad', 'precio_unitario', 'subtotal', )
     show_change_link = True
 
 # Admin de Local
@@ -18,7 +18,7 @@ class LocalAdmin(admin.ModelAdmin):
 # Admin de Pedido
 @admin.register(Pedido)
 class PedidoAdmin(admin.ModelAdmin):
-    list_display = ('id', 'comprador', 'local', 'estado', 'monto_total', 'fecha_pedido', 'fecha_retiro')
-    list_filter = ('estado', 'fecha_pedido', 'local')
+    list_display = ('id', 'comprador', 'local', 'estado', 'monto_total', 'fecha_pedido', 'fecha_retiro','metodo_pago' )
+    list_filter = ('estado', 'fecha_pedido', 'local', 'metodo_pago')
     search_fields = ('comprador', 'rut_cli', 'correo_cli')
     inlines = [DetallePedidoInline]
