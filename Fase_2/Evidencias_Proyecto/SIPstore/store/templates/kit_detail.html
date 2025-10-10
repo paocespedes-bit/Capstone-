@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 {% load static %}
+{% load myfilters %}
 
 {% block link %}
 <link rel="stylesheet" href="{% static 'store/style/detalles.css' %}">
@@ -25,7 +26,7 @@
   <!-- Información del producto -->
   <div class="product-info">
     <h1 class="product-title">{{ kit.nombre }}</h1>
-    <p class="product-price">Desde: <span>${{ kit.precio }}</span> IVA Incl.</p>
+    <p class="product-price">Desde: <span>${{ kit.precio|floatformat:0|punto_miles }}</span> IVA Incl.</p>
 
     <form action="" method="post">
       {% csrf_token %}

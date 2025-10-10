@@ -1,5 +1,5 @@
 {% load static %}
-{% load humanize %}
+{% load myfilters %}
 
 {% block link %}
 <link rel="stylesheet" href="{% static 'control/style/tablas.css' %}">
@@ -80,7 +80,7 @@
                     <td>#{{ kit.id }}</td>
                     <td>SIN STOCK</td>
                     <td>{{ kit.nombre }}</td>
-                    <td>${{ kit.precio_actual|floatformat:0|intcomma }}</td>
+                    <td>${{ kit.precio_actual|floatformat:0|punto_miles }}</td>
                     <td>
                         {% if kit.oferta %}
                         {{ kit.oferta }}%

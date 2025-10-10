@@ -1,5 +1,5 @@
 {% load static %}
-{% load humanize %}
+{% load myfilters %}
 <!-- !css -->
 {% block link %}
 <link rel="stylesheet" href="{% static 'store/style/tarjeta.css' %}" />
@@ -30,9 +30,9 @@
       </div>
       <!-- !precios -->
       <div class="prices">
-        <p class="price">${{panel.precio|floatformat:0|intcomma}}</p> 
+        <p class="price">${{panel.precio|floatformat:0|punto_miles}}</p> 
         <!-- !Precio anterior -->
-        <p class="tachado">${{panel.precio|floatformat:0|intcomma}}</p>
+        <p class="tachado">${{panel.precio|floatformat:0|punto_miles}}</p>
       </div>
       <!-- !--------------------- -->
       <div class="actions">

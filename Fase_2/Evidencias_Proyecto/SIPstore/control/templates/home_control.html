@@ -1,4 +1,4 @@
-{% extends "base_control.html"%} {% load static %} {% load i18n %} {% load humanize %}
+{% extends "base_control.html"%} {% load static %} {% load i18n %} {% load myfilters %}
 
 <!-- !CSS  -->
 {% block link %}
@@ -88,7 +88,7 @@
                   {% endwith %}
                 </td>
                 <td class="text-center">{{ pedido.local }}</td>
-                <td class="text-center">${{ pedido.monto_total|floatformat:0|intcomma }}</td>
+                <td class="text-center">${{ pedido.monto_total|floatformat:0|punto_miles }}</td>
                 <td class="text-center">
                   {% with metodo_actual=pedido.estado|lower %}
                     <span class="badge 
