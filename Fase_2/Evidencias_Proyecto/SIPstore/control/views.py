@@ -6,10 +6,21 @@ from django.contrib import messages
 from .forms import CategoriaForm, PanelSIPForm, KitConstruccionForm, ImagenProductoForm
 from store.models import PanelSIP, KitConstruccion, Categoria, imagenProducto
 from .models import Pedido,DetallePedido
+from django.utils import timezone
 
 # Views principales
 def control(request):
-    return render(request, 'home_control.html')
+    ahora = timezone.localtime(timezone.now())
+    inicio_dia = ahora.replace(hour=0, minute=0, second=0, microsecond=0)
+    fin_dia = ahora.replace(hour=23, minute=59, second=59, microsecond=999999)
+
+    # Filtramos los pedidos cuya fecha_pedido esté dentro del rango de hoy
+    pedidos_hoy = Pedido.objects.filter(fecha_pedido__range=(inicio_dia, fin_dia))
+
+    context = {
+        'pedidos_hoy': pedidos_hoy,
+    }
+    return render(request, 'home_control.html', context)
 
 def subir_imagenes_panel(request, panel_id):
     panel = get_object_or_404(PanelSIP, id=panel_id)
