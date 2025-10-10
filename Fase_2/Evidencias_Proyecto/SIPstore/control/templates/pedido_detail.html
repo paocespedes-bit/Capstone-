@@ -119,33 +119,56 @@ Detalles Pedido
         <h4 class="mb-1 mt-3">Datos de venta</h4>
         <div class="card shadow-sm border-0 w-100">
             <div class="card-body">
-                    <table class="table table-striped table-hover align-middle">
+                <table class="table table-striped table-hover align-middle">
 
-                        <thead class="table">
-                            <tr>
+                    <thead class="table">
+                        <tr>
+                            <th scope="col">Imagen</th>
+                            <th scope="col">Detalle</th>
+                            <th scope="col">$/Unitario</th>
+                            <th scope="col">Cant.</th>
+                            <th scope="col">$Subtotal</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        {% for item in detalles %}
+                        <tr>
+                            <td>
                                 
-                                <th scope="col">Detalle</th>
-                                <th scope="col">$/Unitario</th>
-                                <th scope="col">Cant.</th>
-                                <th scope="col">$Subtotal</th>
-                            </tr>
-                        </thead>
-                        
-                        <tbody>
-                            {% for item in detalles %}
-                            <tr>
-                                <td>{{ item.producto.nombre }}</td>
-                                <td>${{ item.precio_unitario|floatformat:0|intcomma}}</td>
-                                <td>{{ item.cantidad }}</td>
-                                <td>${{ item.subtotal|floatformat:0|intcomma }}</td>
-                            </tr>
-                            {% endfor %}
-                        </tbody>
-                        
-                    </table>
-                    <ul lass="m-0 p-0 d-flex justify-content-between align-items-center" style="background-color: rgb(251, 238, 0);">
-                        <li class="list-group-item d-flex justify-content-between align-items-center m-4"><strong>Total:</strong> <span>${{ pedido.monto_total|floatformat:0|intcomma  }}</span></li>
-                    </ul>
+                                    {% if item.producto.imagenes.all %}
+                                <img class="" src="{{item.producto.imagenes.first.imagen.url  }}" alt="{{panel.nombre}}" style="max-width: 5vw; height: 5vw;" />
+                                {% else %}
+                                <img src="{% static 'img/SinImagen.png' %}" alt="Imagen no disponible" style="max-width: 5vw; height: 6vw;"/>
+                                {% endif %}
+                                
+                            </td>
+
+                            <td>
+                                {% if item.content_type.model == 'kitconstruccion' %}
+                                K#{{ item.producto.id }} - {{ item.producto.nombre }}
+                                {% elif item.content_type.model == 'panel' or item.content_type.model == 'panelsip' %}
+                                P#{{ item.producto.id }} - {{ item.producto.nombre }}
+                                {% else %}
+                                ID#{{ item.producto.id }} - Producto Desconocido
+                                {% endif %}
+                            </td>
+
+
+                            <td>${{ item.precio_unitario|floatformat:0|intcomma}}</td>
+                            <td>{{ item.cantidad }}</td>
+                            <td>${{ item.subtotal|floatformat:0|intcomma }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+
+                </table>
+                <ul lass="m-0 p-0 d-flex justify-content-between align-items-center"
+                    style="background-color: rgb(251, 238, 0);">
+                    <li class="list-group-item d-flex justify-content-between align-items-center m-4">
+                        <strong>Total:</strong> <span>${{ pedido.monto_total|floatformat:0|intcomma }}</span>
+                    </li>
+                </ul>
             </div>
         </div>
     </div>
