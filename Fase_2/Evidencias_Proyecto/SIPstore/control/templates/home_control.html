@@ -12,6 +12,7 @@
 
 <!-- Gráficos -->
 <div class="row g-4 mb-4 graficos">
+  <!-- Total ventas del año -->
   <div class="col-12 col-md-6 col-lg-4 gr">
     <div class="card p-3 shadow-sm">
       <h5><i class="bi bi-graph-up-arrow me-2"></i>Total ventas del año</h5>
@@ -24,6 +25,8 @@
               data-values-dia='{{ data_ventas_dia|safe }}'></canvas>
     </div>
   </div>
+
+  <!-- TOP 3 productos -->
   <div class="col-12 col-md-6 col-lg-4 gr">
     <div class="card p-3 shadow-sm">
       <h5><i class="bi bi-star me-2"></i>TOP 3 productos</h5>
@@ -32,6 +35,8 @@
               data-values='{{ data_top_productos|safe }}'></canvas>
     </div>
   </div>
+
+  <!-- Ventas del mes -->
   <div class="col-12 col-md-6 col-lg-4 gr">
     <div class="card p-3 shadow-sm">
       <h5><i class="bi bi-calendar me-2"></i>Ventas del mes</h5>
@@ -45,6 +50,7 @@
 <!-- Tabla de pedidos de hoy -->
 <div class="card shadow-sm p-3">
   <h4 class="mb-3 text-primary">Pedidos de hoy ({{ pedidos_hoy.count }})</h4>
+  <a href="{% url 'pedidos' %}">Ver todos los pedidos...</a>
   <div class="table-responsive">
     <table class="table table-hover table-striped align-middle">
       <thead>
@@ -104,8 +110,8 @@
   </div>
 </div>
 
+<!-- Chart.js -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script src="{% static 'control/js/dashboard.js' %}"></script>
 <script src="{% static 'control/js/modal.js' %}"></script>
 {% endblock %}
-
