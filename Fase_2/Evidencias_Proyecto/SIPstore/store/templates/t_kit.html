@@ -1,5 +1,5 @@
 {% load static%}
-{% load humanize %}
+{% load myfilters %}
 <!-- !css -->
 {% block link %}
 <link rel="stylesheet" href="{% static 'store/style/tarjeta.css' %}" />
@@ -28,9 +28,9 @@
         Disponible bajo pedido
       </div>
       <div class="prices">
-        <p class="price">${{kit.precio|floatformat:0|intcomma}}</p> 
+        <p class="price">${{kit.precio|floatformat:0|punto_miles}}</p> 
         <!-- !Precio anterior -->
-        <p class="tachado">${{kit.precio|floatformat:0|intcomma}}</p>
+        <p class="tachado">${{kit.precio|floatformat:0|punto_miles}}</p>
       </div>
 
       <div class="actions">

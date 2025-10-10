@@ -9,7 +9,8 @@ urlpatterns = [
     path('admin/', admin.site.urls), #!despues desabilitar
     path('', include('core.urls')),
     path('', include('store.urls')),
-    path('', include('control.urls'))
+    path('', include('control.urls')),
+    path('carrito/', include('cart.urls'))
 ]
 
 if settings.DEBUG:

@@ -1,6 +1,6 @@
 {% load static %}
 {% load humanize %}
-
+{% load myfilters %}
 {% block link %}
 <link rel="stylesheet" href="{% static 'control/style/tablas.css' %}">
 {% endblock %}
@@ -52,12 +52,12 @@
           <td>#{{ panel.id }}</td>
           <td>SIN STOCK</td>
           <td>{{ panel.nombre }}</td>
-          <td>${{ panel.precio_actual|floatformat:0|intcomma }}</td>
+          <td>${{ panel.precio_actual|floatformat:0|punto_miles }}</td>
           <td>
             {% if panel.oferta %}
-              {{ panel.oferta }}%
+            {{ panel.oferta }}%
             {% else %}
-              N/A
+            N/A
             {% endif %}
           </td>
           <td title="{{ panel.descripcion }}">{{ panel.descripcion|truncatechars:20 }}...</td>
@@ -67,7 +67,7 @@
           <td>{{ panel.ancho }}</td>
           <td>
             {% for cat in panel.categorias.all %}
-              <span class="badge bg-secondary">{{ cat.nombre }}</span>
+            <span class="badge bg-secondary">{{ cat.nombre }}</span>
             {% endfor %}
           </td>
           <td>
@@ -77,24 +77,24 @@
             </button>
           </td>
           <td class="text-center">
-              <button class="btn btn-sm btn-primary" 
-                data-bs-toggle="modal"
-                data-bs-target="#modalEditarPanel_{{ panel.id }}">
+            <button class="btn btn-sm btn-primary" data-bs-toggle="modal"
+              data-bs-target="#modalEditarPanel_{{ panel.id }}">
               Editar
             </button>
-            <button type="button" class="btn btn-danger btn-eliminar" data-bs-toggle="modal"
-              data-bs-target="#modalEliminar" data-url="{% url 'eliminar_panel' panel.id %}"
-              data-nombre="{{ panel.nombre }}" data-tipo="Panel SIP">
+            <button type="button" class="btn btn-danger" data-bs-toggle="modal"
+              data-bs-target="#modalEliminarPanel_{{ panel.id }}">
               Eliminar
             </button>
           </td>
           <td class="text-center">
-            <button type="button" class="btn btn-sm btn-info" data-bs-toggle="modal" data-bs-target="#modalSubirImagenes_{{ panel.id }}">
+            <button type="button" class="btn btn-sm btn-info" data-bs-toggle="modal"
+              data-bs-target="#modalSubirImagenes_{{ panel.id }}">
               + <i class="bi bi-image-fill"></i>
             </button>
           </td>
           <td class="text-center">
-            <button type="button" class="btn btn-sm btn-info" data-bs-toggle="modal" data-bs-target="#modalEliminarImagenes_{{ panel.id }}">
+            <button type="button" class="btn btn-sm btn-info" data-bs-toggle="modal"
+              data-bs-target="#modalEliminarImagenes_{{ panel.id }}">
               - <i class="bi bi-image-fill"></i>
             </button>
           </td>
@@ -107,6 +107,5 @@
 </div>
 
 {% block script %}
-<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"></script>
 <script src="{% static 'control/js/eliminar.js' %}"></script>
 {% endblock %}

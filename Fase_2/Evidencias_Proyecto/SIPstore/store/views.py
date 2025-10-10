@@ -121,12 +121,10 @@ def kits(request):
     }
     return render(request, "kits.html", context)
 
-def carrito(request):
-    return render(request, "carrito.html")
-
 def kit_detail(request, pk):
     kit = get_object_or_404(KitConstruccion, pk=pk)
     return render(request, 'kit_detail.html', {'kit': kit})
+
 def paneles_detail(request, pk):
     panel = get_object_or_404(PanelSIP, pk=pk)
     return render(request, 'paneles_detail.html', {'panel': panel})
