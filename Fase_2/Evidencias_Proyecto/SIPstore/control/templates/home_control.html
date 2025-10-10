@@ -4,6 +4,7 @@
 
 {% block link %}
 <link rel="stylesheet" href="{% static 'control/style/home.css' %}" />
+<link rel="stylesheet" href="{% static 'control/style/modal.css' %}" />
 {% endblock %}
 
 {% block content %}
@@ -14,19 +15,29 @@
   <div class="col-12 col-md-6 col-lg-4 gr">
     <div class="card p-3 shadow-sm">
       <h5><i class="bi bi-graph-up-arrow me-2"></i>Total ventas del año</h5>
-      <canvas id="ventasAnio" class="chart-box"></canvas>
+      <canvas id="ventasPorAnio" class="chart-box"
+              data-labels='{{ labels_ventas_anio|safe }}'
+              data-values='{{ data_ventas_anio|safe }}'
+              data-labels-mes='{{ labels_ventas_mes|safe }}'
+              data-values-mes='{{ data_ventas_mes|safe }}'
+              data-labels-dia='{{ labels_ventas_dia|safe }}'
+              data-values-dia='{{ data_ventas_dia|safe }}'></canvas>
     </div>
   </div>
   <div class="col-12 col-md-6 col-lg-4 gr">
     <div class="card p-3 shadow-sm">
       <h5><i class="bi bi-star me-2"></i>TOP 3 productos</h5>
-      <canvas id="topProductos" class="chart-box"></canvas>
+      <canvas id="topProductos" class="chart-box"
+              data-labels='{{ labels_top_productos|safe }}'
+              data-values='{{ data_top_productos|safe }}'></canvas>
     </div>
   </div>
   <div class="col-12 col-md-6 col-lg-4 gr">
     <div class="card p-3 shadow-sm">
       <h5><i class="bi bi-calendar me-2"></i>Ventas del mes</h5>
-      <canvas id="ventasMes" class="chart-box"></canvas>
+      <canvas id="ventasMes" class="chart-box"
+              data-labels='{{ labels_ventas_dia|safe }}'
+              data-values='{{ data_ventas_dia|safe }}'></canvas>
     </div>
   </div>
 </div>
@@ -81,4 +92,19 @@
     </table>
   </div>
 </div>
+
+<!-- Modal de detalles de ventas -->
+<div id="modalVentas" class="modal">
+  <div class="modal-content">
+    <span class="close">&times;</span>
+    <h3>Detalles de Ventas</h3>
+    <canvas id="chartVentasAnio" width="400" height="200"></canvas>
+    <canvas id="chartVentasMes" width="400" height="200"></canvas>
+    <canvas id="chartVentasDia" width="400" height="200"></canvas>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="{% static 'control/js/dashboard.js' %}"></script>
+<script src="{% static 'control/js/modal.js' %}"></script>
 {% endblock %}
