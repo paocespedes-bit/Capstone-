@@ -21,6 +21,10 @@ class Pedido(models.Model):
         ('completado', 'Completado'),
         ('cancelado', 'Cancelado'),
     ]
+    METODO =[
+        ('pago_tienda', 'Pago en Tienda'),
+        ('pago_web', 'Pago Web'),
+    ]
     local = models.ForeignKey(Local,on_delete=models.CASCADE,related_name='pedidos')
     comprador = models.CharField(max_length=200)
     rut_cli = models.CharField(max_length=12)
@@ -29,9 +33,9 @@ class Pedido(models.Model):
     ubicacion_cli = models.TextField(max_length=800)
     fecha_pedido = models.DateTimeField(default=timezone.now)
     fecha_retiro = models.DateTimeField(blank=True,null=True)
-    estado = models.CharField(max_length=20, choices=ESTADOS,default='pendiente')
+    estado = models.CharField(max_length=20, choices=ESTADOS,default='Pendiente')
     monto_total = models.DecimalField(max_digits=10,decimal_places=2, default=0)
-    
+    metodo_pago = models.CharField(max_length=20,choices=METODO ,default='Pago en Tienda')
     def actualizar_monto_total(self):
         total = sum(detalle.subtotal for detalle in self.detalles.all())
         self.monto_total = total
@@ -42,10 +46,7 @@ class Pedido(models.Model):
     
 # ! Modelo detalle Pedido
 class DetallePedido(models.Model):
-    METODO =[
-        ('pago_tienda', 'Pago en Tienda'),
-        ('pago_web', 'Pago Web'),
-    ]
+    
     pedido = models.ForeignKey(Pedido, on_delete=models.CASCADE, related_name='detalles')
     content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
     object_id = models.PositiveIntegerField()
@@ -53,7 +54,7 @@ class DetallePedido(models.Model):
     cantidad = models.PositiveIntegerField(default=1)
     precio_unitario = models.DecimalField(max_digits=10,decimal_places=2)
     subtotal = models.DecimalField(max_digits=10,decimal_places=2,editable=False)
-    metodo_pago = models.CharField(max_length=20,choices=METODO ,default='pago_tienda')
+    
     def save(self,*args, **kwargs):
         self.subtotal = self.precio_unitario * self.cantidad
         super().save(*args,**kwargs)

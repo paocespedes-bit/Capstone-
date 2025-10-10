@@ -5,7 +5,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from .forms import CategoriaForm, PanelSIPForm, KitConstruccionForm, ImagenProductoForm
 from store.models import PanelSIP, KitConstruccion, Categoria, imagenProducto
-from .models import Pedido
+from .models import Pedido,DetallePedido
 
 # Views principales
 def control(request):
@@ -224,8 +224,14 @@ def pedidos(request):
     }
     return render(request,'pedidos.html',context)
 
-def pedido_detail(request,pk):
+def pedido_detail(request, pk):
     pedidos = get_object_or_404(Pedido, pk=pk)
-    return render(request, 'pedido_detail.html', {'pedidos': pedidos})
+    detalles = DetallePedido.objects.filter(pedido=pedidos)  
+    context ={
+        'pedido': pedidos,
+        'detalles': detalles
+    }
+    return render(request, 'pedido_detail.html', context)
+
 
 

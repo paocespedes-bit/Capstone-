@@ -1,107 +1,176 @@
 {% extends "base_control.html" %}
 {% load static %}
+{% load humanize %}
 
 {% block title %}
-Detalles de pedido
+Detalles Pedido
 {% endblock %}
-
 {% block link %}
-<link rel="stylesheet" href="{% static 'control/style/pedidos_detail.css' %}">
+<link rel="stylesheet" href="{% static 'control/style/tablas.css' %}">
 {% endblock %}
-
 {% block content %}
-<div class="detalle-container">
+<div class="container-fluid py-4 inventario-container">
+    <h2 class="text-center mb-4">Pedido #{{ pedido.id }}</h2>
+    <div class="tab-content mt-3" id="inventarioTabsContent">
+        <h4 class="mb-1">Datos Pedido</h4>
+        <div class="card shadow-sm border-0 w-100">
+            <div class="card-body">
 
-  <h1>Detalles de pedido con número de boleta #{{ pedido.id }}</h1>
+                <div class="row g-3">
 
-  <!-- !tabla de productos  -->
-  <table class="tabla-productos">
-    <thead>
-      <tr>
-        <th>Producto</th>
-        <th>Imagen</th>
-        <th>Cantidad</th>
-        <th>Valor unitario</th>
-        <th>Total</th>
-      </tr>
-    </thead>
-    <tbody>
-      {% for item in pedido %}
-      <tr>
-        <td>
-          <strong>{{ item.nombre }}</strong><br>
-          <small>Solicitado por: {{ item.solicitado_por }}</small><br>
-          <small>{{ item.descripcion }}</small>
-        </td>
-        <td>
-          {% if item.imagen %}
-            <img src="{{ item.imagen.url }}" alt="{{ item.nombre }}">
-          {% else %}
-            <span>Sin imagen</span>
-          {% endif %}
-        </td>
-        <td>{{ item.cantidad }}</td>
-        <td>${{ item.valor_unitario|floatformat:0 }}</td>
-        <td>${{ item.total|floatformat:0 }}</td>
-      </tr>
-      {% endfor %}
-    </tbody>
-  </table>
+                    <div class="col-md-6 **border-end**">
+                        <ul class="list-group list-group-flush">
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                <strong>Fecha Pedido:</strong>
+                                <span>{{ pedido.fecha_pedido|date:"d F Y" }}</span>
+                            </li>
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                <strong>Fecha Retiro:</strong>
+                                {% if pedido.fecha_retiro %}
+                                <span>{{ pedido.fecha_retiro|date:"d F Y" }}</span>
+                                {% else %}
+                                <span>N/A</span>
+                                {% endif %}
+                            </li>
+                        </ul>
+                    </div>
 
-  <div class="total-box">
-    <h3>Total: <span>${{ pedido.total|floatformat:0 }}</span></h3>
-  </div>
+                    <div class="col-md-6">
+                        <ul class="list-group list-group-flush">
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                <strong>Estado:</strong>
+                                {% with estado_actual=pedido.estado|title %}
+                                <span class="badge fs-6
+                        {% if estado_actual == 'Pendiente' %}
+                            bg-warning text-dark
+                        {% elif estado_actual == 'En Proceso' %}
+                            bg-primary text-dark
+                        {% elif estado_actual == 'Completado' %}
+                            bg-success
+                        {% elif estado_actual == 'Cancelado' %}
+                            bg-danger
+                        {% else %}
+                            bg-secondary
+                        {% endif %}
+                        ">
+                                    {{ pedido.estado|title }}
+                                </span>
+                                {% endwith %}
+                            </li>
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                <strong>Método de Pago:</strong>
+                                {% with metodo_actual=pedido.metodo_pago|lower %}
+                                <span class="badge fs-6
+                        {% if metodo_actual == 'pago en tienda' %}
+                            bg-warning text-dark
+                        {% elif metodo_actual == 'pago web' %}
+                            bg-success
+                        {% else %}
+                            bg-secondary
+                        {% endif %}
+                        ">
+                                    {{ pedido.metodo_pago|title }}
+                                </span>
+                                {% endwith %}
+                            </li>
+                        </ul>
+                    </div>
 
-  <!-- !informacion del cliente   -->
-  <div class="detalle-form">
-    <h2>Detalles del pedido</h2>
+                    <div class="col-12 m-0">
+                        <hr class="my-4">
+                        <ul class="list-group list-group-flush">
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                <strong>Centro Retiro:</strong>
+                                <span>{{ pedido.local }}</span>
+                            </li>
+                        </ul>
+                    </div>
 
-    <div class="form-row">
-      <label>Nombre completo:</label>
-      <input type="text" value="{{ pedido.nombre_cliente }}" readonly>
+                </div>
+            </div>
+        </div>
+        <h4 class="mb-1 mt-3">Datos del Cliente</h4>
+        <div class="card shadow-sm border-0 w-100">
+            <div class="card-body">
+                <ul class="list-group list-group-flush mt-3">
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        <strong>Nombre:</strong>
+                        <span>{{ pedido.comprador }}</span>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        <strong>RUT/ID:</strong>
+                        <span>{{ pedido.rut_cli }}</span>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        <strong>Teléfono:</strong>
+                        <span>+{{ pedido.celular_cli }}</span>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        <strong>Correo:</strong>
+                        <span>{{ pedido.correo_cli }}</span>
+                    </li>
+                    <li class="list-group-item">
+                        <strong>Dirección:</strong>
+                        <p class="card-text mb-0 mt-1 text-muted">{{ pedido.ubicacion_cli }}</p>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <h4 class="mb-1 mt-3">Datos de venta</h4>
+        <div class="card shadow-sm border-0 w-100">
+            <div class="card-body">
+                <table class="table table-striped table-hover align-middle">
+
+                    <thead class="table">
+                        <tr>
+                            <th scope="col">Imagen</th>
+                            <th scope="col">Detalle</th>
+                            <th scope="col">$/Unitario</th>
+                            <th scope="col">Cant.</th>
+                            <th scope="col">$Subtotal</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        {% for item in detalles %}
+                        <tr>
+                            <td>
+                                
+                                    {% if item.producto.imagenes.all %}
+                                <img class="" src="{{item.producto.imagenes.first.imagen.url  }}" alt="{{panel.nombre}}" style="max-width: 5vw; height: 5vw;" />
+                                {% else %}
+                                <img src="{% static 'img/SinImagen.png' %}" alt="Imagen no disponible" style="max-width: 5vw; height: 6vw;"/>
+                                {% endif %}
+                                
+                            </td>
+
+                            <td>
+                                {% if item.content_type.model == 'kitconstruccion' %}
+                                K#{{ item.producto.id }} - {{ item.producto.nombre }}
+                                {% elif item.content_type.model == 'panel' or item.content_type.model == 'panelsip' %}
+                                P#{{ item.producto.id }} - {{ item.producto.nombre }}
+                                {% else %}
+                                ID#{{ item.producto.id }} - Producto Desconocido
+                                {% endif %}
+                            </td>
+
+
+                            <td>${{ item.precio_unitario|floatformat:0|intcomma}}</td>
+                            <td>{{ item.cantidad }}</td>
+                            <td>${{ item.subtotal|floatformat:0|intcomma }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+
+                </table>
+                <ul lass="m-0 p-0 d-flex justify-content-between align-items-center"
+                    style="background-color: rgb(251, 238, 0);">
+                    <li class="list-group-item d-flex justify-content-between align-items-center m-4">
+                        <strong>Total:</strong> <span>${{ pedido.monto_total|floatformat:0|intcomma }}</span>
+                    </li>
+                </ul>
+            </div>
+        </div>
     </div>
-
-    <div class="form-row">
-      <label>RUT:</label>
-      <input type="text" value="{{ pedido.rut }}" readonly>
-    </div>
-
-    <div class="form-row">
-      <label>Número celular:</label>
-      <input type="text" value="{{ pedido.celular }}" readonly>
-    </div>
-
-    <div class="form-row">
-      <label>Correo electrónico:</label>
-      <input type="email" value="{{ pedido.email }}" readonly>
-    </div>
-
-    <div class="form-row">
-      <label>Dirección:</label>
-      <input type="text" value="{{ pedido.direccion }}" readonly>
-    </div>
-
-    <div class="form-row">
-      <label>Centro de retiro:</label>
-      <select disabled>
-        <option selected>{{ pedido.centro_retiro }}</option>
-      </select>
-    </div>
-
-    <div class="form-row">
-      <label>Fecha de retiro:</label>
-      <input type="date" value="{{ pedido.fecha_retiro|date:'Y-m-d' }}" readonly>
-    </div>
-
-    <div class="form-row">
-      <label>Modo de pago:</label>
-      <div class="radio-group">
-        <label><input type="radio" {% if pedido.metodo_pago == 'Tienda' %}checked{% endif %} disabled> Pago en tienda</label>
-        <label><input type="radio" {% if pedido.metodo_pago == 'Webpay' %}checked{% endif %} disabled> Web pay</label>
-      </div>
-    </div>
-
-  </div>
-
 </div>
 {% endblock %}
