@@ -44,8 +44,8 @@ def control(request):
     # TOP 3 productos
     detalles = DetallePedido.objects.all()
     productos_cantidad = Counter()
-    for detalle in detalles:
-        productos_cantidad[detalle.producto.nombre] += detalle.cantidad
+    # for detalle in detalles:
+    #     productos_cantidad[detalle.producto.nombre] += detalle.cantidad
 
     top_productos = productos_cantidad.most_common(3)
     labels_top_productos = [p[0] for p in top_productos]
