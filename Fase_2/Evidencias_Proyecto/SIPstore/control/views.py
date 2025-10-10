@@ -6,54 +6,15 @@ from django.contrib import messages
 from .forms import CategoriaForm, PanelSIPForm, KitConstruccionForm, ImagenProductoForm
 from store.models import PanelSIP, KitConstruccion, Categoria, imagenProducto
 from .models import Pedido,DetallePedido
+from datetime import date
 
-# Views principales
+# !Views principales
 def control(request):
-    return render(request, 'home_control.html')
-
-def subir_imagenes_panel(request, panel_id):
-    panel = get_object_or_404(PanelSIP, id=panel_id)
-
-    if request.method == "POST":
-        for imagen in request.FILES.getlist('imagenes'):
-            imagenProducto.objects.create(
-                imagen=imagen,
-                content_type=ContentType.objects.get_for_model(panel),
-                object_id=panel.id
-            )
-        return redirect('stock')  
-
-    return render(request, 'stock.html', {'panel': panel})
-
-def eliminar_imagen(request, imagen_id):
-    imagen = get_object_or_404(imagenProducto, id=imagen_id)
-    panel = imagen.producto  # Instancia real: PanelSIP o KitConstruccion
-
-    if request.method == 'POST':
-        imagen.delete()
-        return redirect('stock')
-    
-def subir_imagenes_kit(request, kit_id):
-    kit = get_object_or_404(KitConstruccion, id=kit_id)
-
-    if request.method == "POST":
-        for imagen in request.FILES.getlist('imagenes'):
-            imagenProducto.objects.create(
-                imagen=imagen,
-                content_type=ContentType.objects.get_for_model(kit),
-                object_id=kit.id
-            )
-        return redirect('/stock/?tab=kits') 
-
-    return render(request, 'tabla_kits.html', {"kit": kit})
-
-def eliminar_imagen_kit(request, imagen_id):
-    imagen = get_object_or_404(imagenProducto, id=imagen_id)
-    kit = imagen.producto  # Instancia real: PanelSIP o KitConstruccion
-
-    if request.method == 'POST':
-        imagen.delete()
-        return redirect('/stock/?tab=kits')
+    pedidos = Pedido.objects.all()
+    context = {
+        'pedidos' : pedidos   
+    }
+    return render(request, 'home_control.html',context)
 
 def stock(request):
     paneles = PanelSIP.objects.all()
@@ -84,7 +45,33 @@ def stock(request):
     }
     return render(request, 'stock.html', context)
 
+def pedidos(request):
+    pedidos = Pedido.objects.all()
+    ordenar = request.GET.get("ordenar")
+    direccion = request.GET.get("direccion")
 
+    if ordenar:
+        if direccion == "desc":
+            pedidos = pedidos.order_by(f"-{ordenar}")
+        else:
+            pedidos = pedidos.order_by(ordenar)
+
+    context = {
+        'pedidos' : pedidos   
+    }
+    return render(request,'pedidos.html',context)
+
+def pedido_detail(request, pk):
+    pedidos = get_object_or_404(Pedido, pk=pk)
+    detalles = DetallePedido.objects.filter(pedido=pedidos)  
+    context ={
+        'pedido': pedidos,
+        'detalles': detalles
+    }
+    return render(request, 'pedido_detail.html', context)
+# !======================
+# !CREAR 
+# !======================
 def crear_categoria(request):
     if request.method == 'POST':
         form = CategoriaForm(request.POST)
@@ -130,8 +117,57 @@ def crear_kit(request):
         'form': kit_form,
         'titulo': 'Nuevo Kit de Construcción'
     })
-    
-    
+# !======================
+# !SUBIR IMAGENES 
+# !======================
+def subir_imagenes_panel(request, panel_id):
+    panel = get_object_or_404(PanelSIP, id=panel_id)
+
+    if request.method == "POST":
+        for imagen in request.FILES.getlist('imagenes'):
+            imagenProducto.objects.create(
+                imagen=imagen,
+                content_type=ContentType.objects.get_for_model(panel),
+                object_id=panel.id
+            )
+        return redirect('stock')  
+
+    return render(request, 'stock.html', {'panel': panel})
+
+def subir_imagenes_kit(request, kit_id):
+    kit = get_object_or_404(KitConstruccion, id=kit_id)
+
+    if request.method == "POST":
+        for imagen in request.FILES.getlist('imagenes'):
+            imagenProducto.objects.create(
+                imagen=imagen,
+                content_type=ContentType.objects.get_for_model(kit),
+                object_id=kit.id
+            )
+        return redirect('/stock/?tab=kits') 
+
+    return render(request, 'tabla_kits.html', {"kit": kit})
+# !======================
+# !ELIMINAR IMAGENES
+# !======================
+def eliminar_imagen_kit(request, imagen_id):
+    imagen = get_object_or_404(imagenProducto, id=imagen_id)
+    kit = imagen.producto  # Instancia real: PanelSIP o KitConstruccion
+
+    if request.method == 'POST':
+        imagen.delete()
+        return redirect('/stock/?tab=kits')
+
+def eliminar_imagen(request, imagen_id):
+    imagen = get_object_or_404(imagenProducto, id=imagen_id)
+    panel = imagen.producto  # Instancia real: PanelSIP o KitConstruccion
+
+    if request.method == 'POST':
+        imagen.delete()
+        return redirect('stock')
+# !======================
+# !ELIMINAR
+# !======================
 # Eliminar categoría
 def eliminar_categoria(request, pk):
     categoria = get_object_or_404(Categoria, pk=pk)
@@ -159,18 +195,9 @@ def eliminar_kit(request, pk):
         messages.success(request, 'Kit de construcción eliminado correctamente.')
         return redirect('/stock/?tab=kits')
     return redirect('/stock/?tab=kits')
-
-def editar_categoria(request, pk):
-    categoria = get_object_or_404(Categoria, pk=pk)
-    if request.method == "POST":
-        form = CategoriaForm(request.POST, instance=categoria)
-        if form.is_valid():
-            form.save()
-            return redirect('/stock/?tab=cat')  # usa la vista que carga stock.html
-    else:
-        form = CategoriaForm(instance=categoria)
-    return render(request, 'editar_categoria.html', {'form': form, 'categoria': categoria})
-
+# !======================
+# !EDITAR
+# !======================
 def editar_panel(request, pk):
     panel = get_object_or_404(PanelSIP, pk=pk)
 
@@ -207,31 +234,16 @@ def editar_kit(request, pk):
         form = KitConstruccionForm(instance=kit)
     return render(request, "editar_kit.html", {"form": form})
 
-
-def pedidos(request):
-    pedidos = Pedido.objects.all()
-    ordenar = request.GET.get("ordenar")
-    direccion = request.GET.get("direccion")
-
-    if ordenar:
-        if direccion == "desc":
-            pedidos = pedidos.order_by(f"-{ordenar}")
-        else:
-            pedidos = pedidos.order_by(ordenar)
-
-    context = {
-        'pedidos' : pedidos   
-    }
-    return render(request,'pedidos.html',context)
-
-def pedido_detail(request, pk):
-    pedidos = get_object_or_404(Pedido, pk=pk)
-    detalles = DetallePedido.objects.filter(pedido=pedidos)  
-    context ={
-        'pedido': pedidos,
-        'detalles': detalles
-    }
-    return render(request, 'pedido_detail.html', context)
+def editar_categoria(request, pk):
+    categoria = get_object_or_404(Categoria, pk=pk)
+    if request.method == "POST":
+        form = CategoriaForm(request.POST, instance=categoria)
+        if form.is_valid():
+            form.save()
+            return redirect('/stock/?tab=cat')  # usa la vista que carga stock.html
+    else:
+        form = CategoriaForm(instance=categoria)
+    return render(request, 'editar_categoria.html', {'form': form, 'categoria': categoria})
 
 
 

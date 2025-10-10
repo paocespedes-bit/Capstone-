@@ -1,4 +1,4 @@
-{% extends "base_control.html"%} {% load static %}
+{% extends "base_control.html"%} {% load static %} {% load i18n %} {% load humanize %}
 
 <!-- !CSS  -->
 {% block link %}
@@ -31,56 +31,100 @@
 <!-- Tabla -->
 <div class="card shadow-sm p-3">
   <h4 class="mb-3 text-primary">Pedidos de hoy</h4>
+  <a href="{% url 'pedidos' %}">ver todos los pedidos...</a>
   <div class="table-responsive">
     <table class="table table-hover table-striped align-middle">
       <thead>
         <tr>
-          <th>ID boleta</th>
-          <th>Fecha de entrega</th>
-          <th>Estado</th>
-          <th>Centro de retiro</th>
-          <th>Acciones</th>
+          <th>ID
+            {% include 'filtro_columna.html' with columna_nombre="id" %}
+          </th>
+          <th>Cliente
+            {% include 'filtro_columna.html' with columna_nombre="comprador" %}
+          </th>
+          <th>Fecha de pedido
+            {% include 'filtro_columna.html' with columna_nombre="fecha_pedido" %}
+          </th>
+          <th>Estado
+            {% include 'filtro_columna.html' with columna_nombre="estado" %}
+          </th>
+          <th>Centro de retiro
+            {% include 'filtro_columna.html' with columna_nombre="local" %}
+          </th>
+          <th>Total
+            {% include 'filtro_columna.html' with columna_nombre="monto_total" %}
+          </th>
+          <th>Pago
+            {% include 'filtro_columna.html' with columna_nombre="metodo_pago" %}
+          </th>
+          <th>Ver Mas</th>
         </tr>
       </thead>
       <tbody>
-        <tr>
-          <td>#100</td>
-          <td>12/12/2025</td>
-          <td><span class="badge bg-warning">En proceso</span></td>
-          <td>Melipilla</td>
-          <td>
-            <button class="btn btn-ver btn-sm">Ver más</button>
-          </td>
-        </tr>
-        <tr>
-          <td>#101</td>
-          <td>12/12/2025</td>
-          <td><span class="badge bg-success">Entregado</span></td>
-          <td>RM</td>
-          <td>
-            <button class="btn btn-ver btn-sm">Ver más</button>
-          </td>
-        </tr>
-        <tr>
-          <td>#102</td>
-          <td>12/12/2025</td>
-          <td><span class="badge bg-danger">Cancelado</span></td>
-          <td>RM</td>
-          <td>
-            <button class="btn btn-ver btn-sm">Ver más</button>
-          </td>
-        </tr>
-        <tr>
-          <td>#103</td>
-          <td>12/12/2025</td>
-          <td><span class="badge bg-warning">En proceso</span></td>
-          <td>Melipilla</td>
-          <td>
-            <button class="btn btn-ver btn-sm">Ver más</button>
-          </td>
-        </tr>
+        {% now "Y-m-d" as today_date %}
+        {% for pedido in pedidos %}
+          {% with pedido.fecha_pedido|date:"Y-m-d" as pedido_date %}
+            {%if pedido_date == today_date %}
+              <tr>
+                <td class="text-center">#{{ pedido.id }}</td>
+                <td class="text-center">{{ pedido.comprador }}</td>
+                <td class="text-center">{{ pedido.fecha_pedido|date:"d F Y" }}</td>
+                <td class="text-center">
+                  {% with estado_actual=pedido.estado|lower %}
+                    <span class="badge 
+                      {% if estado_actual == 'pendiente' %}
+                        bg-warning text-dark
+                      {% elif estado_actual == 'en proceso' %}
+                        bg-primary text-dark
+                      {% elif estado_actual == 'completado' %}
+                        bg-success
+                      {% elif estado_actual == 'cancelado' %}
+                        bg-danger
+                      {% else %}
+                        bg-secondary
+                      {% endif %}">
+                      {{ pedido.estado }}
+                    </span>
+                  {% endwith %}
+                </td>
+                <td class="text-center">{{ pedido.local }}</td>
+                <td class="text-center">${{ pedido.monto_total|floatformat:0|intcomma }}</td>
+                <td class="text-center">
+                  {% with metodo_actual=pedido.estado|lower %}
+                    <span class="badge 
+                      {% if metodo_actual == 'pago en tienda' %}
+                        bg-warning text-dark
+                      {% elif metodo_actual == 'pago web' %}
+                        bg-success
+                      {% else %}
+                        bg-secondary
+                      {% endif %}">
+                      {{ pedido.metodo_pago }}
+                    </span>
+                  {% endwith %}
+                </td>
+                <td class="text-center">
+                  <a class="btn btn-sm btn-primary " href="{% url 'pedido_detail' pedido.id %}">
+                    <i class="bi bi-eye fs-5"></i>
+                  </a>
+                </td>
+              </tr>
+            {% else %}
+              <tr>
+                <td colspan="8" style="text-align: center; background-color: #f0f0f0; padding: 15px;">
+                  <p style="color: #333; font-weight: bold;">
+                    ⚠️ No se encontraron pedidos registrados para hoy.
+                  </p>
+                </td>
+              </tr>
+            {% endif %}
+          {% endwith %}
+        {% endfor %}
       </tbody>
     </table>
   </div>
 </div>
+{% endblock %}
+{% block script %}
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"></script>
 {% endblock %}
