@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 {% load static %}
-
+{% load myfilters %}
 {% block link %}
 <link rel="stylesheet" href="{% static 'cart/css/carrito.css' %}" />
 {% endblock %}
@@ -43,7 +43,17 @@
         </div>
       </div>
     </div>
-
+{% if carrito %}
+<ul>
+  {% for item in carrito %}
+    <li>
+      Tipo: {{ item.content_type }}, ID: {{ item.product_id }}, Cantidad: {{ item.quantity }}
+    </li>
+  {% endfor %}
+</ul>
+{% else %}
+<p>El carrito está vacío</p>
+{% endif %}
     <!-- Resumen de compra -->
     <div class="col-md-4">
       <div class="cart-summary">
