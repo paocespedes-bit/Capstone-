@@ -78,12 +78,11 @@ def crear_categoria(request):
         if form.is_valid():
             form.save()
             messages.success(request, 'Categoría creada correctamente.')
-            return redirect('/stock/?tab=cat')
         else:
             messages.error(request, 'Por favor corrige los errores del formulario.')
-    else:
-        form = CategoriaForm()
-    return render(request, 'tabla_categoria.html', {'form': form, 'titulo': 'Nueva Categoría'})
+
+    # Siempre redirigimos a la pestaña de categorías
+    return redirect(f"{reverse('stock')}?tab=cat")
 
 def crear_panel(request):
     if request.method == 'POST':
@@ -91,32 +90,28 @@ def crear_panel(request):
         if panel_form.is_valid():
             panel_form.save()
             messages.success(request, 'Panel SIP creado correctamente.')
-            return redirect('stock')
-    else:
-        panel_form = PanelSIPForm()
+        else:
+            messages.error(request, 'Por favor corrige los errores del formulario.')
 
-    return render(request, 'stock.html', {
-        'panel_form': panel_form,
-        'paneles': PanelSIP.objects.all(),
-        'categorias': Categoria.objects.all()
-    })
+        
+        return redirect(f"{reverse('stock')}?tab=paneles")
+    
+    return redirect(f"{reverse('stock')}?tab=paneles")
 
 def crear_kit(request):
     if request.method == 'POST':
         kit_form = KitConstruccionForm(request.POST)
-
         if kit_form.is_valid():
             kit_form.save()
-
             messages.success(request, 'Kit de construcción creado correctamente.')
-            return redirect('/stock/?tab=kits')
-    else:
-        kit_form = KitConstruccionForm()
+        else:
+            messages.error(request, 'Por favor corrige los errores del formulario.')
 
-    return render(request, 'formularios.html', {
-        'form': kit_form,
-        'titulo': 'Nuevo Kit de Construcción'
-    })
+        
+        return redirect(f"{reverse('stock')}?tab=kits")
+    
+
+    return redirect(f"{reverse('stock')}?tab=kits")
 # !======================
 # !SUBIR IMAGENES 
 # !======================
@@ -222,12 +217,14 @@ def editar_categoria(request, pk):
 # Eliminar categoría
 def eliminar_categoria(request, pk):
     categoria = get_object_or_404(Categoria, pk=pk)
+
     if request.method == "POST":
         nombre = categoria.nombre
         categoria.delete()
         messages.success(request, f'Categoría "{nombre}" eliminada correctamente.')
-        return redirect('/stock/?tab=cat')
-    return redirect('/stock/?tab=cat')
+
+    # Redirigimos siempre a la pestaña de categorías
+    return redirect(f"{reverse('stock')}?tab=cat")
 
 # Eliminar panel
 def eliminar_panel(request, pk):
