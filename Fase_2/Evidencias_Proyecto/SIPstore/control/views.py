@@ -165,36 +165,7 @@ def eliminar_imagen(request, imagen_id):
     if request.method == 'POST':
         imagen.delete()
         return redirect('stock')
-# !======================
-# !ELIMINAR
-# !======================
-# Eliminar categoría
-def eliminar_categoria(request, pk):
-    categoria = get_object_or_404(Categoria, pk=pk)
-    if request.method == "POST":
-        nombre = categoria.nombre
-        categoria.delete()
-        messages.success(request, f'Categoría "{nombre}" eliminada correctamente.')
-        return redirect('/stock/?tab=cat')
-    return redirect('/stock/?tab=cat')
 
-# Eliminar panel
-def eliminar_panel(request, pk):
-    panel = get_object_or_404(PanelSIP, pk=pk)
-    if request.method == "POST":
-        panel.delete()
-        messages.success(request, 'Panel SIP eliminado correctamente.')
-        return redirect('stock')
-    return redirect('stock')
-
-# Eliminar kit
-def eliminar_kit(request, pk):
-    kit = get_object_or_404(KitConstruccion, pk=pk)
-    if request.method == "POST":
-        kit.delete()
-        messages.success(request, 'Kit de construcción eliminado correctamente.')
-        return redirect('/stock/?tab=kits')
-    return redirect('/stock/?tab=kits')
 # !======================
 # !EDITAR
 # !======================
@@ -245,5 +216,34 @@ def editar_categoria(request, pk):
         form = CategoriaForm(instance=categoria)
     return render(request, 'editar_categoria.html', {'form': form, 'categoria': categoria})
 
+# !======================
+# !ELIMINAR
+# !======================
+# Eliminar categoría
+def eliminar_categoria(request, pk):
+    categoria = get_object_or_404(Categoria, pk=pk)
+    if request.method == "POST":
+        nombre = categoria.nombre
+        categoria.delete()
+        messages.success(request, f'Categoría "{nombre}" eliminada correctamente.')
+        return redirect('/stock/?tab=cat')
+    return redirect('/stock/?tab=cat')
 
+# Eliminar panel
+def eliminar_panel(request, pk):
+    panel = get_object_or_404(PanelSIP, pk=pk)
+    if request.method == "POST":
+        panel.delete()
+        messages.success(request, 'Panel SIP eliminado correctamente.')
+        return redirect('stock')
+    return redirect('stock')
+
+# Eliminar kit
+def eliminar_kit(request, pk):
+    kit = get_object_or_404(KitConstruccion, pk=pk)
+    if request.method == "POST":
+        kit.delete()
+        messages.success(request, 'Kit de construcción eliminado correctamente.')
+        return redirect('/stock/?tab=kits')
+    return redirect('/stock/?tab=kits')
 

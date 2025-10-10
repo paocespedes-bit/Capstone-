@@ -3,7 +3,7 @@
 !Subir imagnes 
 !================================== -->
 {% for panel in paneles %}
-<div class="modal fade" id="modalSubirImagenes_{{ panel.id }}" tabindex="-1" aria-labelledby="modalSubirImagenesLabel_{{ panel.id }}" aria-hidden="true">
+<div class="modal fade" id="modalSubirImagenes_{{ panel.id }}" tabindex="-1" aria-labelledby="modalSubirImagenesLabel_{{ panel.id }}">
   <div class="modal-dialog">
     <div class="modal-content">
       <form method="post" enctype="multipart/form-data" action="{% url 'subir_imagenes_panel' panel.id %}">
@@ -30,7 +30,7 @@
 <!-- *KITS  -->
 
 {% for kit in kits %}
-<div class="modal fade" id="modalSubirImagenesKit_{{ kit.id }}" tabindex="-1" aria-labelledby="modalSubirImagenesKitLabel_{{ kit.id }}" aria-hidden="true">
+<div class="modal fade" id="modalSubirImagenesKit_{{ kit.id }}" tabindex="-1" aria-labelledby="modalSubirImagenesKitLabel_{{ kit.id }}">
   <div class="modal-dialog">
     <div class="modal-content">
       <form method="post" enctype="multipart/form-data" action="{% url 'subir_imagenes_kit' kit.id %}">
@@ -58,7 +58,7 @@
 !Eliminar imagenes 
 !================================== -->
 {% for panel in paneles %}
-<div class="modal fade" id="modalEliminarImagenes_{{ panel.id }}" tabindex="-1" aria-labelledby="modalEliminarImagenes_{{ panel.id }}" aria-hidden="true">
+<div class="modal fade" id="modalEliminarImagenes_{{ panel.id }}" tabindex="-1" aria-labelledby="modalEliminarImagenes_{{ panel.id }}" >
   <div class="modal-dialog modal-lg">
     <div class="modal-content">
       <div class="modal-header">
@@ -93,7 +93,7 @@
 <!-- *KITS  -->
 
 {% for kit in kits %}
-<div class="modal fade" id="modalEliminarImagenesKit_{{ kit.id }}" tabindex="-1" aria-labelledby="modalEliminarImagenesKit_{{ kit.id }}" aria-hidden="true">
+<div class="modal fade" id="modalEliminarImagenesKit_{{ kit.id }}" tabindex="-1" aria-labelledby="modalEliminarImagenesKit_{{ kit.id }}" >
   <div class="modal-dialog modal-lg">
     <div class="modal-content">
       <div class="modal-header">
@@ -130,7 +130,7 @@
 !================================== -->
 {% for cat in categorias %}
 <div class="modal fade" id="modalEditarPanel{{ cat.id }}" tabindex="-1"
-  aria-labelledby="modalEditarPanelLabel{{ cat.id }}" aria-hidden="true">
+  aria-labelledby="modalEditarPanelLabel{{ cat.id }}" >
   <div class="modal-dialog">
     <div class="modal-content">
       <form method="post" action="{% url 'editar_categoria' cat.id %}">
@@ -161,7 +161,7 @@
 {% if paneles %}
   {% for panel in paneles %}
   <div class="modal fade" id="modalEditarPanel_{{ panel.id }}" tabindex="-1"
-    aria-labelledby="modalEditarPanelLabel_{{ panel.id }}" aria-hidden="true">
+    aria-labelledby="modalEditarPanelLabel_{{ panel.id }}">
     <div class="modal-dialog modal-lg">
       <div class="modal-content">
         <form method="post" action="{% url 'editar_panel' panel.id %}" enctype="multipart/form-data">
@@ -239,7 +239,7 @@
 {% if kits %}
   {% for kit in kits %}
   <div class="modal fade" id="modalEditarKit_{{ kit.id }}" tabindex="-1"
-      aria-labelledby="modalEditarKitLabel_{{ kit.id }}" aria-hidden="true">
+      aria-labelledby="modalEditarKitLabel_{{ kit.id }}" >
     <div class="modal-dialog modal-lg">
       <div class="modal-content">
         <form method="post" action="{% url 'editar_kit' kit.id %}">
@@ -301,6 +301,93 @@
           <div class="modal-footer">
             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
             <button type="submit" class="btn btn-primary">Guardar cambios</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+  {% endfor %}
+{% endif %}
+
+<!-- !==================================
+!ELIMINAR
+!================================== -->
+{% if paneles %}
+  {% for panel in paneles %}
+  <div class="modal fade" id="modalEliminarPanel_{{ panel.id }}" tabindex="-1" aria-labelledby="modalEliminarPanelLabel_{{ panel.id }}">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <form method="post" action="{% url 'eliminar_panel' panel.id %}">
+          {% csrf_token %}
+          <div class="modal-header">
+            <h5 class="modal-title" id="modalEliminarPanelLabel_{{ panel.id }}">
+              Eliminar Panel SIP #{{ panel.id }}
+            </h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+          </div>
+          <div class="modal-body">
+            <p>¿Deseas eliminar el panel "<strong>{{ panel.nombre }}</strong>"?</p>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+            <button type="submit" class="btn btn-danger">Eliminar</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+  {% endfor %}
+{% endif %}
+
+<!-- *ELIMINAR KITS -->
+{% if kits %}
+  {% for kit in kits %}
+  <div class="modal fade" id="modalEliminarKit_{{ kit.id }}" tabindex="-1" aria-labelledby="modalEliminarKitLabel_{{ kit.id }}">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <form method="post" action="{% url 'eliminar_kit' kit.id %}">
+          {% csrf_token %}
+          <div class="modal-header">
+            <h5 class="modal-title" id="modalEliminarKitLabel_{{ kit.id }}">
+              Eliminar Kit #{{ kit.id }}
+            </h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+          </div>
+          <div class="modal-body">
+            <p>¿Deseas eliminar el kit "<strong>{{ kit.nombre }}</strong>"?</p>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+            <button type="submit" class="btn btn-danger">Eliminar</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+  {% endfor %}
+{% endif %}
+
+<!-- *ELIMINAR CATEGORÍAS -->
+{% if categorias %}
+  {% for cat in categorias %}
+  <div class="modal fade" id="modalEliminarCategoria_{{ cat.id }}" tabindex="-1"
+       aria-labelledby="modalEliminarCategoriaLabel_{{ cat.id }}">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <form method="post" action="{% url 'eliminar_categoria' cat.id %}">
+          {% csrf_token %}
+          <div class="modal-header">
+            <h5 class="modal-title" id="modalEliminarCategoriaLabel_{{ cat.id }}">
+              Eliminar Categoría
+            </h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+          </div>
+          <div class="modal-body">
+            <p>¿Deseas eliminar la categoría "<strong>{{ cat.nombre }}</strong>"?</p>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+            <button type="submit" class="btn btn-danger">Eliminar</button>
           </div>
         </form>
       </div>

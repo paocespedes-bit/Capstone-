@@ -17,13 +17,10 @@
         <td class="text-center">
           <button class="btn btn-sm btn-primary" data-bs-toggle="modal"
             data-bs-target="#modalEditarPanel{{ cat.id }}">Editar</button>
-          <button type="button" class="btn btn-danger btn-eliminar" 
-                data-bs-toggle="modal" 
-                data-bs-target="#modalEliminar"
-                data-url="{% url 'eliminar_categoria' cat.id %}"
-                data-nombre="{{ cat.nombre }}"
-                data-tipo="Categoría">
-          Eliminar
+          <button type="button" class="btn btn-danger" data-bs-toggle="modal"
+            data-bs-target="#modalEliminarCategoria_{{ cat.id }}">
+            Eliminar
+          </button>
         </td>
       </tr>
       {% endfor %}

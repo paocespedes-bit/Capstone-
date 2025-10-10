@@ -5,33 +5,33 @@
 <link rel="stylesheet" href="{% static 'control/style/tablas.css' %}">
 {% endblock %}
 <script>
-const editButtons = document.querySelectorAll('.btn-editar-kit');
+    const editButtons = document.querySelectorAll('.btn-editar-kit');
 
-editButtons.forEach(button => {
-    button.addEventListener('click', function() {
-        const kitId = this.dataset.id;
-        const modal = document.getElementById(`modalEditarKit_${kitId}`);
-        const form = modal.querySelector('#formEditarKit');
+    editButtons.forEach(button => {
+        button.addEventListener('click', function () {
+            const kitId = this.dataset.id;
+            const modal = document.getElementById(`modalEditarKit_${kitId}`);
+            const form = modal.querySelector('#formEditarKit');
 
-        // Actualizar la acción del formulario
-        form.action = `/editar-kit/${kitId}/`;
+            // Actualizar la acción del formulario
+            form.action = `/editar-kit/${kitId}/`;
 
-        // Rellenar los inputs
-        form.querySelector('[name="nombre"]').value = this.dataset.nombre;
-        form.querySelector('[name="precio"]').value = this.dataset.precio;
-        form.querySelector('[name="descripcion"]').value = this.dataset.descripcion;
-        form.querySelector('[name="m2"]').value = this.dataset.m2;
-        form.querySelector('[name="dormitorios"]').value = this.dataset.dormitorios;
-        form.querySelector('[name="banos"]').value = this.dataset.banos;
+            // Rellenar los inputs
+            form.querySelector('[name="nombre"]').value = this.dataset.nombre;
+            form.querySelector('[name="precio"]').value = this.dataset.precio;
+            form.querySelector('[name="descripcion"]').value = this.dataset.descripcion;
+            form.querySelector('[name="m2"]').value = this.dataset.m2;
+            form.querySelector('[name="dormitorios"]').value = this.dataset.dormitorios;
+            form.querySelector('[name="banos"]').value = this.dataset.banos;
 
-        // Para categorías múltiples
-        const categorias = this.dataset.categorias.split(',');
-        const select = form.querySelector('[name="categorias"]');
-        Array.from(select.options).forEach(option => {
-            option.selected = categorias.includes(option.value);
+            // Para categorías múltiples
+            const categorias = this.dataset.categorias.split(',');
+            const select = form.querySelector('[name="categorias"]');
+            Array.from(select.options).forEach(option => {
+                option.selected = categorias.includes(option.value);
+            });
         });
     });
-});
 </script>
 
 <div class="container-fluid">
@@ -104,33 +104,29 @@ editButtons.forEach(button => {
                         </button>
                     </td>
                     <td class="text-center">
-                        <button class="btn btn-sm btn-primary btn-editar-kit"
-                                data-bs-toggle="modal"
-                                data-bs-target="#modalEditarKit_{{ kit.id }}"
-                                data-id="{{ kit.id }}"
-                                data-nombre="{{ kit.nombre }}"
-                                data-precio="{{ kit.precio }}"
-                                data-descripcion="{{ kit.descripcion }}"
-                                data-m2="{{ kit.m2 }}"
-                                data-dormitorios="{{ kit.dormitorios }}"
-                                data-banos="{{ kit.banos }}"
-                                data-categorias="{{ kit.categorias.all|join:',' }}">
+                        <button class="btn btn-sm btn-primary btn-editar-kit" data-bs-toggle="modal"
+                            data-bs-target="#modalEditarKit_{{ kit.id }}" data-id="{{ kit.id }}"
+                            data-nombre="{{ kit.nombre }}" data-precio="{{ kit.precio }}"
+                            data-descripcion="{{ kit.descripcion }}" data-m2="{{ kit.m2 }}"
+                            data-dormitorios="{{ kit.dormitorios }}" data-banos="{{ kit.banos }}"
+                            data-categorias="{{ kit.categorias.all|join:',' }}">
                             Editar
                         </button>
-                        <button type="button" class="btn btn-danger btn-eliminar" data-bs-toggle="modal"
-                            data-bs-target="#modalEliminar" data-url="{% url 'eliminar_kit' kit.id %}"
-                            data-nombre="{{ kit.nombre }}" data-tipo="Kit de construcción">
+                        <button type="button" class="btn btn-danger" data-bs-toggle="modal"
+                            data-bs-target="#modalEliminarKit_{{ kit.id }}">
                             Eliminar
                         </button>
                     </td>
                     <td class="text-center">
-                        <button type="button" class="btn btn-sm btn-info" data-bs-toggle="modal" data-bs-target="#modalSubirImagenesKit_{{ kit.id }}">
-                        + <i class="bi bi-image-fill"></i>
+                        <button type="button" class="btn btn-sm btn-info" data-bs-toggle="modal"
+                            data-bs-target="#modalSubirImagenesKit_{{ kit.id }}">
+                            + <i class="bi bi-image-fill"></i>
                         </button>
                     </td>
                     <td class="text-center">
-                        <button type="button" class="btn btn-sm btn-info" data-bs-toggle="modal" data-bs-target="#modalEliminarImagenesKit_{{ kit.id }}">
-                        - <i class="bi bi-image-fill"></i>
+                        <button type="button" class="btn btn-sm btn-info" data-bs-toggle="modal"
+                            data-bs-target="#modalEliminarImagenesKit_{{ kit.id }}">
+                            - <i class="bi bi-image-fill"></i>
                         </button>
                     </td>
                     {% include 'imagenes.html' %}
