@@ -35,17 +35,16 @@ document.addEventListener('DOMContentLoaded', function() {
       });
     }
 
-    // Último gráfico: también ventas por mes
+    // Ventas por día
     if(!chartDia) {
       chartDia = new Chart(document.getElementById('chartVentasDia').getContext('2d'), {
         type: 'line',
-        data: { labels: labelsMes, datasets: [{ label: 'Ventas por mes', data: dataMes, borderColor: 'rgba(255, 99, 132, 1)', fill: false, tension: 0.3 }] },
+        data: { labels: labelsDia, datasets: [{ label: 'Ventas por día', data: dataDia, borderColor: 'rgba(255, 99, 132, 1)', fill: false, tension: 0.3 }] },
         options: { responsive: true, scales: { y: { beginAtZero: true } } }
       });
     }
   });
 
-  // Cerrar modal
   spanClose.onclick = () => { modal.style.display = 'none'; }
   window.onclick = (event) => { if(event.target == modal) modal.style.display = 'none'; }
 });
