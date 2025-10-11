@@ -7,14 +7,74 @@ from .forms import CategoriaForm, PanelSIPForm, KitConstruccionForm, ImagenProdu
 from store.models import PanelSIP, KitConstruccion, Categoria, imagenProducto
 from .models import Pedido,DetallePedido
 from datetime import date
+from django.utils import timezone
+from django.db.models import Sum, F
+from collections import Counter 
+from django.db.models.functions import ExtractYear
 
 # !Views principales
 def control(request):
-    pedidos = Pedido.objects.all()
+    ahora = timezone.localtime(timezone.now())
+    inicio_dia = ahora.replace(hour=0, minute=0, second=0, microsecond=0)
+    fin_dia = ahora.replace(hour=23, minute=59, second=59, microsecond=999999)
+
+    # Pedidos de hoy
+    pedidos_hoy = Pedido.objects.filter(fecha_pedido__range=(inicio_dia, fin_dia))
+
+    # Ventas por año
+    ventas_anio = Pedido.objects.annotate(anio=ExtractYear('fecha_pedido'))\
+        .values('anio')\
+        .annotate(total_anio=Sum('monto_total'))\
+        .order_by('anio')
+
+    labels_ventas_anio = [v['anio'] for v in ventas_anio]
+    data_ventas_anio = [float(v['total_anio']) for v in ventas_anio]
+
+    # Ventas por mes
+    year = ahora.year
+    ventas_mes = Pedido.objects.filter(fecha_pedido__year=year)\
+        .annotate(mes=F('fecha_pedido__month'))\
+        .values('mes')\
+        .annotate(total_mes=Sum('monto_total'))\
+        .order_by('mes')
+
+    labels_ventas_mes = [v['mes'] for v in ventas_mes]
+    data_ventas_mes = [float(v['total_mes']) for v in ventas_mes]
+
+    # TOP 3 productos
+    detalles = DetallePedido.objects.all()
+    productos_cantidad = Counter()
+    # for detalle in detalles:
+    #     productos_cantidad[detalle.producto.nombre] += detalle.cantidad
+
+    top_productos = productos_cantidad.most_common(3)
+    labels_top_productos = [p[0] for p in top_productos]
+    data_top_productos = [p[1] for p in top_productos]
+
+    # Ventas por día
+    mes_actual = ahora.month
+    ventas_dia = Pedido.objects.filter(fecha_pedido__year=year, fecha_pedido__month=mes_actual)\
+        .annotate(dia=F('fecha_pedido__day'))\
+        .values('dia')\
+        .annotate(total_dia=Sum('monto_total'))\
+        .order_by('dia')
+
+    labels_ventas_dia = [v['dia'] for v in ventas_dia]
+    data_ventas_dia = [float(v['total_dia']) for v in ventas_dia]
+
     context = {
-        'pedidos' : pedidos   
+        'pedidos_hoy': pedidos_hoy,
+        'labels_ventas_anio': labels_ventas_anio,
+        'data_ventas_anio': data_ventas_anio,
+        'labels_ventas_mes': labels_ventas_mes, 
+        'data_ventas_mes': data_ventas_mes,
+        'labels_top_productos': labels_top_productos,
+        'data_top_productos': data_top_productos,
+        'labels_ventas_dia': labels_ventas_dia,
+        'data_ventas_dia': data_ventas_dia,
     }
-    return render(request, 'home_control.html',context)
+
+    return render(request, 'home_control.html', context)
 
 def stock(request):
     paneles = PanelSIP.objects.all()
