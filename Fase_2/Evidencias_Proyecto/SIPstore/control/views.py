@@ -22,56 +22,73 @@ def control(request):
     pedidos_hoy = Pedido.objects.filter(fecha_pedido__range=(inicio_dia, fin_dia))
 
     # Ventas por año
-    ventas_anio = Pedido.objects.annotate(anio=ExtractYear('fecha_pedido'))\
-        .values('anio')\
-        .annotate(total_anio=Sum('monto_total'))\
+    ventas_anio = (
+        Pedido.objects.annotate(anio=ExtractYear('fecha_pedido'))
+        .values('anio')
+        .annotate(total_anio=Sum('monto_total'))
         .order_by('anio')
-
+    )
     labels_ventas_anio = [v['anio'] for v in ventas_anio]
     data_ventas_anio = [float(v['total_anio']) for v in ventas_anio]
 
     # Ventas por mes
     year = ahora.year
-    ventas_mes = Pedido.objects.filter(fecha_pedido__year=year)\
-        .annotate(mes=F('fecha_pedido__month'))\
-        .values('mes')\
-        .annotate(total_mes=Sum('monto_total'))\
+    ventas_mes = (
+        Pedido.objects.filter(fecha_pedido__year=year)
+        .annotate(mes=F('fecha_pedido__month'))
+        .values('mes')
+        .annotate(total_mes=Sum('monto_total'))
         .order_by('mes')
-
+    )
     labels_ventas_mes = [v['mes'] for v in ventas_mes]
     data_ventas_mes = [float(v['total_mes']) for v in ventas_mes]
 
-    # TOP 3 productos
-    detalles = DetallePedido.objects.all()
-    productos_cantidad = Counter()
-    # for detalle in detalles:
-    #     productos_cantidad[detalle.producto.nombre] += detalle.cantidad
-
-    top_productos = productos_cantidad.most_common(3)
-    labels_top_productos = [p[0] for p in top_productos]
-    data_top_productos = [p[1] for p in top_productos]
-
     # Ventas por día
     mes_actual = ahora.month
-    ventas_dia = Pedido.objects.filter(fecha_pedido__year=year, fecha_pedido__month=mes_actual)\
-        .annotate(dia=F('fecha_pedido__day'))\
-        .values('dia')\
-        .annotate(total_dia=Sum('monto_total'))\
+    ventas_dia = (
+        Pedido.objects.filter(fecha_pedido__year=year, fecha_pedido__month=mes_actual)
+        .annotate(dia=F('fecha_pedido__day'))
+        .values('dia')
+        .annotate(total_dia=Sum('monto_total'))
         .order_by('dia')
-
+    )
     labels_ventas_dia = [v['dia'] for v in ventas_dia]
     data_ventas_dia = [float(v['total_dia']) for v in ventas_dia]
 
+    # ==== TOP productos ====
+    detalles_completados = DetallePedido.objects.filter(pedido__estado='Completado')
+
+    top_productos = (
+        detalles_completados
+        .values('content_type', 'object_id')
+        .annotate(total_vendido=Sum('cantidad'))
+        .order_by('-total_vendido')[:5]
+    )
+
+    labels_top = []
+    data_top = []
+
+    for item in top_productos:
+        try:
+            content_type = ContentType.objects.get_for_id(item['content_type'])
+            producto = content_type.get_object_for_this_type(id=item['object_id'])
+            nombre = getattr(producto, 'nombre', str(producto))
+        except Exception:
+            nombre = f"ID {item['object_id']}"
+        labels_top.append(nombre)
+        data_top.append(int(item['total_vendido']))
+
+    # ==== Contexto final ====
     context = {
         'pedidos_hoy': pedidos_hoy,
         'labels_ventas_anio': labels_ventas_anio,
         'data_ventas_anio': data_ventas_anio,
         'labels_ventas_mes': labels_ventas_mes, 
         'data_ventas_mes': data_ventas_mes,
-        'labels_top_productos': labels_top_productos,
-        'data_top_productos': data_top_productos,
         'labels_ventas_dia': labels_ventas_dia,
         'data_ventas_dia': data_ventas_dia,
+        'labels_top': labels_top,
+        'data_top': data_top,  
     }
 
     return render(request, 'home_control.html', context)
