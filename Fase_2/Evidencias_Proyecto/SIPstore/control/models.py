@@ -25,17 +25,28 @@ class Pedido(models.Model):
         ('pago_tienda', 'Pago en Tienda'),
         ('pago_web', 'Pago Web'),
     ]
-    local = models.ForeignKey(Local,on_delete=models.CASCADE,related_name='pedidos')
+    
+    local = models.ForeignKey('Local',on_delete=models.SET_NULL,null=True, blank=True,related_name='pedidos')
+    nombre_local = models.CharField(max_length=200, blank=True, null=True)
+    
     comprador = models.CharField(max_length=200)
     rut_cli = models.CharField(max_length=12)
     correo_cli = models.EmailField()
     celular_cli = models.CharField(max_length=20)
     ubicacion_cli = models.TextField(max_length=800)
+    
     fecha_pedido = models.DateTimeField(default=timezone.now)
     fecha_retiro = models.DateTimeField(blank=True,null=True)
-    estado = models.CharField(max_length=20, choices=ESTADOS,default='Pendiente')
+    estado = models.CharField(max_length=20, choices=ESTADOS,default='pendiente')
+    
     monto_total = models.DecimalField(max_digits=10,decimal_places=2, default=0)
-    metodo_pago = models.CharField(max_length=20,choices=METODO ,default='Pago en Tienda')
+    metodo_pago = models.CharField(max_length=20,choices=METODO ,default='pago_tienda')
+    
+    def save(self, *args, **kwargs):
+        if self.local and not self.nombre_local:
+            self.nombre_local = self.local.nombre
+        super().save(*args, **kwargs)
+    
     def actualizar_monto_total(self):
         total = sum(detalle.subtotal for detalle in self.detalles.all())
         self.monto_total = total
@@ -46,15 +57,17 @@ class Pedido(models.Model):
     
 # ! Modelo detalle Pedido
 class DetallePedido(models.Model):
-    
     pedido = models.ForeignKey(Pedido, on_delete=models.CASCADE, related_name='detalles')
-    content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
-    object_id = models.PositiveIntegerField()
-    producto = GenericForeignKey('content_type', 'object_id')
-    cantidad = models.PositiveIntegerField(default=1)
-    precio_unitario = models.DecimalField(max_digits=10,decimal_places=2)
-    subtotal = models.DecimalField(max_digits=10,decimal_places=2,editable=False)
     
+    content_type = models.ForeignKey(ContentType, on_delete=models.SET_NULL, null=True, blank=True)
+    tipo = models.CharField(max_length=50)
+    object_id = models.PositiveIntegerField(null=True, blank=True)
+    producto = GenericForeignKey('content_type', 'object_id')
+    nombre_producto = models.CharField(max_length=255)
+    precio_unitario = models.DecimalField(max_digits=10,decimal_places=2)
+    
+    cantidad = models.PositiveIntegerField(default=1)
+    subtotal = models.DecimalField(max_digits=10,decimal_places=2,editable=False)
     def save(self,*args, **kwargs):
         self.subtotal = self.precio_unitario * self.cantidad
         super().save(*args,**kwargs)

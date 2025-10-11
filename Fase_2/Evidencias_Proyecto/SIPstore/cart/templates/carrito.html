@@ -11,70 +11,78 @@
 <div class="container cart-container">
   <div class="row">
     <!-- Lista de productos -->
+    {% if carrito %}
     <div class="col-md-8">
       <div class="titulo">
         <h1>Carrito</h1>
       </div>
+      <!-- Producto -->
+
+      {% for p in productos %}
       <div class="cart-item d-flex align-items-center">
         <img src="{% static 'img/SinImagen.png' %}" alt="Producto">
         <div class="ms-3 flex-grow-1">
-          <h5>Nombre del Producto</h5>
-          <p>ID: 12345</p>
+          <h5>{{ p.nombre }}</h5>
+          {% if p.tipo == "kitconstruccion" %}
+          <p>Kit ID: {{ p.id }}</p>
+          {% elif p.tipo == "panelsip" %}
+          <p>Panel ID: {{ p.id }}</p>
+          {% else %}
+          <p>ID: {{ p.id }}</p>
+          {% endif %}
         </div>
         <div class="me-3">
-          <input type="number" class="form-control quantity-input" value="1" min="1">
+          <input type="number" class="form-control quantity-input" value="{{ p.cantidad }}" min="1" step="1"
+            data-contenttype="{{ p.tipo }}" data-id="{{ p.id }}">
         </div>
         <div class="text-end">
-          <p class="mb-1">$25.00 <span class="price-original">$30.00</span></p>
+          <p class="mb-1">${{ p.precio|floatformat:0|punto_miles }}
+            <!-- <span class="price-original">${{ p.precio_anterior|floatformat:0|punto_miles }}</span> --> </p>
         </div>
+        <div>
+          <button class="remove-cart-item btn btn-danger m-3" data-id="{{ p.id }}" data-contenttype="{{ p.tipo }}"><i class="bi bi-trash"></i> Eliminar</button> 
+        </div>
+      </div>
+      {% endfor %}
+      <div>
+        <a class="btn btn-danger m-3" href="{% url 'vaciar_carrito' %}">Vaciar Carro</a>
       </div>
 
-      <div class="cart-item d-flex align-items-center">
-        <img src="{% static 'img/SinImagen.png' %}" alt="Producto">
-        <div class="ms-3 flex-grow-1">
-          <h5>Otro Producto</h5>
-          <p>ID: 67890</p>
-        </div>
-        <div class="me-3">
-          <input type="number" class="form-control quantity-input" value="2" min="1">
-        </div>
-        <div class="text-end">
-          <p class="mb-1">$15.00 <span class="price-original">$20.00</span></p>
-        </div>
-      </div>
     </div>
-{% if carrito %}
-<ul>
-  {% for item in carrito %}
-    <li>
-      Tipo: {{ item.content_type }}, ID: {{ item.product_id }}, Cantidad: {{ item.quantity }}
-    </li>
-  {% endfor %}
-</ul>
-{% else %}
-<p>El carrito está vacío</p>
-{% endif %}
     <!-- Resumen de compra -->
     <div class="col-md-4">
       <div class="cart-summary">
         <h4>Resumen de Compra</h4>
+        {% for p in productos %}
         <div class="d-flex justify-content-between">
-          <span>Producto 1 x 1</span>
-          <span>$25.00</span>
+          <span>{{p.nombre|truncatechars:10}} x {{p.cantidad}}</span>
+          <strong>${{p.subtotal}}</strong>
         </div>
-        <div class="d-flex justify-content-between">
-          <span>Producto 2 x 2</span>
-          <span>$30.00</span>
-        </div>
+        {% endfor %}
         <hr>
         <div class="d-flex justify-content-between total">
           <span>Total</span>
-          <span>$55.00</span>
+          <span>${{total|floatformat:0|punto_miles}}</span>
         </div>
-        <button class="btn btn-primary w-100 mt-3">Finalizar Compra</button>
+        <button class="btn btn-primary w-100 mt-3">Continuar Compra</button>
       </div>
+      <ul>
+        {% for item in carrito %}
+        <li>
+          Tipo: {{ item.content_type }}, ID: {{ item.product_id }}, Cantidad: {{ item.quantity }}
+        </li>
+        {% endfor %}
+      </ul>
+
     </div>
+    {% else %}
+    <p>El carrito está vacío</p>
+    {% endif %}
   </div>
 </div>
 
+{% endblock %}
+
+{% block script %}
+<script src="{% static 'eliminar_carrito.js' %}"></script>
 {% endblock %}

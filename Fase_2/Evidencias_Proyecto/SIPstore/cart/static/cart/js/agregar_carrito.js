@@ -3,43 +3,55 @@ document.addEventListener("DOMContentLoaded", () => {
   const badgeCarrito = document.querySelector("#cart-badge"); 
   const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]')?.value;
 
-  botonesAgregar.forEach((boton, index) => {
+  botonesAgregar.forEach(boton => {
     boton.addEventListener("click", async (e) => {
       e.stopPropagation();
-      const card = e.target.closest(".card");
-      const cantidad = parseInt(card.querySelector(".quantity span").textContent);
 
-      // Obtener datos del producto desde data-attributes del botón
+      const card = e.target.closest(".card");
+      const cantidad = parseInt(card.querySelector(".quantity span").textContent) || 1;
+
+      // Datos del producto desde data-attributes
       const contentType = boton.dataset.contenttype;  
       const productId = boton.dataset.id; 
-      
-      const data = {
-        content_type: contentType,
-        product_id: productId,
-        quantity: cantidad
-      };
 
-      const response = await fetch(URL_AGREGAR_CARRITO, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "X-CSRFToken": csrftoken || "",
-        },
-        body: JSON.stringify(data),
-      });
+      try {
+        const response = await fetch(URL_AGREGAR_CARRITO, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "X-CSRFToken": csrftoken || "",
+          },
+          body: JSON.stringify({ 
+            content_type: contentType,
+            product_id: productId,
+            quantity: cantidad
+          }),
+        });
 
-      const result = await response.json();
-      if (response.ok) {
-        mostrarToast(result.message);         // ✅ Usamos tu toast existente
+        if (!response.ok) {
+          console.error("Error al agregar al carrito");
+          return;
+        }
+
+        const result = await response.json();
+
+        // Actualizar badge del carrito
         badgeCarrito.textContent = result.total_items;
-        badgeCarrito.classList.remove("hidden"); // muestra el badge si estaba oculto
+        badgeCarrito.classList.remove("hidden");
+
+        // Mostrar toast
+        mostrarToast(result.message);
+
+      } catch (error) {
+        console.error("Error en la solicitud:", error);
       }
     });
   });
 
-  // Función para mostrar el toast usando tu HTML existente
- function mostrarToast(mensaje) {
+  // Función para mostrar toast usando Bootstrap
+  function mostrarToast(mensaje) {
     const toastEl = document.getElementById("toast");
+    if (!toastEl) return;
     toastEl.querySelector(".toast-message").textContent = mensaje;
     const toast = new bootstrap.Toast(toastEl);
     toast.show();
