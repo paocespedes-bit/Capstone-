@@ -10,7 +10,7 @@ from datetime import date
 from django.utils import timezone
 from django.db.models import Sum, F
 from collections import Counter 
-from django.db.models.functions import ExtractYear
+from django.db.models.functions import ExtractYear, ExtractMonth
 
 # !Views principales
 def control(request):
@@ -18,10 +18,9 @@ def control(request):
     inicio_dia = ahora.replace(hour=0, minute=0, second=0, microsecond=0)
     fin_dia = ahora.replace(hour=23, minute=59, second=59, microsecond=999999)
 
-    # Pedidos de hoy
     pedidos_hoy = Pedido.objects.filter(fecha_pedido__range=(inicio_dia, fin_dia))
 
-    # Ventas por año
+    # === Ventas por año ===
     ventas_anio = (
         Pedido.objects.annotate(anio=ExtractYear('fecha_pedido'))
         .values('anio')
@@ -29,9 +28,9 @@ def control(request):
         .order_by('anio')
     )
     labels_ventas_anio = [v['anio'] for v in ventas_anio]
-    data_ventas_anio = [float(v['total_anio']) for v in ventas_anio]
+    data_ventas_anio = [float(v['total_anio'] or 0) for v in ventas_anio]
 
-    # Ventas por mes
+    # === Ventas por mes ===
     year = ahora.year
     ventas_mes = (
         Pedido.objects.filter(fecha_pedido__year=year)
@@ -41,9 +40,9 @@ def control(request):
         .order_by('mes')
     )
     labels_ventas_mes = [v['mes'] for v in ventas_mes]
-    data_ventas_mes = [float(v['total_mes']) for v in ventas_mes]
+    data_ventas_mes = [float(v['total_mes'] or 0) for v in ventas_mes]
 
-    # Ventas por día
+    # === Ventas por día ===
     mes_actual = ahora.month
     ventas_dia = (
         Pedido.objects.filter(fecha_pedido__year=year, fecha_pedido__month=mes_actual)
@@ -53,42 +52,67 @@ def control(request):
         .order_by('dia')
     )
     labels_ventas_dia = [v['dia'] for v in ventas_dia]
-    data_ventas_dia = [float(v['total_dia']) for v in ventas_dia]
+    data_ventas_dia = [float(v['total_dia'] or 0) for v in ventas_dia]
 
-    # ==== TOP productos ====
-    detalles_completados = DetallePedido.objects.filter(pedido__estado='Completado')
-
-    top_productos = (
-        detalles_completados
-        .values('content_type', 'object_id')
-        .annotate(total_vendido=Sum('cantidad'))
-        .order_by('-total_vendido')[:5]
+    # === Ingresos por tipo de producto ===
+    ingresos_tipo = (
+        DetallePedido.objects
+        .values('content_type')
+        .annotate(total_ingresos=Sum('subtotal'))
+        .order_by('-total_ingresos')
     )
 
-    labels_top = []
-    data_top = []
+    labels_ingresos = []
+    data_ingresos = []
 
-    for item in top_productos:
+    for item in ingresos_tipo:
         try:
-            content_type = ContentType.objects.get_for_id(item['content_type'])
-            producto = content_type.get_object_for_this_type(id=item['object_id'])
-            nombre = getattr(producto, 'nombre', str(producto))
+            tipo = ContentType.objects.get_for_id(item['content_type']).model_class().__name__
         except Exception:
-            nombre = f"ID {item['object_id']}"
-        labels_top.append(nombre)
-        data_top.append(int(item['total_vendido']))
+            tipo = "Desconocido"
+        labels_ingresos.append(tipo)
+        data_ingresos.append(float(item['total_ingresos'] or 0))
 
-    # ==== Contexto final ====
+    # --- Ventas por tipo de producto + mes (nuevo) ---
+    detalles = DetallePedido.objects.annotate(
+        mes=ExtractMonth('pedido__fecha_pedido')
+    ).values('mes', 'content_type').annotate(total_cantidad=Sum('cantidad'))
+
+    tipos = {}
+    meses = set()
+    for det in detalles:
+        tipo = ContentType.objects.get_for_id(det['content_type']).model_class().__name__
+        meses.add(det['mes'])
+        if tipo not in tipos:
+            tipos[tipo] = {}
+        tipos[tipo][det['mes']] = det['total_cantidad']
+
+    meses = sorted(list(meses))
+    labels_productos_mes = [f"Mes {m}" for m in meses]
+
+    datasets_productos_mes = []
+    colores = ['rgba(54,162,235,0.6)', 'rgba(255,99,132,0.6)', 'rgba(75,192,192,0.6)', 'rgba(255,206,86,0.6)']
+
+    for i, (tipo, data_dict) in enumerate(tipos.items()):
+        data = [data_dict.get(m, 0) for m in meses]
+        datasets_productos_mes.append({
+            'label': tipo,
+            'data': data,
+            'backgroundColor': colores[i % len(colores)]
+        })
+
     context = {
         'pedidos_hoy': pedidos_hoy,
         'labels_ventas_anio': labels_ventas_anio,
         'data_ventas_anio': data_ventas_anio,
-        'labels_ventas_mes': labels_ventas_mes, 
+        'labels_ventas_mes': labels_ventas_mes,
         'data_ventas_mes': data_ventas_mes,
         'labels_ventas_dia': labels_ventas_dia,
         'data_ventas_dia': data_ventas_dia,
-        'labels_top': labels_top,
-        'data_top': data_top,  
+        'labels_ingresos': labels_ingresos,
+        'data_ingresos': data_ingresos,
+        'labels_productos_mes': labels_productos_mes,
+        'datasets_productos_mes': datasets_productos_mes,
     }
 
     return render(request, 'home_control.html', context)

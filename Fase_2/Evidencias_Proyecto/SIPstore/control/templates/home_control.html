@@ -7,8 +7,23 @@
 <link rel="stylesheet" href="{% static 'control/style/modal.css' %}" />
 {% endblock %}
 
-{% block content %}
-<h1 class="mb-4 fw-bold text-primary">Bienvenido</h1>
+{% block content %} 
+
+{# ===== JSON seguros para los gráficos ===== #}
+{{ labels_ventas_anio|json_script:"labels_ventas_anio_json" }}
+{{ data_ventas_anio|json_script:"data_ventas_anio_json" }}
+
+{{ labels_ventas_mes|json_script:"labels_ventas_mes_json" }}
+{{ data_ventas_mes|json_script:"data_ventas_mes_json" }}
+
+{{ labels_ventas_dia|json_script:"labels_ventas_dia_json" }}
+{{ data_ventas_dia|json_script:"data_ventas_dia_json" }}
+
+{{ labels_ingresos|json_script:"labels_ingresos_json" }}
+{{ data_ingresos|json_script:"data_ingresos_json" }}
+
+{{ labels_productos_mes|json_script:"labels_productos_mes_json" }}
+{{ datasets_productos_mes|json_script:"datasets_productos_mes_json" }}
 
 <!-- Gráficos -->
 <div class="row g-4 mb-4 graficos">
@@ -16,38 +31,25 @@
   <div class="col-12 col-md-6 col-lg-4 gr">
     <div class="card p-3 shadow-sm">
       <h5><i class="bi bi-graph-up-arrow me-2"></i>Total ventas del año</h5>
-      <canvas id="ventasPorAnio" class="chart-box"
-              data-labels='{{ labels_ventas_anio|safe }}'
-              data-values='{{ data_ventas_anio|safe }}'
-              data-labels-mes='{{ labels_ventas_mes|safe }}'
-              data-values-mes='{{ data_ventas_mes|safe }}'
-              data-labels-dia='{{ labels_ventas_dia|safe }}'
-              data-values-dia='{{ data_ventas_dia|safe }}'></canvas>
+      <canvas id="ventasPorAnio" class="chart-box" width="300" height="300"></canvas>
     </div>
   </div>
 
-  <!-- TOP productos -->
+  <!-- Ingresos por tipo de producto -->
   <div class="col-12 col-md-6 col-lg-4 gr">
     <div class="card p-3 shadow-sm">
-      <h5><i class="bi bi-star me-2"></i>TOP productos</h5>
-      <canvas 
-        id="topProductos" 
-        class="chart-box"
-        data-labels='{{ labels_top|safe }}'
-        data-values='{{ data_top|safe }}'>
-      </canvas>
+      <h5><i class="bi bi-pie-chart me-2"></i>Ingresos por tipo de producto</h5>
+      <canvas id="ingresosPorTipo" class="chart-box"></canvas>
     </div>
   </div>
 
-  <!-- Ventas del mes -->
+  <!-- Ventas tipo producto/mes -->
   <div class="col-12 col-md-6 col-lg-4 gr">
-    <div class="card p-3 shadow-sm">
-      <h5><i class="bi bi-calendar me-2"></i>Ventas del mes</h5>
-      <canvas id="ventasMes" class="chart-box" 
-        data-labels-mes='{{ labels_ventas_mes|safe }}'
-        data-values-mes='{{ data_ventas_mes|safe }}'></canvas>
-    </div>
+  <div class="card p-3 shadow-sm">
+    <h5><i class="bi bi-bar-chart me-2"></i>Ventas por tipo de producto / mes</h5>
+    <canvas id="productosPorMesLineas" class="chart-box" width="300" height="300"></canvas>
   </div>
+</div>
 </div>
 
 <!-- Tabla de pedidos de hoy -->
@@ -102,7 +104,7 @@
   </div>
 </div>
 
-<!-- Modal de detalles de ventas -->
+<!-- Modal (si lo usas) -->
 <div id="modalVentas" class="modal">
   <div class="modal-content">
     <span class="close">&times;</span>
