@@ -15,3 +15,7 @@ def punto_miles(value):
         return f"{value:,}".replace(",", ".")
     except (ValueError, TypeError):
         return value
+    
+@register.filter
+def multiply(value, arg):
+    return float(value) * int(arg)

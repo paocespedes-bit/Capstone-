@@ -103,6 +103,9 @@ main.container {
 } */
 
 /* ! boton carrito */
+.hidden {
+  display: none;
+}
 
 .cart-button {
   border-radius: 50px;

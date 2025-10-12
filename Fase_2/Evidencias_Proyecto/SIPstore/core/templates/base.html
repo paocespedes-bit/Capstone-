@@ -1,73 +1,56 @@
 {% load static %}
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-    <!-- !Icono de pestaña -->
-    <link
-      rel="icon"
-      type="image/x-icon"
-      href="{% static 'img/logoMin.png' %}"
-    />
-    <!--! Normalize.css  -->
-    <link rel="stylesheet" href="{% static 'css/normalize.css' %}" />
-    <!-- !Bootstrap CSS -->
-    <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}" />
-    <!-- !Bootstrap Icon  -->
-    <link rel="stylesheet" href="{% static 'css/bootstrap-icons.min.css' %}" />
-    <!-- !CSS  -->
-    <link rel="stylesheet" href="{% static 'core/style/base.css' %}" />
-    {% block link %}{% endblock %}
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-    <title>{% block title %}SIPstore{% endblock %}</title>
-  </head>
-  <body>
-    <!-- Navbar -->
-    <nav
-      class="navbar navbar-expand-lg navbar-dark bg-primary rounded shadow-sm"
-    >
-      <div class="container-fluid">
-        <img
-          id="nav-logo"
-          src="{% static 'img/logoHorizontal.png' %}"
-          alt="SIPstore"
-          class="d-inline-block align-text-top logo"
-        />
+  <!-- !Icono de pestaña -->
+  <link rel="icon" type="image/x-icon" href="{% static 'img/logoMin.png' %}" />
+  <!--! Normalize.css  -->
+  <link rel="stylesheet" href="{% static 'css/normalize.css' %}" />
+  <!-- !Bootstrap CSS -->
+  <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}" />
+  <!-- !Bootstrap Icon  -->
+  <link rel="stylesheet" href="{% static 'css/bootstrap-icons.min.css' %}" />
+  <!-- !CSS  -->
+  <link rel="stylesheet" href="{% static 'core/style/base.css' %}" />
+  {% block link %}{% endblock %}
 
-        <button
-          class="navbar-toggler"
-          type="button"
-          data-bs-toggle="collapse"
-          data-bs-target="#navbarNav"
-          aria-controls="navbarNav"
-          aria-expanded="false"
-          aria-label="Toggle navigation"
-        >
-          <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarNav">
-          <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-            <li class="nav-item">
-              <a class="nav-link" href="{% url 'home' %}">Inicio</a>
-            </li>
+  <title>{% block title %}SIPstore{% endblock %}</title>
+</head>
 
-            <li class="nav-item">
-              <a class="nav-link" href="{% url 'kits' %}"
-                >Kit de construccion</a
-              >
-            </li>
+<body>
+  <!-- Navbar -->
+  <nav class="navbar navbar-expand-lg navbar-dark bg-primary rounded shadow-sm">
+    <div class="container-fluid">
+      <img id="nav-logo" src="{% static 'img/logoHorizontal.png' %}" alt="SIPstore"
+        class="d-inline-block align-text-top logo" />
 
-            <li class="nav-item">
-              <a class="nav-link" href="{% url 'paneles' %}">Paneles SIP</a>
-            </li>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+        aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'home' %}">Inicio</a>
+          </li>
 
-            <li class="nav-item">
-              <a class="nav-link" href="#">Cotiza Estructura</a>
-            </li>
-          </ul>
-          <!-- ! Barra busqueda
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'kits' %}">Kit de construccion</a>
+          </li>
+
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'paneles' %}">Paneles SIP</a>
+          </li>
+
+          <li class="nav-item">
+            <a class="nav-link" href="#">Cotiza Estructura</a>
+          </li>
+        </ul>
+        <!-- ! Barra busqueda
           
             <div class="search-wrapper d-flex align-items-center">
               <div class="search-box">
@@ -81,82 +64,82 @@
                 </button>
               </div>
             </div> -->
-          <!-- !Boton carrito  -->
-          <a href="{% url 'carrito' %}" class="btn btn-success cart-button">
-  <i class="bi bi-cart3"></i> Carrito
-</a>
+        <!-- !Boton carrito  -->
+        <a href="{% url 'carrito' %}" class="btn btn-success cart-button position-relative">
+          <i class="bi bi-cart3"></i> Carrito
+          <span id="cart-badge" class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger hidden">
+            0
+          </span>
+        </a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- !Main Content -->
+  <main class="container">
+    <div class="main rounded shadow-sm">
+      {% block content %}{% endblock %}
+    </div>
+  </main>
+
+  <!-- !Footer -->
+  <footer class="bg-primary text-white mt-4 rounded-top">
+    <div class="container py-4">
+      <div class="row text-center text-md-start">
+        <div class="col-md-4 mb-3">
+          <img src="{% static 'img/logoVertical.png' %}" alt="SIPSTORE" class="log mb-2" />
+          <p class="mb-1">Ubicación</p>
+        </div>
+        <div class="col-md-4 mb-3">
+          <p class="fw-bold mb-2">Servicios</p>
+          <a class="a-foot d-block mb-1" href="{% url 'kits' %}">Kit de Construccion</a>
+          <a class="a-foot d-block mb-1" href="{% url 'paneles' %}">Paneles SIP</a>
+          <a class="a-foot d-block mb-1" href="#">Cotizar Estructura</a>
+        </div>
+        <div class="col-md-4 mb-3">
+          <p class="fw-bold mb-2">Contacto</p>
+          <p class="mb-1 tex">
+            <i class="bi bi-telephone-fill"></i> +569 6405 74XX
+          </p>
+          <p class="mb-2 tex">
+            <i class="bi bi-envelope-at-fill"></i>
+            correoejemplo@gmail.com
+          </p>
+          <div class="d-flex justify-content-center justify-content-md-start gap-2">
+            <a class="a-foot d-flex align-items-center boton-red" href="#">
+              <i class="bi bi-whatsapp"></i>Whatsapp
+            </a>
+            <a class="a-foot d-flex align-items-center boton-red" href="#">
+              <i class="bi bi-facebook"></i>Facebook
+            </a>
+          </div>
         </div>
       </div>
-    </nav>
-
-    <!-- !Main Content -->
-    <main class="container">
-      <div class="main rounded shadow-sm">
-        {% block content %}{% endblock %}
-      </div>
-    </main>
-
-    <!-- !Footer -->
-    <footer class="bg-primary text-white mt-4 rounded-top">
-      <div class="container py-4">
-        <div class="row text-center text-md-start">
-          <div class="col-md-4 mb-3">
-            <img
-              src="{% static 'img/logoVertical.png' %}"
-              alt="SIPSTORE"
-              class="log mb-2"
-            />
-            <p class="mb-1">Ubicación</p>
-          </div>
-          <div class="col-md-4 mb-3">
-            <p class="fw-bold mb-2">Servicios</p>
-            <a class="a-foot d-block mb-1" href="{% url 'kits' %}"
-              >Kit de Construccion</a
-            >
-            <a class="a-foot d-block mb-1" href="{% url 'paneles' %}"
-              >Paneles SIP</a
-            >
-            <a class="a-foot d-block mb-1" href="#">Cotizar Estructura</a>
-          </div>
-          <div class="col-md-4 mb-3">
-            <p class="fw-bold mb-2">Contacto</p>
-            <p class="mb-1 tex">
-              <i class="bi bi-telephone-fill"></i> +569 6405 74XX
-            </p>
-            <p class="mb-2 tex">
-              <i class="bi bi-envelope-at-fill"></i>
-              correoejemplo@gmail.com
-            </p>
-            <div
-              class="d-flex justify-content-center justify-content-md-start gap-2"
-            >
-              <a class="a-foot d-flex align-items-center boton-red" href="#">
-                <i class="bi bi-whatsapp"></i>Whatsapp
-              </a>
-              <a class="a-foot d-flex align-items-center boton-red" href="#">
-                <i class="bi bi-facebook"></i>Facebook
-              </a>
-            </div>
-          </div>
+      <div class="row mt-3 border-top pt-3 text-center">
+        <div class="col-12 col-md-6 mb-2 mb-md-0 ultimo">
+          Derechos reservados
         </div>
-        <div class="row mt-3 border-top pt-3 text-center">
-          <div class="col-12 col-md-6 mb-2 mb-md-0 ultimo">
-            Derechos reservados
-          </div>
-          <div class="col-12 col-md-6 ultimo">Medios de pago (iconos)</div>
-        </div>
+        <div class="col-12 col-md-6 ultimo">Medios de pago (iconos)</div>
       </div>
-    </footer>
+    </div>
+  </footer>
 
-    <button id="btnTop">↑</button>
+  <button id="btnTop">↑</button>
 
-    <a id="btnWhats" href="https://wa.me/56964057476" target="_blank">
-      <i class="bi bi-whatsapp"></i>
-    </a>
+  <a id="btnWhats" href="https://wa.me/56964057476" target="_blank">
+    <i class="bi bi-whatsapp"></i>
+  </a>
+  <form style="display:none;">
+  {% csrf_token %}
+  </form>
+  <!-- !Bootstrap JS -->
+  <script src="{% static 'js/bootstrap.min.js' %}"></script>
+  <script src="{% static 'js/whatsapp.js' %}"></script>
+  <script>
+    const URL_AGREGAR_CARRITO = "{% url 'agregar_carrito' %}";
+    const URL_ELIMINAR_CARRITO = "{% url 'eliminar_item_carrito' %}";
+  </script>
+  {% block script %}{% endblock %}
+</body>
 
-    <!-- !Bootstrap JS -->
-    <script src="{% static 'js/bootstrap.min.js' %}"></script>
-    <script src="{% static 'js/whatsapp.js' %}"></script>
-    {% block script %}{% endblock %}
-  </body>
 </html>
