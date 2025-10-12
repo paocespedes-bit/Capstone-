@@ -9,7 +9,6 @@
 
 {% block content %} 
 
-{# ===== JSON seguros para los gráficos ===== #}
 {{ labels_ventas_anio|json_script:"labels_ventas_anio_json" }}
 {{ data_ventas_anio|json_script:"data_ventas_anio_json" }}
 
@@ -104,7 +103,7 @@
   </div>
 </div>
 
-<!-- Modal (si lo usas) -->
+<!-- Modal -->
 <div id="modalVentas" class="modal">
   <div class="modal-content">
     <span class="close">&times;</span>
@@ -115,7 +114,6 @@
   </div>
 </div>
 
-<!-- Chart.js -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script src="{% static 'control/js/dashboard.js' %}"></script>
 <script src="{% static 'control/js/modal.js' %}"></script>
