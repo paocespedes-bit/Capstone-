@@ -10,7 +10,7 @@ class Local(models.Model):
     nombre = models.CharField(max_length=200, unique=True)
     ubicacion = models.CharField(max_length=300)
     telefono = models.CharField(max_length=20,blank=True,null=True)
-    def __str__(self):
+    def _str_(self):
         return self.nombre
     
 # ! Modelo Pedido
@@ -51,7 +51,7 @@ class Pedido(models.Model):
         total = sum(detalle.subtotal for detalle in self.detalles.all())
         Pedido.objects.filter(pk=self.pk).update(monto_total=total)
 
-    def __str__(self):
+    def _str_(self):
         return f"Pedido #{self.id} - {self.comprador}"
     
 # ! Modelo detalle Pedido
@@ -66,25 +66,21 @@ class DetallePedido(models.Model):
     cantidad = models.PositiveIntegerField(default=1)
     subtotal = models.DecimalField(max_digits=10, decimal_places=2, editable=False)
 
-
     def save(self, *args, **kwargs):
-        """
-        Llenar automáticamente precio y nombre desde el producto,
-        calcular subtotal y actualizar el total del pedido.
-        """
-        if self.producto:
-            # Precio considerando ofertas activas
-            self.precio_unitario = getattr(self.producto, 'precio_actual', 0)
-            # Nombre del producto
-            self.nombre_producto = getattr(self.producto, 'nombre', 'Producto')
-
-        # Calcular subtotal
-        self.subtotal = self.precio_unitario * self.cantidad
+        # Calcular subtotal usando precio_actual del producto
+        precio = getattr(self.producto, 'precio_actual', 0)
+        self.subtotal = precio * self.cantidad
 
         super().save(*args, **kwargs)
-
-        # Actualizar monto total del pedido (sin recursión)
         self.pedido.actualizar_monto_total()
 
-    def __str__(self):
+    @property
+    def nombre_producto(self):
+        return getattr(self.producto, 'nombre', 'Producto Desconocido')
+
+    @property
+    def precio_unitario(self):
+        return getattr(self.producto, 'precio_actual', 0)
+
+    def _str_(self):
         return f"{self.nombre_producto} x {self.cantidad} (Pedido #{self.pedido.id})"
