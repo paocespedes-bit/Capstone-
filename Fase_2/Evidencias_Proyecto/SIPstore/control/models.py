@@ -55,6 +55,7 @@ class Pedido(models.Model):
         return f"Pedido #{self.id} - {self.comprador}"
     
 # ! Modelo detalle Pedido
+# ! Modelo detalle Pedido
 class DetallePedido(models.Model):
     pedido = models.ForeignKey(Pedido, on_delete=models.CASCADE, related_name='detalles')
     
@@ -62,6 +63,8 @@ class DetallePedido(models.Model):
     tipo = models.CharField(max_length=50)
     object_id = models.PositiveIntegerField(null=True, blank=True)
     producto = GenericForeignKey('content_type', 'object_id')
+    nombre_producto = models.CharField(max_length=255)
+    precio_unitario = models.DecimalField(max_digits=10,decimal_places=2)
     
     cantidad = models.PositiveIntegerField(default=1)
     subtotal = models.DecimalField(max_digits=10,decimal_places=2,editable=False)
