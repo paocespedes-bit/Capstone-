@@ -136,7 +136,7 @@ Detalles Pedido
                         <tr>
                             <td>
                                 
-                                    {% if item.producto.imagenes.all %}
+                                {% if item.producto.imagenes.all %}
                                 <img class="" src="{{item.producto.imagenes.first.imagen.url  }}" alt="{{panel.nombre}}" style="max-width: 5vw; height: 5vw;" />
                                 {% else %}
                                 <img src="{% static 'img/SinImagen.png' %}" alt="Imagen no disponible" style="max-width: 5vw; height: 6vw;"/>

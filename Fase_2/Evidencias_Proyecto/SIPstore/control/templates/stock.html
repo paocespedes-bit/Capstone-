@@ -81,4 +81,27 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 });
 </script>
+
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    const filtros = document.querySelectorAll(".filtro-panel");
+
+    filtros.forEach(select => {
+        select.addEventListener("change", function() {
+        const params = new URLSearchParams(window.location.search);
+        params.set("tab", "paneles");  // mantener pestaña activa
+
+        // Establecer o eliminar parámetro según valor
+        if (this.value) {
+            params.set(this.name, this.value);
+        } else {
+            params.delete(this.name);
+        }
+
+        // Redirigir con nuevos filtros
+        window.location.search = params.toString();
+        });
+    });
+});
+</script>
 {% endblock%}

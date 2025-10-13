@@ -181,3 +181,16 @@ h2 {
     background-color: #6c757d; /* gris */
     color: #fff;
 }
+
+th select {
+  width: 100%;
+  padding: 3px;
+  font-size: 0.85rem;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+  background-color: #f8f9fa;
+}
+th select:focus {
+  border-color: #0d6efd;
+  outline: none;
+}

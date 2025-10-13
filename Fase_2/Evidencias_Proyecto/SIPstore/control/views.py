@@ -13,6 +13,7 @@ from collections import Counter
 from django.db.models.functions import ExtractYear, ExtractMonth
 from django.http import FileResponse, Http404
 from .utils.boleta import generar_boleta_pdf
+from decimal import Decimal, InvalidOperation
 
 
 # !Views principales
@@ -120,34 +121,83 @@ def control(request):
 
     return render(request, 'home_control.html', context)
 
+def safe_decimal(value):
+    """Convierte string con coma o punto a Decimal, o None si no es válido."""
+    if not value or value.strip() == "":
+        return None
+    try:
+        return Decimal(value.replace(",", "."))
+    except (InvalidOperation, AttributeError):
+        return None
+
 def stock(request):
     paneles = PanelSIP.objects.all()
     kits = KitConstruccion.objects.all()
     categorias = Categoria.objects.all()
+
+    # Parámetros de orden y pestaña
     ordenar = request.GET.get("ordenar")
     direccion = request.GET.get("direccion")
+    tab = request.GET.get("tab", "paneles")
 
-    if ordenar:
-        if direccion == "desc":
-            paneles = paneles.order_by(f"-{ordenar}")
-        else:
-            paneles = paneles.order_by(ordenar)
+    # --- FILTROS PERSONALIZADOS (solo paneles) ---
+    tipo_obs = request.GET.get("tipo_obs")
+    espesor = request.GET.get("espesor")
+    largo = request.GET.get("largo")
+    ancho = request.GET.get("ancho")
 
+    # Aplicar filtros
+    if tipo_obs and tipo_obs.strip() != "":
+        paneles = paneles.filter(tipo_obs=tipo_obs)
+
+    # Convertimos los valores a Decimal para los campos numéricos
+    espesor_decimal = safe_decimal(espesor)
+    largo_decimal = safe_decimal(largo)
+    ancho_decimal = safe_decimal(ancho)
+
+    if espesor_decimal is not None:
+        paneles = paneles.filter(espesor=espesor_decimal)
+    if largo_decimal is not None:
+        paneles = paneles.filter(largo=largo_decimal)
+    if ancho_decimal is not None:
+        paneles = paneles.filter(ancho=ancho_decimal)
+
+    # --- ORDENAMIENTO ---
     if ordenar:
-        if direccion == "desc":
-            kits = kits.order_by(f"-{ordenar}")
-        else:
-            kits = kits.order_by(ordenar)
+        orden = f"-{ordenar}" if direccion == "desc" else ordenar
+
+        if tab == "paneles":
+            paneles = paneles.order_by(orden)
+        elif tab == "kits":
+            kits = kits.order_by(orden)
+        elif tab == "cat":
+            categorias = categorias.order_by(orden)
+
+    # --- VALORES ÚNICOS PARA SELECTS ---
+    tipo_obs_opciones = PanelSIP.objects.values_list("tipo_obs", flat=True).distinct()
+    espesor_opciones = PanelSIP.objects.values_list("espesor", flat=True).distinct()
+    largo_opciones = PanelSIP.objects.values_list("largo", flat=True).distinct()
+    ancho_opciones = PanelSIP.objects.values_list("ancho", flat=True).distinct()
 
     context = {
-        'paneles': paneles,
-        'kits': kits,
-        'categorias': categorias,
-        'panel_form': PanelSIPForm(),  
-        'CategoriaForm': CategoriaForm(),
-        'KitConstruccionForm': KitConstruccionForm(),
+        "paneles": paneles,
+        "kits": kits,
+        "categorias": categorias,
+        "panel_form": PanelSIPForm(),
+        "CategoriaForm": CategoriaForm(),
+        "KitConstruccionForm": KitConstruccionForm(),
+        "tipo_obs_opciones": tipo_obs_opciones,
+        "espesor_opciones": espesor_opciones,
+        "largo_opciones": largo_opciones,
+        "ancho_opciones": ancho_opciones,
+        # Guardamos los valores actuales para mantener selección
+        "selected_tipo_obs": tipo_obs,
+        "selected_espesor": espesor,
+        "selected_largo": largo,
+        "selected_ancho": ancho,
     }
-    return render(request, 'stock.html', context)
+
+    return render(request, "stock.html", context)
 
 def pedidos(request):
     pedidos = Pedido.objects.all()
@@ -349,6 +399,11 @@ def eliminar_kit(request, pk):
         return redirect('/stock/?tab=kits')
     return redirect('/stock/?tab=kits')
 
+
+# !======================
+# !BOLETAS
+# !======================
+
 def descargar_boleta(request, pedido_id):
     try:
         pedido = Pedido.objects.get(id=pedido_id)
@@ -367,6 +422,11 @@ def save(self,*args, **kwargs):
     self.subtotal = self.precio_unitario * self.cantidad
     super().save(*args,**kwargs)
     self.pedido.actualizar_monto_total()
+
+
+# !======================
+# !ESTADO DE PEDIDO----DISEÑO
+# !======================
 
 
 def cambiar_estado_pedido(request, pedido_id):
