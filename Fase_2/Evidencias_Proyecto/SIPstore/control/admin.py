@@ -5,9 +5,17 @@ from .models import Local, Pedido, DetallePedido
 class DetallePedidoInline(admin.TabularInline):
     model = DetallePedido
     extra = 1
-    readonly_fields = ('subtotal',)
-    fields = ('content_type', 'object_id', 'cantidad', 'precio_unitario', 'subtotal')
+    fields = ('content_type', 'object_id', 'cantidad', 'get_precio', 'get_subtotal')
+    readonly_fields = ('get_precio', 'get_subtotal')
     show_change_link = True
+
+    def get_precio(self, obj):
+        return obj.precio_unitario
+    get_precio.short_description = "Precio Unitario"
+
+    def get_subtotal(self, obj):
+        return obj.subtotal
+    get_subtotal.short_description = "Subtotal"
 
 # Admin de Local
 @admin.register(Local)

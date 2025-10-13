@@ -169,6 +169,11 @@ Detalles Pedido
                         <strong>Total:</strong> <span>${{ pedido.monto_total|floatformat:0|intcomma }}</span>
                     </li>
                 </ul>
+                <div class="d-flex justify-content-end mb-3">
+                    <a href="{% url 'descargar_boleta' pedido.id %}" class="btn btn-success">
+                        <i class="bi bi-file-earmark-pdf"></i> Descargar Boleta PDF
+                    </a>
+                </div>
             </div>
         </div>
     </div>

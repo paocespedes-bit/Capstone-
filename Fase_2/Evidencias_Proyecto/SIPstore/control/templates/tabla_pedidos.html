@@ -41,24 +41,25 @@
                     <td class="text-center">{{ pedido.comprador }}</td>
                     <td class="text-center">{{ pedido.fecha_pedido|date:"d F Y" }}</td>
                     <td class="text-center">
-                        {% with estado_actual=pedido.estado|lower %}
-                        <span class="badge 
-                        {% if estado_actual == 'pendiente' %}
-                            bg-warning text-dark
-                        {% elif estado_actual == 'en proceso' %}
-                            bg-primary text-dark
-                        {% elif estado_actual == 'completado' %}
-                            bg-success
-                        {% elif estado_actual == 'cancelado' %}
-                            bg-danger
-                        {% else %}
-                            bg-secondary
-                        {% endif %}
-                        ">
-                            {{ pedido.estado }}
-                        </span>
-                        {% endwith %}
-
+                        <form method="post" action="{% url 'cambiar_estado_pedido' pedido.id %}">
+                            {% csrf_token %}
+                            <select 
+                                name="nuevo_estado" 
+                                class="form-select form-select-sm w-auto text-center estado-select 
+                                {% if pedido.estado == 'pendiente' %}estado-pendiente
+                                {% elif pedido.estado == 'en_proceso' %}estado-proceso
+                                {% elif pedido.estado == 'completado' %}estado-completado
+                                {% elif pedido.estado == 'cancelado' %}estado-cancelado
+                                {% else %}estado-default{% endif %}"
+                                onchange="this.form.submit()"
+                            >
+                                {% for value, display in pedido.ESTADOS %}
+                                <option value="{{ value }}" {% if pedido.estado == value %}selected{% endif %}>
+                                    {{ display }}
+                                </option>
+                                {% endfor %}
+                            </select>
+                        </form>
                     </td>
                     <td class="text-center">{{ pedido.local }}</td>
                     <td class="text-center">${{ pedido.monto_total|floatformat:0|intcomma }}</td>

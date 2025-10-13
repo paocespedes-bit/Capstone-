@@ -11,6 +11,9 @@ from django.utils import timezone
 from django.db.models import Sum, F
 from collections import Counter 
 from django.db.models.functions import ExtractYear, ExtractMonth
+from django.http import FileResponse, Http404
+from .utils.boleta import generar_boleta_pdf
+
 
 # !Views principales
 def control(request):
@@ -169,6 +172,7 @@ def pedido_detail(request, pk):
         'pedido': pedidos,
         'detalles': detalles
     }
+    
     return render(request, 'pedido_detail.html', context)
 # !======================
 # !CREAR 
@@ -345,3 +349,36 @@ def eliminar_kit(request, pk):
         return redirect('/stock/?tab=kits')
     return redirect('/stock/?tab=kits')
 
+def descargar_boleta(request, pedido_id):
+    try:
+        pedido = Pedido.objects.get(id=pedido_id)
+    except Pedido.DoesNotExist:
+        raise Http404("El pedido no existe")
+
+    detalles = DetallePedido.objects.filter(pedido=pedido)
+    pdf_buffer = generar_boleta_pdf(pedido, detalles)
+    filename = f"boleta_pedido_{pedido.id}.pdf"
+
+    return FileResponse(pdf_buffer, as_attachment=True, filename=filename)
+
+def save(self,*args, **kwargs):
+    if not self.nombre_producto and self.producto:
+        self.nombre_producto = getattr(self.producto, 'nombre', 'Producto Desconocido')
+    self.subtotal = self.precio_unitario * self.cantidad
+    super().save(*args,**kwargs)
+    self.pedido.actualizar_monto_total()
+
+
+def cambiar_estado_pedido(request, pedido_id):
+    pedido = get_object_or_404(Pedido, id=pedido_id)
+    
+    if request.method == "POST":
+        nuevo_estado = request.POST.get("nuevo_estado")
+        if nuevo_estado in dict(Pedido.ESTADOS).keys():
+            pedido.estado = nuevo_estado
+            pedido.save()
+            messages.success(request, f"Estado del pedido #{pedido.id} actualizado a {pedido.get_estado_display()}.")
+        else:
+            messages.error(request, "Estado no válido.")
+    
+    return redirect(request.META.get("HTTP_REFERER", "pedidos_list"))
