@@ -78,7 +78,17 @@
                 {% for kit in kits %}
                 <tr>
                     <td>#{{ kit.id }}</td>
-                    <td>SIN STOCK</td>
+                    <td>
+                        {% if kit.inventario.first.modo_stock == 'stock' %}
+                        {% if kit.inventario.first.disponible == 0 %}
+                        Sin Stock
+                        {% else %}
+                        {{kit.inventario.first.disponible}}
+                        {% endif %}
+                        {% else %}
+                        Por Pedido
+                        {% endif %}
+                    </td>
                     <td>{{ kit.nombre }}</td>
                     <td>${{ kit.precio_actual|floatformat:0|punto_miles }}</td>
                     <td>

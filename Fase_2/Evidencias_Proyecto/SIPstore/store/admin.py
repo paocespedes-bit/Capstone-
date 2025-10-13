@@ -6,15 +6,26 @@ from .models import (
     PanelSIP,
     imagenProducto,
     Oferta,
-    Comentario
+    Comentario,
+    Inventario
 )
-
-# Para manejar imágenes en la misma página del producto
 
 class ImagenProductoInline(GenericTabularInline):
     model = imagenProducto
     extra = 1
 
+class InventarioInline(GenericTabularInline):
+    model = Inventario
+    extra = 1         
+    max_num = 1       
+    min_num = 1       
+    ct_field = "content_type"
+    ct_fk_field = "object_id"
+    fields = ('disponible', 'reservado', 'modo_stock')
+    verbose_name = "Inventario"
+    verbose_name_plural = "Inventario"
+    can_delete = False 
+    
 # Personalización para el modelo KitConstruccion
 @admin.register(KitConstruccion)
 class KitConstruccionAdmin(admin.ModelAdmin):
@@ -24,7 +35,7 @@ class KitConstruccionAdmin(admin.ModelAdmin):
     # Permite filtrar por categorías
     list_filter = ('categorias',)
     # Muestra las imágenes en la misma página de edición del kit
-    inlines = [ImagenProductoInline]
+    inlines = [ImagenProductoInline,InventarioInline]
     # Muestra los campos en el orden especificado
     fields = ('nombre', 'precio', 'descripcion', 'm2', 'dormitorios', 'banos', 'categorias')
 
@@ -34,7 +45,7 @@ class PanelSIPAdmin(admin.ModelAdmin):
     list_display = ('nombre', 'precio', 'espesor', 'largo', 'ancho', 'precio_actual')
     search_fields = ('nombre', 'tipo_obs', 'madera_union')
     list_filter = ('categorias',)
-    inlines = [ImagenProductoInline]
+    inlines = [ImagenProductoInline,InventarioInline]
 
 # Registro de los modelos restantes, también se puede usar el decorador @admin.register()
 @admin.register(Categoria)

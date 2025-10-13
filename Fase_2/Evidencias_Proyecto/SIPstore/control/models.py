@@ -2,7 +2,7 @@ from django.db import models
 from django.utils import timezone
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
-from store.models import PanelSIP, KitConstruccion
+from store.models import PanelSIP, KitConstruccion,Inventario
 # Create your models here.
 
 # ! Modelo Local (local retiro)
@@ -64,23 +64,23 @@ class DetallePedido(models.Model):
     producto = GenericForeignKey('content_type', 'object_id')
     
     cantidad = models.PositiveIntegerField(default=1)
-    subtotal = models.DecimalField(max_digits=10, decimal_places=2, editable=False)
-
+    subtotal = models.DecimalField(max_digits=10,decimal_places=2,editable=False)
     def save(self, *args, **kwargs):
-        # Calcular subtotal usando precio_actual del producto
-        precio = getattr(self.producto, 'precio_actual', 0)
-        self.subtotal = precio * self.cantidad
-
+        self.subtotal = self.precio_unitario * self.cantidad
         super().save(*args, **kwargs)
+
+    # Actualiza monto total
         self.pedido.actualizar_monto_total()
 
-    @property
-    def nombre_producto(self):
-        return getattr(self.producto, 'nombre', 'Producto Desconocido')
-
-    @property
-    def precio_unitario(self):
-        return getattr(self.producto, 'precio_actual', 0)
-
+    # Actualiza inventario del producto si existe
+        if self.content_type and self.object_id:
+            inventario = Inventario.objects.filter(
+            content_type=self.content_type,
+            object_id=self.object_id
+            ).first()
+            if inventario:
+                inventario.reservado += self.cantidad
+                inventario.actualizar_stock()
+    
     def __str__(self):
         return f"{self.nombre_producto} x {self.cantidad} (Pedido #{self.pedido.id})"
