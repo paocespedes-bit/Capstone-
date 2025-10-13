@@ -4,7 +4,7 @@ from django.contrib.contenttypes.models import ContentType
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from .forms import CategoriaForm, PanelSIPForm, KitConstruccionForm, ImagenProductoForm
-from store.models import PanelSIP, KitConstruccion, Categoria, imagenProducto
+from store.models import PanelSIP, KitConstruccion, Categoria, imagenProducto,Inventario
 from .models import Pedido,DetallePedido
 from datetime import date
 from django.utils import timezone
@@ -189,11 +189,36 @@ def crear_panel(request):
     if request.method == 'POST':
         panel_form = PanelSIPForm(request.POST)
         if panel_form.is_valid():
-            panel_form.save()
-            messages.success(request, 'Panel SIP creado correctamente.')
+            
+            panel = panel_form.save(commit=False)
+            panel.save()
+            panel_form.save_m2m()
+            
+            # Obtener ContentType para PanelSIP
+            panel_content_type = ContentType.objects.get_for_model(PanelSIP)
+            
+            modo_stock = request.POST.get('modo_stock')
+            cantidad_str = request.POST.get('cantidad')
+            
+            cantidad_disponible = 0
+            if modo_stock == 'stock' and cantidad_str:
+                try:
+                    cantidad_disponible = int(cantidad_str)
+                except ValueError:
+                    cantidad_disponible = 0
+            
+            Inventario.objects.create(
+                # ASIGNACIÓN EXPLÍCITA DE LA GENERIC FOREIGN KEY
+                content_type=panel_content_type,
+                object_id=panel.id,
+                disponible=cantidad_disponible,
+                reservado=0,
+                modo_stock=modo_stock if modo_stock else 'pedido'
+            )
+
+            messages.success(request, 'Panel SIP creado correctamente y se ha establecido su inventario.')
         else:
             messages.error(request, 'Por favor corrige los errores del formulario.')
-
         
         return redirect(f"{reverse('stock')}?tab=paneles")
     
@@ -203,8 +228,34 @@ def crear_kit(request):
     if request.method == 'POST':
         kit_form = KitConstruccionForm(request.POST)
         if kit_form.is_valid():
-            kit_form.save()
-            messages.success(request, 'Kit de construcción creado correctamente.')
+            
+            kit = kit_form.save(commit=False)
+            kit.save()
+            kit_form.save_m2m()
+            
+            # Obtener ContentType para KitConstruccion
+            kit_content_type = ContentType.objects.get_for_model(KitConstruccion)
+
+            modo_stock = request.POST.get('modo_stock')
+            cantidad_str = request.POST.get('cantidad')
+            
+            cantidad_disponible = 0
+            if modo_stock == 'stock' and cantidad_str:
+                try:
+                    cantidad_disponible = int(cantidad_str)
+                except ValueError:
+                    cantidad_disponible = 0
+            
+            Inventario.objects.create(
+                # ASIGNACIÓN EXPLÍCITA DE LA GENERIC FOREIGN KEY
+                content_type=kit_content_type,
+                object_id=kit.id,
+                disponible=cantidad_disponible,
+                reservado=0,
+                modo_stock=modo_stock if modo_stock else 'pedido'
+            )
+            
+            messages.success(request, 'Kit de construcción creado correctamente y se ha establecido su inventario.')
         else:
             messages.error(request, 'Por favor corrige los errores del formulario.')
 
@@ -213,6 +264,7 @@ def crear_kit(request):
     
 
     return redirect(f"{reverse('stock')}?tab=kits")
+
 # !======================
 # !SUBIR IMAGENES 
 # !======================
@@ -279,27 +331,61 @@ def editar_panel(request, pk):
         panel.largo = request.POST.get('largo')
         panel.ancho = request.POST.get('ancho')
         panel.save()
+        
+        # Guardar relaciones Many-to-Many
         panel.categorias.set(request.POST.getlist('categorias'))
 
-        return redirect('stock')
+        # Actualizar Inventario
+        inventario = panel.inventario.first() 
+        
+        if inventario:
+            modo_stock = request.POST.get('modo_stock')
+            cantidad_str = request.POST.get('cantidad')
+            
+            inventario.modo_stock = modo_stock if modo_stock else 'pedido'
+            
+            if inventario.modo_stock == 'stock' and cantidad_str:
+                try:
+                    inventario.disponible = int(cantidad_str) 
+                except ValueError:
+                    pass
 
-    return render(request, 'stock.html', {
-        'panel_form': None,  # No necesitamos el panel_form aquí
-        'paneles': PanelSIP.objects.all(),
-        'categorias': Categoria.objects.all(),
-    })
+            inventario.save()
+        
+        return redirect(f"{reverse('stock')}?tab=paneles")
+
+    return redirect(f"{reverse('stock')}?tab=paneles") 
 
 def editar_kit(request, pk):
     kit = get_object_or_404(KitConstruccion, pk=pk)
+    
     if request.method == "POST":
         form = KitConstruccionForm(request.POST, instance=kit)
         if form.is_valid():
             form.save()
-            # Redirige al inventario con query param para la pestaña de kits
+            
+            # Actualizar Inventario
+            inventario = kit.inventario.first()
+            
+            if inventario:
+                modo_stock = request.POST.get('modo_stock')
+                cantidad_str = request.POST.get('cantidad')
+                
+                inventario.modo_stock = modo_stock if modo_stock else 'pedido'
+                
+                if inventario.modo_stock == 'stock' and cantidad_str:
+                    try:
+                        inventario.disponible = int(cantidad_str)
+                    except ValueError:
+                        pass
+                
+                inventario.save()
+                
             return redirect(f"{reverse('stock')}?tab=kits")
-    else:
-        form = KitConstruccionForm(instance=kit)
-    return render(request, "editar_kit.html", {"form": form})
+        
+        return redirect(f"{reverse('stock')}?tab=kits")
+        
+    return redirect(f"{reverse('stock')}?tab=kits")
 
 def editar_categoria(request, pk):
     categoria = get_object_or_404(Categoria, pk=pk)

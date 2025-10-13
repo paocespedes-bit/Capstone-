@@ -20,6 +20,7 @@ class Producto(models.Model):
     descripcion = models.TextField(blank=True, null=True)
     ofertas = GenericRelation('Oferta', related_query_name='producto')
     imagenes = GenericRelation('imagenProducto', related_query_name='producto')
+    inventario = GenericRelation('Inventario', related_query_name='producto')
 
     @property
     def precio_actual(self):
@@ -73,10 +74,7 @@ class imagenProducto(models.Model):
 
 #*Inventario
 class Inventario(models.Model):
-    TIPO_STOCK =[
-        ('stock', 'Con stock'), 
-        ('pedido', 'Por pedido')
-    ]
+    TIPO_STOCK =[('stock', 'Con stock'), ('pedido', 'Por pedido')]
     
     content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
     object_id = models.PositiveIntegerField()
@@ -84,11 +82,14 @@ class Inventario(models.Model):
 
     disponible = models.PositiveIntegerField(default=0)
     reservado = models.PositiveIntegerField(default=0)
-    modo_stock = models.CharField(
-        max_length=20,
-        choices=TIPO_STOCK,
-        default='pedido'
-    )
+    modo_stock = models.CharField(max_length=20, choices=TIPO_STOCK, default='pedido')
+
+    def actualizar_stock(self):
+        self.disponible = max(self.disponible - self.reservado, 0)
+        self.save()
+
+    def __str__(self):
+        return f"Inventario de {self.producto} - Disponible: {self.disponible}"
 
     def actualizar_stock(self):
         self.disponible = max(self.disponible - self.reservado, 0)

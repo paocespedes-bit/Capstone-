@@ -51,10 +51,15 @@
         <tr>
           <td>#{{ panel.id }}</td>
           <td>
-            <button type="button" class="btn btn-outline-primary  " data-bs-toggle="modal"
-              data-bs-target="#modalInventarioPanel_{{ panel.id }}">
-              Stock <i class="bi bi-pencil-square"></i>
-            </button>
+            {% if panel.inventario.first.modo_stock == 'stock' %}
+              {% if panel.inventario.first.disponible == 0 %}
+                Sin Stock
+              {% else %}
+                {{panel.inventario.first.disponible}}
+              {% endif %}
+            {% else %}
+              Por Pedido
+            {% endif %}
           </td>
           <td>{{ panel.nombre }}</td>
           <td>${{ panel.precio_actual|floatformat:0|punto_miles }}</td>
@@ -82,10 +87,11 @@
             </button>
           </td>
           <td class="text-center">
-            <button class="btn btn-sm btn-primary" data-bs-toggle="modal"
+            <button type="button" class="btn btn-sm btn-primary" data-bs-toggle="modal"
               data-bs-target="#modalEditarPanel_{{ panel.id }}">
-              Editar
+              Editar <i class="bi bi-pencil-square"></i>
             </button>
+            
             <button type="button" class="btn btn-danger" data-bs-toggle="modal"
               data-bs-target="#modalEliminarPanel_{{ panel.id }}">
               Eliminar
