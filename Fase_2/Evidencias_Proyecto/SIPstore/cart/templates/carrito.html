@@ -8,81 +8,104 @@
 {% block title %}Carrito de Compras{% endblock %}
 
 {% block content %}
-<div class="container cart-container">
-  <div class="row">
-    <!-- Lista de productos -->
-    {% if carrito %}
-    <div class="col-md-8">
-      <div class="titulo">
-        <h1>Carrito</h1>
-      </div>
-      <!-- Producto -->
-
-      {% for p in productos %}
-      <div class="cart-item d-flex align-items-center">
-        <img src="{% static 'img/SinImagen.png' %}" alt="Producto">
-        <div class="ms-3 flex-grow-1">
-          <h5>{{ p.nombre }}</h5>
-          {% if p.tipo == "kitconstruccion" %}
-          <p>Kit ID: {{ p.id }}</p>
-          {% elif p.tipo == "panelsip" %}
-          <p>Panel ID: {{ p.id }}</p>
-          {% else %}
-          <p>ID: {{ p.id }}</p>
-          {% endif %}
-        </div>
-        <div class="me-3">
-          <input type="number" class="form-control quantity-input" value="{{ p.cantidad }}" min="1" step="1"
-            data-contenttype="{{ p.tipo }}" data-id="{{ p.id }}">
-        </div>
-        <div class="text-end">
-          <p class="mb-1">${{ p.precio|floatformat:0|punto_miles }}
-            <!-- <span class="price-original">${{ p.precio_anterior|floatformat:0|punto_miles }}</span> --> </p>
-        </div>
-        <div>
-          <button class="remove-cart-item btn btn-danger m-3" data-id="{{ p.id }}" data-contenttype="{{ p.tipo }}"><i class="bi bi-trash"></i> Eliminar</button> 
-        </div>
-      </div>
-      {% endfor %}
-      <div>
-        <a class="btn btn-danger m-3" href="{% url 'vaciar_carrito' %}">Vaciar Carro</a>
-      </div>
-
-    </div>
-    <!-- Resumen de compra -->
-    <div class="col-md-4">
-      <div class="cart-summary">
-        <h4>Resumen de Compra</h4>
-        {% for p in productos %}
-        <div class="d-flex justify-content-between">
-          <span>{{p.nombre|truncatechars:10}} x {{p.cantidad}}</span>
-          <strong>${{p.subtotal}}</strong>
-        </div>
-        {% endfor %}
-        <hr>
-        <div class="d-flex justify-content-between total">
-          <span>Total</span>
-          <span>${{total|floatformat:0|punto_miles}}</span>
-        </div>
-        <button class="btn btn-primary w-100 mt-3">Continuar Compra</button>
-      </div>
-      <ul>
-        {% for item in carrito %}
-        <li>
-          Tipo: {{ item.content_type }}, ID: {{ item.product_id }}, Cantidad: {{ item.quantity }}
-        </li>
-        {% endfor %}
-      </ul>
-
-    </div>
-    {% else %}
-    <p>El carrito está vacío</p>
-    {% endif %}
-  </div>
+<div class="col-md-8">
+  <h1>Carrito</h1>
+  <div id="lista-carrito"></div>
+  <button class="btn btn-danger mt-3" onclick="vaciarCarrito()">Vaciar Carrito</button>
 </div>
 
+<div class="col-md-4">
+  <div class="cart-summary">
+    <h4>Resumen de Compra</h4>
+    <div id="resumen-carrito"></div>
+    <button class="btn btn-primary w-100 mt-3" data-bs-toggle="collapse" data-bs-target="#formularioPago">
+      Continuar con Pedido
+    </button>
+  </div>
+
+  <!-- Formulario colapsable -->
+  <div class="collapse mt-3" id="formularioPago">
+    <form method="post">
+      {% csrf_token %}
+      <input class="form-control mb-2" name="comprador" placeholder="Nombre completo">
+      <input class="form-control mb-2" name="correo_cli" placeholder="Correo electrónico">
+      <input class="form-control mb-2" name="celular_cli" placeholder="Celular">
+      <textarea class="form-control mb-2" name="ubicacion_cli" placeholder="Dirección"></textarea>
+      <button class="btn btn-success w-100">Confirmar Pedido</button>
+    </form>
+  </div>
+</div>
 {% endblock %}
 
 {% block script %}
 <script src="{% static 'eliminar_carrito.js' %}"></script>
+<script>
+function renderizarCarrito() {
+  const contenedor = document.getElementById("lista-carrito");
+  const resumen = document.getElementById("resumen-carrito");
+  let carrito = JSON.parse(localStorage.getItem("carrito")) || [];
+
+  contenedor.innerHTML = "";
+  resumen.innerHTML = "";
+
+  let total = 0;
+
+  carrito.forEach((p, index) => {
+    const subtotal = p.precio_unitario * p.cantidad;
+    total += subtotal;
+
+    contenedor.innerHTML += `
+      <div class="cart-item d-flex align-items-center">
+        <div class="flex-grow-1">
+          <h5>${p.nombre_producto}</h5>
+          <p>${p.content_type} ID: ${p.id}</p>
+        </div>
+        <input type="number" min="1" value="${p.cantidad}" class="form-control w-25 me-2" onchange="actualizarCantidad(${index}, this.value)">
+        <span>$${p.precio_unitario}|floatformat:0|punto_miles</span>
+        <button class="btn btn-danger ms-2" onclick="eliminarItem(${index})"><i class="bi bi-trash"></i></button>
+      </div>
+    `;
+
+    resumen.innerHTML += `
+      <div class="d-flex justify-content-between">
+        <span>${p.nombre_producto} x ${p.cantidad}</span>
+        <strong>$${subtotal.toLocaleString()}</strong>
+      </div>
+    `;
+  });
+
+  resumen.innerHTML += `
+    <hr>
+    <div class="d-flex justify-content-between">
+      <span><strong>Total</strong></span>
+      <strong>$${total.toLocaleString()}</strong>
+    </div>
+  `;
+}
+
+function actualizarCantidad(index, nuevaCantidad) {
+  let carrito = JSON.parse(localStorage.getItem("carrito")) || [];
+  if (nuevaCantidad < 1) nuevaCantidad = 1;
+  carrito[index].cantidad = parseInt(nuevaCantidad);
+  localStorage.setItem("carrito", JSON.stringify(carrito));
+  renderizarCarrito();
+}
+
+function eliminarItem(index) {
+  let carrito = JSON.parse(localStorage.getItem("carrito")) || [];
+  carrito.splice(index, 1);
+  localStorage.setItem("carrito", JSON.stringify(carrito));
+  renderizarCarrito();
+  actualizarBadge();
+}
+
+function vaciarCarrito() {
+  localStorage.removeItem("carrito");
+  renderizarCarrito();
+  actualizarBadge();
+}
+
+document.addEventListener("DOMContentLoaded", renderizarCarrito);
+</script>
+
 {% endblock %}

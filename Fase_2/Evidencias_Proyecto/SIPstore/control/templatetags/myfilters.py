@@ -19,3 +19,7 @@ def punto_miles(value):
 @register.filter
 def multiply(value, arg):
     return float(value) * int(arg)
+
+@register.filter
+def mul(value, arg):
+    return value * arg

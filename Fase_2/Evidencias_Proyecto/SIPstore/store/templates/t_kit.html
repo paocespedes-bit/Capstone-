@@ -46,7 +46,7 @@
           <button type="button" class="btn rounded-circle custom-icon-btn"><i class="bi bi-plus-lg"></i></button>
         </div>
         
-        <button class="add-cart" data-id="{{ kit.id }}" data-contenttype="kitconstruccion">Añadir al Carrito&nbsp;<i class="bi bi-cart3"></i></button>
+        <button class="btn-agregar-carrito add-cart" data-contenttype="kitconstruccion" data-id="{{ kit.id }}" data-nombre="{{ kit.nombre }}" data-precio="{{ kit.precio }}">Añadir al Carrito&nbsp;<i class="bi bi-cart3"></i></button>
       </div>
     </div>
     <div class="expansion">
@@ -66,5 +66,5 @@
 {% block script %}
 <script src="{% static 'store/js/mas_menos.js' %}"></script>
 <script src="{% static 'store/js/click.js' %}"></script>
-<script src="{% static 'cart/js/agregar_carrito.js' %}"></script>
+<script src="{% static 'cart/js/carrito.js' %}"></script>
 {% endblock %}

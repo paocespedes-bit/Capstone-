@@ -67,7 +67,7 @@
         <!-- !Boton carrito  -->
         <a href="{% url 'carrito' %}" class="btn btn-success cart-button position-relative">
           <i class="bi bi-cart3"></i> Carrito
-          <span id="cart-badge" class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger hidden">
+          <span id="cart-badge" class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
             0
           </span>
         </a>
@@ -135,10 +135,6 @@
   <!-- !Bootstrap JS -->
   <script src="{% static 'js/bootstrap.min.js' %}"></script>
   <script src="{% static 'js/whatsapp.js' %}"></script>
-  <script>
-    const URL_AGREGAR_CARRITO = "{% url 'agregar_carrito' %}";
-    const URL_ELIMINAR_CARRITO = "{% url 'eliminar_item_carrito' %}";
-  </script>
   {% block script %}{% endblock %}
 </body>
 
