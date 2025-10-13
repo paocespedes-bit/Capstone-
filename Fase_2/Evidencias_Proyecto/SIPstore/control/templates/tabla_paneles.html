@@ -50,7 +50,12 @@
         {% for panel in paneles %}
         <tr>
           <td>#{{ panel.id }}</td>
-          <td>SIN STOCK</td>
+          <td>
+            <button type="button" class="btn btn-outline-primary  " data-bs-toggle="modal"
+              data-bs-target="#modalInventarioPanel_{{ panel.id }}">
+              Stock <i class="bi bi-pencil-square"></i>
+            </button>
+          </td>
           <td>{{ panel.nombre }}</td>
           <td>${{ panel.precio_actual|floatformat:0|punto_miles }}</td>
           <td>

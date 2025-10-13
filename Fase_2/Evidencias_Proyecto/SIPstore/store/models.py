@@ -73,15 +73,29 @@ class imagenProducto(models.Model):
 
 #*Inventario
 class Inventario(models.Model):
-    producto = models.OneToOneField('Producto',on_delete=models.CASCADE, related_name='inventario')
+    TIPO_STOCK =[
+        ('stock', 'Con stock'), 
+        ('pedido', 'Por pedido')
+    ]
+    
+    content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
+    object_id = models.PositiveIntegerField()
+    producto = GenericForeignKey('content_type', 'object_id')
+
     disponible = models.PositiveIntegerField(default=0)
-    reservado = models.PositiveBigIntegerField(default=0) #! puede servir para pedidos en cuso, si no eliminar
+    reservado = models.PositiveIntegerField(default=0)
+    modo_stock = models.CharField(
+        max_length=20,
+        choices=TIPO_STOCK,
+        default='pedido'
+    )
+
+    def actualizar_stock(self):
+        self.disponible = max(self.disponible - self.reservado, 0)
+        self.save()
 
     def __str__(self):
-        return f"stock de {self.producto.nombre}"
-    
-    class Meta:
-        abstract = True
+        return f"Inventario de {self.producto} - Disponible: {self.disponible} / Reservado: {self.reservado}"
     
 #*Ofertas
 class Oferta(models.Model):

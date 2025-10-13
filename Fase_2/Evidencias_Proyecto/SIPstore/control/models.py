@@ -2,7 +2,7 @@ from django.db import models
 from django.utils import timezone
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
-from store.models import PanelSIP, KitConstruccion
+from store.models import PanelSIP, KitConstruccion,Inventario
 # Create your models here.
 
 # ! Modelo Local (local retiro)
@@ -68,10 +68,22 @@ class DetallePedido(models.Model):
     
     cantidad = models.PositiveIntegerField(default=1)
     subtotal = models.DecimalField(max_digits=10,decimal_places=2,editable=False)
-    def save(self,*args, **kwargs):
+    def save(self, *args, **kwargs):
         self.subtotal = self.precio_unitario * self.cantidad
-        super().save(*args,**kwargs)
+        super().save(*args, **kwargs)
+
+    # Actualiza monto total
         self.pedido.actualizar_monto_total()
+
+    # Actualiza inventario del producto si existe
+        if self.content_type and self.object_id:
+            inventario = Inventario.objects.filter(
+            content_type=self.content_type,
+            object_id=self.object_id
+            ).first()
+            if inventario:
+                inventario.reservado += self.cantidad
+                inventario.actualizar_stock()
     
     def __str__(self):
         return f"{self.producto} x {self.cantidad} (Pedido #{self.pedido.id})"

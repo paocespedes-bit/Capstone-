@@ -78,7 +78,12 @@
                 {% for kit in kits %}
                 <tr>
                     <td>#{{ kit.id }}</td>
-                    <td>SIN STOCK</td>
+                    <td>
+                        <button type="button" class="btn btn-outline-primary" data-bs-toggle="modal"
+                            data-bs-target="#modalInventarioKit_{{ kit.id }}">
+                            Stock <i class="bi bi-pencil-square"></i>
+                        </button>
+                    </td>
                     <td>{{ kit.nombre }}</td>
                     <td>${{ kit.precio_actual|floatformat:0|punto_miles }}</td>
                     <td>
