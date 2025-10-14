@@ -61,7 +61,7 @@
                             </select>
                         </form>
                     </td>
-                    <td class="text-center">{{ pedido.local }}</td>
+                    <td class="text-center">{{ pedido.nombre_local }}</td>
                     <td class="text-center">${{ pedido.monto_total|floatformat:0|intcomma }}</td>
                     <td class="text-center">
                         {% with metodo_actual=pedido.estado|lower %}

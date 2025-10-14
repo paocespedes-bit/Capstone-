@@ -102,9 +102,9 @@ def eliminar_item_carrito(request):
         for item in carrito:
             if item["content_type"] == content_type and item["product_id"] == int(product_id):
                 carrito.remove(item)
-                break  # Rompemos el bucle después de eliminar el item
+                break  
 
-        # Actualizar el carrito en la sesión
+        
         request.session["carrito"] = carrito
         total_items = sum(item.get("quantity", 0) for item in carrito)
         

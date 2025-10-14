@@ -81,7 +81,7 @@ Detalles Pedido
                         <ul class="list-group list-group-flush">
                             <li class="list-group-item d-flex justify-content-between align-items-center">
                                 <strong>Centro Retiro:</strong>
-                                <span>{{ pedido.local }}</span>
+                                <span>{{ pedido.nombre_local }}</span>
                             </li>
                         </ul>
                     </div>
@@ -146,11 +146,11 @@ Detalles Pedido
 
                             <td data-label="Nombre">
                                 {% if item.content_type.model == 'kitconstruccion' %}
-                                K#{{ item.producto.id }} - {{ item.producto.nombre }}
+                                K#{{ item.object_id }} - {{ item.nombre_producto }}
                                 {% elif item.content_type.model == 'panel' or item.content_type.model == 'panelsip' %}
-                                P#{{ item.producto.id }} - {{ item.producto.nombre }}
+                                P#{{ item.producto.id }} - {{ item.nombre_producto }}
                                 {% else %}
-                                ID#{{ item.producto.id }} - Producto Desconocido
+                                ID#{{ item.object_id }} - Producto Desconocido
                                 {% endif %}
                             </td>
 
