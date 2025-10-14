@@ -10,11 +10,12 @@
         <th class="text-center">Acciones</th>
       </tr>
     </thead>
+    <h2>Categorias</h2>
     <tbody>
       {% for cat in categorias %}
       <tr>
-        <td>{{ cat.nombre }}</td>
-        <td class="text-center">
+        <td data-label="Nombre">{{ cat.nombre }}</td>
+        <td data-label="Acciones" class="text-center">
           <button class="btn btn-sm btn-primary" data-bs-toggle="modal"
             data-bs-target="#modalEditarPanel{{ cat.id }}">Editar</button>
           <button type="button" class="btn btn-danger" data-bs-toggle="modal"
