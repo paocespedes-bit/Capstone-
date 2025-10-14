@@ -55,7 +55,7 @@ class Pedido(models.Model):
         return f"Pedido #{self.id} - {self.comprador}"
     
 # ! Modelo detalle Pedido
-# ! Modelo detalle Pedido
+
 class DetallePedido(models.Model):
     pedido = models.ForeignKey(Pedido, on_delete=models.CASCADE, related_name='detalles')
     
@@ -68,22 +68,30 @@ class DetallePedido(models.Model):
     
     cantidad = models.PositiveIntegerField(default=1)
     subtotal = models.DecimalField(max_digits=10,decimal_places=2,editable=False)
+    
     def save(self, *args, **kwargs):
+        # Si existe un producto vinculado, copiamos su nombre y precio actual
+        if self.producto:
+            self.nombre_producto = getattr(self.producto, 'nombre', 'Producto Desconocido')
+            self.precio_unitario = getattr(self.producto, 'precio_actual', 0)
+        
+        # Calculamos el subtotal antes de guardar
         self.subtotal = self.precio_unitario * self.cantidad
+        
         super().save(*args, **kwargs)
-
-    # Actualiza monto total
+        
+        # Actualizamos el monto total del pedido
         self.pedido.actualizar_monto_total()
 
-    # Actualiza inventario del producto si existe
+        # Actualizamos inventario
         if self.content_type and self.object_id:
             inventario = Inventario.objects.filter(
-            content_type=self.content_type,
-            object_id=self.object_id
+                content_type=self.content_type,
+                object_id=self.object_id
             ).first()
             if inventario:
                 inventario.reservado += self.cantidad
                 inventario.actualizar_stock()
-    
+
     def __str__(self):
         return f"{self.nombre_producto} x {self.cantidad} (Pedido #{self.pedido.id})"
