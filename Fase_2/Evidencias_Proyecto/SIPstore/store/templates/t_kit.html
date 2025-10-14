@@ -9,6 +9,7 @@
 {% block content %}
 <!-- !Tarjetas de productos -->
 {% for kit in kits %}
+{% if kit.inventario.first.modo_stock == 'stock' and kit.inventario.first.disponible > 0  or kit.inventario.first.modo_stock == 'pedido' %}
 <div class="contenedor-card" data-url="{% url 'kit_detail' kit.pk %}">
   <div class="card" >
     {% if kit.imagenes.all %}
@@ -17,15 +18,20 @@
     <img src="{% static 'img/SinImagen.png' %}" alt="Imagen no disponible" />
     {% endif %}
     <!-- !Oferta  -->
-    <div class="oferta">-10%</div>
+    <!-- <div class="oferta">-10%</div> -->
     <!-- !--------------------- -->
     <div class="card-body">
       <div class="card-title">{{kit.nombre}}</div>
       <!-- !Estrellas -->
-      <div class="stars">★★★★★</div>
+      <!-- <div class="stars">★★★★★</div> -->
       <!-- !--------------------- -->
       <div class="card-description">
-        Disponible bajo pedido
+        {% if kit.inventario.first.modo_stock == 'pedido' %}
+          Disponible bajo pedido
+        {% else %}
+          Stock Disponible ({{kit.inventario.first.disponible}})
+        {% endif %}
+
       </div>
       <div class="prices">
         <p class="price">${{kit.precio|floatformat:0|punto_miles}}</p> 
@@ -50,6 +56,7 @@
     </div>
   </div>
 </div>
+{% endif %}
 {% empty %}
 <p>No kits de construccion disponibles</p>
 {% endfor %} 

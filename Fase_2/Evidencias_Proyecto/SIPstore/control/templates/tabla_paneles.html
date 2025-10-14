@@ -7,103 +7,140 @@
 
 <div class="container-fluid">
   <h2>Tabla de Paneles</h2>
-  <div class="table-responsive mb-5">
-    <table class="table table-hover table-striped align-middle">
-      <thead class="table">
-        <tr>
-          <th>ID
-            {% include 'filtro_columna.html' with columna_nombre="id" %}
-          </th>
-          <th>Cantidad
-          </th>
-          <th>Nombre
-            {% include 'filtro_columna.html' with columna_nombre="nombre" %}
-          </th>
-          <th>Precio
-            {% include 'filtro_columna.html' with columna_nombre="precio" %}
-          </th>
-          <th>Oferta
-          </th>
-          <th>Descripción</th>
-          <th>Tipo OBS
 
-          </th>
-          <th>Espesor
+  <form method="get" action="{% url 'stock' %}">
+    <input type="hidden" name="tab" value="paneles">
+    <div class="table-responsive mb-5">
+      <table class="table table-hover table-striped align-middle">
+        <thead class="table">
+          <tr>
+            <th>ID
+              {% include 'filtro_columna.html' with columna_nombre="id" tab_activo="paneles" %}
+            </th>
+            <th>Cantidad</th>
+            <th>Nombre
+              {% include 'filtro_columna.html' with columna_nombre="nombre" tab_activo="paneles" %}
+            </th>
+            <th>Precio
+              {% include 'filtro_columna.html' with columna_nombre="precio" tab_activo="paneles" %}
+            </th>
+            <th>Oferta</th>
+            <th>Descripción</th>
 
-          </th>
-          <th>Largo
+            <th>
+                Tipo OBS
+                <select name="tipo_obs" id="tipo_obs" onchange="this.form.submit()">
+                    <option value="">Todos</option>
+                    {% for tipo in tipo_obs_opciones %}
+                        <option value="{{ tipo }}" {% if selected_tipo_obs == tipo %}selected{% endif %}>{{ tipo }}</option>
+                    {% endfor %}
+                </select>
+            </th>
+            <th>
+                Espesor
+                <select name="espesor" onchange="this.form.submit()">
+                    <option value="">Todos</option>
+                    {% for e in espesor_opciones %}
+                        <option value="{{ e }}" {% if selected_espesor|stringformat:"s" == e|stringformat:"s" %}selected{% endif %}>{{ e }}</option>
+                    {% endfor %}
+                </select>
+            </th>
+            <th>
+                Largo
+                <select name="largo" onchange="this.form.submit()">
+                    <option value="">Todos</option>
+                    {% for l in largo_opciones %}
+                        <option value="{{ l }}" {% if selected_largo|stringformat:"s" == l|stringformat:"s" %}selected{% endif %}>{{ l }}</option>
+                    {% endfor %}
+                </select>
+            </th>
+            <th>
+                Ancho
+                <select name="ancho" onchange="this.form.submit()">
+                    <option value="">Todos</option>
+                    {% for a in ancho_opciones %}
+                        <option value="{{ a }}" {% if selected_ancho|stringformat:"s" == a|stringformat:"s" %}selected{% endif %}>{{ a }}</option>
+                    {% endfor %}
+                </select>
+            </th>
 
-          </th>
-          <th>Ancho
+            <th>Categorías</th>
+            <th>Imágenes</th>
+            <th class="text-center">Acciones</th>
+            <th>+ Imagenes</th>
+            <th>- Imagenes</th>
+          </tr>
+        </thead>
 
-          </th>
-          <th>Categorías
-            {% include 'filtro_columna.html' with columna_nombre="categorias" %}
-          </th>
-          <th>Imágenes</th>
-          <th class="text-center">Acciones</th>
-          <th>+ Imagenes</th>
-          <th>- Imagenes</th>
-        </tr>
-      </thead>
-      <tbody>
-        {% for panel in paneles %}
-        <tr>
-          <td>#{{ panel.id }}</td>
-          <td>SIN STOCK</td>
-          <td>{{ panel.nombre }}</td>
-          <td>${{ panel.precio_actual|floatformat:0|punto_miles }}</td>
-          <td>
-            {% if panel.oferta %}
-            {{ panel.oferta }}%
-            {% else %}
-            N/A
-            {% endif %}
-          </td>
-          <td title="{{ panel.descripcion }}">{{ panel.descripcion|truncatechars:20 }}...</td>
-          <td>{{ panel.tipo_obs }}</td>
-          <td>{{ panel.espesor }}</td>
-          <td>{{ panel.largo }}</td>
-          <td>{{ panel.ancho }}</td>
-          <td>
-            {% for cat in panel.categorias.all %}
-            <span class="badge bg-secondary">{{ cat.nombre }}</span>
-            {% endfor %}
-          </td>
-          <td>
-            <button type="button" class="btn btn-primary" data-bs-toggle="modal"
-              data-bs-target="#galeriaPanel_{{ panel.id }}">
-              <i class="bi bi-eye"></i> Ver({{ panel.imagenes.count }})
-            </button>
-          </td>
-          <td class="text-center">
-            <button class="btn btn-sm btn-primary" data-bs-toggle="modal"
+        <tbody>
+          {% for panel in paneles %}
+          <tr>
+            <td>#{{ panel.id }}</td>
+            <td>
+              {% if panel.inventario.first.modo_stock == 'stock' %}
+                {% if panel.inventario.first.disponible == 0 %}
+                  Sin Stock
+                {% else %}
+                  {{panel.inventario.first.disponible}}
+                {% endif %}
+              {% else %}
+                Por Pedido
+              {% endif %}
+            </td>
+            <td>{{ panel.nombre }}</td>
+            <td>${{ panel.precio_actual|floatformat:0|punto_miles }}</td>
+            <td>
+              {% if panel.oferta %}
+              {{ panel.oferta }}%
+              {% else %}
+              N/A
+              {% endif %}
+            </td>
+            <td title="{{ panel.descripcion }}">{{ panel.descripcion|truncatechars:20 }}...</td>
+            <td>{{ panel.tipo_obs }}</td>
+            <td>{{ panel.espesor }}</td>
+            <td>{{ panel.largo }}</td>
+            <td>{{ panel.ancho }}</td>
+            <td>
+              {% for cat in panel.categorias.all %}
+              <span class="badge bg-secondary">{{ cat.nombre }}</span>
+              {% endfor %}
+            </td>
+            <td>
+              <button type="button" class="btn btn-primary" data-bs-toggle="modal"
+                data-bs-target="#galeriaPanel_{{ panel.id }}">
+                <i class="bi bi-eye"></i> Ver({{ panel.imagenes.count }})
+              </button>
+            </td>
+            <td class="text-center">
+            <button type="button" class="btn btn-sm btn-primary" data-bs-toggle="modal"
               data-bs-target="#modalEditarPanel_{{ panel.id }}">
-              Editar
+              Editar <i class="bi bi-pencil-square"></i>
             </button>
-            <button type="button" class="btn btn-danger" data-bs-toggle="modal"
-              data-bs-target="#modalEliminarPanel_{{ panel.id }}">
-              Eliminar
-            </button>
-          </td>
-          <td class="text-center">
-            <button type="button" class="btn btn-sm btn-info" data-bs-toggle="modal"
-              data-bs-target="#modalSubirImagenes_{{ panel.id }}">
-              + <i class="bi bi-image-fill"></i>
-            </button>
-          </td>
-          <td class="text-center">
-            <button type="button" class="btn btn-sm btn-info" data-bs-toggle="modal"
-              data-bs-target="#modalEliminarImagenes_{{ panel.id }}">
-              - <i class="bi bi-image-fill"></i>
-            </button>
-          </td>
-          {% include 'imagenes.html' %}
-        </tr>
-        {% endfor %}
-      </tbody>
-    </table>
-  </div>
+              <button type="button" class="btn btn-danger" data-bs-toggle="modal"
+                data-bs-target="#modalEliminarPanel_{{ panel.id }}">
+                Eliminar
+              </button>
+            </td>
+            <td class="text-center">
+              <button type="button" class="btn btn-sm btn-info" data-bs-toggle="modal"
+                data-bs-target="#modalSubirImagenes_{{ panel.id }}">
+                + <i class="bi bi-image-fill"></i>
+              </button>
+            </td>
+            <td class="text-center">
+              <button type="button" class="btn btn-sm btn-info" data-bs-toggle="modal"
+                data-bs-target="#modalEliminarImagenes_{{ panel.id }}">
+                - <i class="bi bi-image-fill"></i>
+              </button>
+            </td>
+            {% include 'imagenes.html' %}
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </form>
 </div>
 
 {% block script %}

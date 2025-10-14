@@ -10,6 +10,7 @@
 {% block content %}
 <!-- !Tarjetas de productos -->
 {% for panel in paneles %}
+{% if panel.inventario.first.modo_stock == 'stock' and panel.inventario.first.disponible > 0  or panel.inventario.first.modo_stock == 'pedido' %}
 <div class="contenedor-card" data-url="{% url 'paneles_detail' panel.pk %}">
   <div class="card">
     {% if panel.imagenes.all %}
@@ -18,7 +19,7 @@
     <img src="{% static 'img/SinImagen.png' %}" alt="Imagen no disponible" />
     {% endif %}
     <!-- !Oferta  -->
-    <div class="oferta">-10%</div>
+    <!-- <div class="oferta">-10%</div> -->
     <!-- !--------------------- -->
     <div class="card-body">
       <div class="card-title">{{panel.nombre}}</div>
@@ -26,7 +27,11 @@
       <!-- <div class="stars">★★★★★</div> -->
       <!-- !--------------------- -->
       <div class="card-description">
-        Disponible bajo pedido
+        {% if panel.inventario.first.modo_stock == 'pedido' %}
+          Disponible bajo pedido
+        {% else %}
+          Stock Disponible ({{panel.inventario.first.disponible}})
+        {% endif %}
       </div>
       <!-- !precios -->
       <div class="prices">
@@ -52,6 +57,7 @@
     </div>
   </div>
 </div>
+{% endif %}
 {% empty %}
 <p>No hay paneles disponibles</p>
 {% endfor %} 

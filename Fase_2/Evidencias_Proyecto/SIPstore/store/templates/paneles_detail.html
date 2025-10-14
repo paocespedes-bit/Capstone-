@@ -33,7 +33,13 @@
   <div class="product-info">
     <h1 class="product-title">{{ panel.nombre }}</h1>
     <p class="product-price">Desde: <span>${{ panel.precio|floatformat:0|punto_miles }}</span> IVA Incl.</p>
-
+    <strong class="d-block mt-3 mb-4 p-2">
+      {% if panel.inventario.first.modo_stock == 'pedido' %}
+          Disponible Bajo Pedido
+        {% else %}
+          Stock Disponible ({{panel.inventario.first.disponible}})
+        {% endif %}
+    </strong>
     <form action="" method="post">
       {% csrf_token %}
       <button class="btn-cart">Añadir al carrito</button>

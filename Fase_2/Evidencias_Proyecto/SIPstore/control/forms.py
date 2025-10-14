@@ -13,6 +13,19 @@ class CategoriaForm(forms.ModelForm):
 
 # Formulario PanelSIP
 class PanelSIPForm(forms.ModelForm):
+    # Campos de stock que NO son parte directa del modelo PanelSIP
+    modo_stock = forms.ChoiceField(
+        choices=[('stock', 'Con stock'), ('pedido', 'Por pedido')],
+        widget=forms.RadioSelect(attrs={'class': 'form-check-input'}),
+        label='Stock'
+    )
+    cantidad = forms.IntegerField(
+        min_value=0,
+        required=False, # Puede ser 'Por pedido' y no necesitar cantidad
+        label='Cantidad disponible',
+        widget=forms.NumberInput(attrs={'class': 'form-control input-cantidad-inventario'})
+    )
+
     class Meta:
         model = PanelSIP
         fields = ['nombre', 'precio', 'descripcion', 'tipo_obs', 'madera_union', 'espesor', 'largo', 'ancho', 'categorias']
@@ -30,6 +43,19 @@ class PanelSIPForm(forms.ModelForm):
 
 # Formulario KitConstruccion
 class KitConstruccionForm(forms.ModelForm):
+    # Campos de stock que NO son parte directa del modelo KitConstruccion
+    modo_stock = forms.ChoiceField(
+        choices=[('stock', 'Con stock'), ('pedido', 'Por pedido')],
+        widget=forms.RadioSelect(attrs={'class': 'form-check-input'}),
+        label='Stock'
+    )
+    cantidad = forms.IntegerField(
+        min_value=0,
+        required=False,
+        label='Cantidad disponible',
+        widget=forms.NumberInput(attrs={'class': 'form-control input-cantidad-inventario'})
+    )
+    
     class Meta:
         model = KitConstruccion
         fields = ['nombre', 'precio', 'descripcion', 'm2', 'dormitorios', 'banos', 'categorias']
