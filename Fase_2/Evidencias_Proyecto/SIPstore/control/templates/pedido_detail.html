@@ -134,7 +134,7 @@ Detalles Pedido
                     <tbody>
                         {% for item in detalles %}
                         <tr>
-                            <td>
+                            <td data-label="Imagen">
                                 
                                 {% if item.producto.imagenes.all %}
                                 <img class="" src="{{item.producto.imagenes.first.imagen.url  }}" alt="{{panel.nombre}}" style="max-width: 5vw; height: 5vw;" />
@@ -144,7 +144,7 @@ Detalles Pedido
                                 
                             </td>
 
-                            <td>
+                            <td data-label="Nombre">
                                 {% if item.content_type.model == 'kitconstruccion' %}
                                 K#{{ item.producto.id }} - {{ item.producto.nombre }}
                                 {% elif item.content_type.model == 'panel' or item.content_type.model == 'panelsip' %}
@@ -155,9 +155,9 @@ Detalles Pedido
                             </td>
 
 
-                            <td>${{ item.precio_unitario|floatformat:0|intcomma}}</td>
-                            <td>{{ item.cantidad }}</td>
-                            <td>${{ item.subtotal|floatformat:0|intcomma }}</td>
+                            <td data-label="Precio Unitario">${{ item.precio_unitario|floatformat:0|intcomma}}</td>
+                            <td data-label="Cantidad">{{ item.cantidad }}</td>
+                            <td data-label="SubTotal">${{ item.subtotal|floatformat:0|intcomma }}</td>
                         </tr>
                         {% endfor %}
                     </tbody>
