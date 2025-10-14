@@ -32,3 +32,10 @@ logs/
 .pytest_cache/
 coverage/
 *.cache
+
+
+# Caches dentro de las migraciones de Django
+*/migrations/__pycache__/
+*/migrations/*.pyc
+*/migrations/*.pyo
+*/migrations/*.pyd
