@@ -1,19 +1,20 @@
 from email.headerregistry import ContentTypeHeader
-from django.urls import reverse
-from django.contrib.contenttypes.models import ContentType
-from django.shortcuts import render, redirect, get_object_or_404
-from django.contrib import messages
 from .forms import CategoriaForm, PanelSIPForm, KitConstruccionForm, ImagenProductoForm
 from store.models import PanelSIP, KitConstruccion, Categoria, imagenProducto,Inventario
 from .models import Pedido,DetallePedido
 from datetime import date
+from .utils.boleta import generar_boleta_pdf
+from decimal import Decimal, InvalidOperation
+from django.urls import reverse
+from django.contrib.contenttypes.models import ContentType
+from django.shortcuts import render, redirect, get_object_or_404
+from django.contrib import messages
+from django.db.models.functions import ExtractYear, ExtractMonth
+from django.http import FileResponse, Http404
 from django.utils import timezone
 from django.db.models import Sum, F
 from collections import Counter 
-from django.db.models.functions import ExtractYear, ExtractMonth
-from django.http import FileResponse, Http404
-from .utils.boleta import generar_boleta_pdf
-from decimal import Decimal, InvalidOperation
+
 
 
 # !Views principales
@@ -528,3 +529,4 @@ def cambiar_estado_pedido(request, pedido_id):
             messages.error(request, "Estado no válido.")
     
     return redirect(request.META.get("HTTP_REFERER", "pedidos_list"))
+

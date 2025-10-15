@@ -83,15 +83,14 @@ class DetallePedido(models.Model):
         # Actualizamos el monto total del pedido
         self.pedido.actualizar_monto_total()
 
-        # Actualizamos inventario
+        # Actualizamos inventario: descontamos disponible y sumamos reservado
         if self.content_type and self.object_id:
             inventario = Inventario.objects.filter(
                 content_type=self.content_type,
                 object_id=self.object_id
             ).first()
             if inventario:
+                # Restar disponible y sumar reservado
+                inventario.disponible = max(inventario.disponible - self.cantidad, 0)
                 inventario.reservado += self.cantidad
-                inventario.actualizar_stock()
-
-    def __str__(self):
-        return f"{self.nombre_producto} x {self.cantidad} (Pedido #{self.pedido.id})"
+                inventario.save(update_fields=['disponible', 'reservado'])

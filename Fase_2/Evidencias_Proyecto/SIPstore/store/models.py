@@ -74,7 +74,10 @@ class imagenProducto(models.Model):
 
 #*Inventario
 class Inventario(models.Model):
-    TIPO_STOCK =[('stock', 'Con stock'), ('pedido', 'Por pedido')]
+    TIPO_STOCK = [
+        ('stock', 'Con stock'),
+        ('pedido', 'Por pedido'),
+    ]
     
     content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
     object_id = models.PositiveIntegerField()
@@ -84,20 +87,18 @@ class Inventario(models.Model):
     reservado = models.PositiveIntegerField(default=0)
     modo_stock = models.CharField(max_length=20, choices=TIPO_STOCK, default='pedido')
 
-    def actualizar_stock(self):
-        self.disponible = max(self.disponible - self.reservado, 0)
-        self.save()
+    def ajustar_reservado(self, nuevo_reservado):
+        self.reservado = nuevo_reservado
+        self.save(update_fields=['reservado'])
 
-    def __str__(self):
-        return f"Inventario de {self.producto} - Disponible: {self.disponible}"
-
-    def actualizar_stock(self):
-        self.disponible = max(self.disponible - self.reservado, 0)
-        self.save()
+    @property
+    def stock_real_disponible(self):
+        """Disponible real restando lo reservado."""
+        return max(self.disponible - self.reservado, 0)
 
     def __str__(self):
         return f"Inventario de {self.producto} - Disponible: {self.disponible} / Reservado: {self.reservado}"
-    
+
 #*Ofertas
 class Oferta(models.Model):
     # !GenericForeignKey para apuntar a cualquier modelo de producto concreto
