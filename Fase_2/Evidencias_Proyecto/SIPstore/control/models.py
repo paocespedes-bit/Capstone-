@@ -54,6 +54,37 @@ class Pedido(models.Model):
     def __str__(self):
         return f"Pedido #{self.id} - {self.comprador}"
     
+    def actualizar_stock_por_estado(self):
+        """
+        Ajusta el stock de los productos del pedido según el estado.
+        """
+        for detalle in self.detalles.all():  # related_name='detalles' en DetallePedido
+            if not detalle.content_type or not detalle.object_id:
+                continue  # Saltar si no hay producto
+
+            inventario = Inventario.objects.filter(
+                content_type=detalle.content_type,
+                object_id=detalle.object_id
+            ).first()
+            if not inventario:
+                continue  # Si no existe inventario, ignorar
+
+            if self.estado in ['pendiente', 'en_proceso']:
+                # Mantener en reservado
+                inventario.ajustar_reservado(inventario.reservado + detalle.cantidad)
+
+            elif self.estado == 'completado':
+                # Reducir reservado porque el pedido se completó
+                nuevo_reservado = max(inventario.reservado - detalle.cantidad, 0)
+                inventario.ajustar_reservado(nuevo_reservado)
+
+            elif self.estado == 'cancelado':
+                # Devolver stock reservado a disponible
+                nuevo_reservado = max(inventario.reservado - detalle.cantidad, 0)
+                inventario.ajustar_reservado(nuevo_reservado)
+                inventario.disponible += detalle.cantidad
+                inventario.save(update_fields=['disponible', 'reservado'])
+        
 # ! Modelo detalle Pedido
 
 class DetallePedido(models.Model):

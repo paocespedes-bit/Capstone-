@@ -524,6 +524,7 @@ def cambiar_estado_pedido(request, pedido_id):
         if nuevo_estado in dict(Pedido.ESTADOS).keys():
             pedido.estado = nuevo_estado
             pedido.save()
+            pedido.actualizar_stock_por_estado()
             messages.success(request, f"Estado del pedido #{pedido.id} actualizado a {pedido.get_estado_display()}.")
         else:
             messages.error(request, "Estado no válido.")
