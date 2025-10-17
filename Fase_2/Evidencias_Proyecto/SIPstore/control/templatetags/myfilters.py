@@ -1,4 +1,5 @@
 from django import template
+from django.contrib.contenttypes.models import ContentType
 
 register = template.Library()
 
@@ -17,9 +18,12 @@ def punto_miles(value):
         return value
     
 @register.filter
-def multiply(value, arg):
-    return float(value) * int(arg)
+def content_type(obj):
+    return ContentType.objects.get_for_model(obj).id
 
 @register.filter
-def mul(value, arg):
-    return value * arg
+def total_precio(carrito):
+    if not carrito:
+        return 0
+    total = sum(item.get("acumulado", 0) for item in carrito.values())
+    return total
