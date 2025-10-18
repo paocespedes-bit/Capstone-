@@ -31,7 +31,7 @@ class Carrito:
             
         self.guardar_carrito()
     
-    def elimiar(self, producto_id):
+    def eliminar(self, producto_id):
         id_str = str(producto_id)
         
         if id_str in self.carrito:

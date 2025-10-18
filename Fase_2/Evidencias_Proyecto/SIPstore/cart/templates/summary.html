@@ -8,15 +8,17 @@
 
         <ul class="list-group list-group-flush mb-3" id="summary-list">
             {% for item in productos_carrito %}
-            <li class="list-group-item d-flex justify-content-between align-items-center bg-light summary-item-{{ item.producto.id }}">
-                {{ item.producto.nombre }} x <span class="cantidad-summary-{{ item.producto.id }}">{{ item.cantidad }}</span>
-                <span class="acumulado-summary-{{ item.producto.id }}">${{ item.acumulado|floatformat:0|punto_miles }}</span>
+            <li class="list-group-item d-flex justify-content-between bg-light summary-item-{{ item.producto.id }}">
+                <div style="width: 10vw;">{{ item.producto.nombre|truncate_chars:10 }}</div>
+                <div class="px-3 text-center" style="max-width: 15vw;">
+                    <span id="cantidad-summary-{{ item.producto.id }}"> X {{ item.cantidad }}</span>
+                </div>
+
+                <div class="ms-3 text-end" style="width: 10vw;">
+                    <span id="acumulado-summary-{{ item.producto.id }}">${{ item.acumulado|floatformat:0|punto_miles}}</span>
+                </div>
             </li>
             {% endfor %}
-            <li lass="list-group-item d-flex justify-content-between align-items-center bg-light fw-bold text-success">
-                Subtotal
-                <span id="subtotal_sumary">${{ total_carrito|default:0|floatformat:0|punto_miles }}</span>
-            </li>
             <li class="list-group-item d-flex justify-content-between align-items-center bg-light fw-bold border-top border-dark">
                 TOTAL
                 <span class="fs-5" id="total_sumary">${{ total_carrito|default:0|floatformat:0|punto_miles }}</span>
@@ -28,6 +30,5 @@
                 Continuar Compra &rarr;
             </button>
         </div>
-
     </div>
 </div>

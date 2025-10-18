@@ -22,3 +22,9 @@ def content_type(obj):
     if obj is None:
         return None
     return ContentType.objects.get_for_model(obj).id
+
+@register.filter
+def truncate_chars(value, max_length):
+    if len(value) > max_length:
+        return value[:max_length] + '...'
+    return value
