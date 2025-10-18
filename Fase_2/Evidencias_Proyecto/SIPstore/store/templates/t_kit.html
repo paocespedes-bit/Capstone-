@@ -42,12 +42,11 @@
 
       <div class="actions">
         <div class="quantity">
-          <button type="button" class="btn rounded-circle custom-icon-btn"><i class="bi bi-dash-lg"></i></button>
-          <span>1</span>
-          <button type="button" class="btn rounded-circle custom-icon-btn"><i class="bi bi-plus-lg"></i></button>
+          <button type="button" class="btn rounded-circle custom-icon-btn btn-menos"><i class="bi bi-dash-lg"></i></button>
+            <span class="cantidad-input" data-max="{% if kit.inventario.first.modo_stock == 'stock' %}{{ kit.inventario.first.disponible }}{% else %}9999{% endif %}">1</span>
+          <button type="button" class="btn rounded-circle custom-icon-btn btn-mas"><i class="bi bi-plus-lg"></i></button>
         </div>
-        
-        <button class="add-cart add-btn btn-agregar" id="add-btn" data-id="{{ kit.id }}" data-ctid="{{ kit|content_type }}" data-url="{% url 'add' %}"
+        <button class="add-cart add-btn add-btn-ajax" id="add-btn-{{ kit.id }}" data-id="{{ kit.id }}" data-ctid="{{ kit|content_type }}" data-url="{% url 'add_ajax' %}"
         >Añadir al Carrito&nbsp;<i class="bi bi-cart3"></i></button >
       </div>
     </div>

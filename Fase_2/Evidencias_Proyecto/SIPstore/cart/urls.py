@@ -3,8 +3,6 @@ from . import views
 
 urlpatterns = [
     path('carrito/', views.carrito, name="carrito"),
-    path('agregar/', views.agregar_producto, name='add'),
-    path('eliminar/', views.eliminar_producto, name='del'),
-    path('restar/', views.restar_producto, name='sub'),
-    path('limpiar/', views.limpiar_carrito, name='cls'),
+    path('agregar/', views.agregar_producto, name="add_ajax"),
+    path('modificar/<str:accion>/', views.modificar_carrito, name="modificar_ajax" ),
     ]

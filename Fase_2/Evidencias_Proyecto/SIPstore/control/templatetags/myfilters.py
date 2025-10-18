@@ -19,11 +19,6 @@ def punto_miles(value):
     
 @register.filter
 def content_type(obj):
+    if obj is None:
+        return None
     return ContentType.objects.get_for_model(obj).id
-
-@register.filter
-def total_precio(carrito):
-    if not carrito:
-        return 0
-    total = sum(item.get("acumulado", 0) for item in carrito.values())
-    return total
