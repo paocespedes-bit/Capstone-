@@ -10,221 +10,25 @@
 
 {% block content %}
 <div class="cart">
-        <h1 class="mb-4 text-primary">🛒 Finalizar Compra</h1>
+        <h1 class="texto">Carrito</h1>
 
         <div class="row">
             
             <div class="col-md-8">
                 
-                <div class="collapse show" id="cartListCollapse">
-                    <div class="card shadow-sm mb-4">
-                        <div class="card-header bg-primary text-white">
-                            <h5 class="mb-0">Productos en tu Carrito</h5>
-                        </div>
-                        <div class="card-body">
-                            
-                            <div class="d-flex align-items-center border-bottom pb-3 mb-3">
-                                <img src="{% static 'img/SinImagen.png' %}" class="img-fluid rounded me-3" alt="Producto A" style="width: 60px; height: 60px; object-fit: cover;">
-                                <div class="flex-grow-1">
-                                    <h6 class="mb-0">Producto A <small class="text-muted fs-6">(ID: 45678)</small></h6>
-                                    <p class="mb-0 small">Cant: **2** | Precio Unitario: **$10.000**</p>
-                                </div>
-                                <button class="btn btn-sm btn-outline-danger" title="Eliminar elemento">
-                                    ❌ Borrar
-                                </button>
-                            </div>
+                {% include 'productos.html' %}
 
-                            <div class="d-flex align-items-center pb-3 mb-3">
-                                <img src="{% static 'img/SinImagen.png' %}" class="img-fluid rounded me-3" alt="Producto B" style="width: 60px; height: 60px; object-fit: cover;">
-                                <div class="flex-grow-1">
-                                    <h6 class="mb-0">Producto B <small class="text-muted fs-6">(ID: 98765)</small></h6>
-                                    <p class="mb-0 small">Cant: **1** | Precio Unitario: **$25.000**</p>
-                                </div>
-                                <button class="btn btn-sm btn-outline-danger" title="Eliminar elemento">
-                                    ❌ Borrar
-                                </button>
-                            </div>
-
-                            <div class="text-end">
-                                <button class="btn btn-sm btn-outline-danger"><i class="bi bi-eraser"></i> Vaciar Carrito</button>
-                            </div>
-
-                        </div>
-                    </div>
-                </div>
-
-                <div class="collapse" id="checkoutFormCollapse">
-                    <div class="card shadow-sm mb-4">
-                        <div class="card-header bg-success text-white">
-                            <h5 class="mb-0">Información de Pedido y Cliente</h5>
-                        </div>
-                        <div class="card-body">
-                            <form>
-                                
-                                <fieldset class="mb-4 p-3 border rounded">
-                                    <legend class="float-none w-auto px-2 fs-6 text-success">Información Pedido</legend>
-                                    
-                                    <div class="mb-3">
-                                        <label for="localSelect" class="form-label">Local de Retiro</label>
-                                        <select class="form-select" id="localSelect" onchange="showLocalCard(this.value)" required>
-                                            <option value="" selected disabled>Selecciona un local...</option>
-                                            <option value="local1">Local Centro - Santiago</option>
-                                            <option value="local2">Local Mall Costanera - Providencia</option>
-                                        </select>
-                                    </div>
-                                    
-                                    <div class="card text-bg-light mb-3 d-none" id="localCard">
-                                        <div class="card-body">
-                                            <h6 class="card-title" id="localCardName"></h6>
-                                            <p class="card-text" id="localCardAddress"></p>
-                                        </div>
-                                    </div>
-                                </fieldset>
-
-                                <fieldset class="p-3 border rounded">
-                                    <legend class="float-none w-auto px-2 fs-6 text-success">Información Cliente (para boleta)</legend>
-                                    
-                                    <div class="row g-3">
-                                        <div class="col-md-6">
-                                            <label for="clientName" class="form-label">Nombre Cliente</label>
-                                            <input type="text" class="form-control" id="clientName" required>
-                                        </div>
-                                        <div class="col-md-6">
-                                            <label for="clientRut" class="form-label">RUT</label>
-                                            <input type="text" class="form-control" id="clientRut" required placeholder="Ej: 12.345.678-9">
-                                        </div>
-                                        <div class="col-md-6">
-                                            <label for="clientEmail" class="form-label">Correo Electrónico</label>
-                                            <input type="email" class="form-control" id="clientEmail" required>
-                                        </div>
-                                        <div class="col-md-6">
-                                            <label for="clientPhone" class="form-label">Celular de Contacto</label>
-                                            <input type="tel" class="form-control" id="clientPhone" required>
-                                        </div>
-                                        <div class="col-12">
-                                            <label for="clientAddress" class="form-label">Ubicación (para boleta)</label>
-                                            <input type="text" class="form-control" id="clientAddress" required placeholder="Calle, número, comuna/ciudad">
-                                            <div class="form-text">Ubicación solo para fines de boleta/facturación.</div>
-                                        </div>
-                                    </div>
-                                </fieldset>
-
-                            </form>
-                        </div>
-                    </div>
-                </div>
+                {% include 'form_pedido.html' %}
 
             </div>
             
             <div class="col">
-                <div class="card bg-light shadow summary-sticky">
-                    <div class="card-header bg-secondary text-white">
-                        <h5 class="mb-0">Sumario de Compra</h5>
-                    </div>
-                    <div class="card-body">
-                        
-                        <ul class="list-group list-group-flush mb-3">
-                            <li class="list-group-item d-flex justify-content-between align-items-center bg-light">
-                                Producto A x 2
-                                <span>$20.000</span>
-                            </li>
-                            <li class="list-group-item d-flex justify-content-between align-items-center bg-light">
-                                Producto B x 1
-                                <span>$25.000</span>
-                            </li>
-                            <li class="list-group-item d-flex justify-content-between align-items-center bg-light fw-bold text-success">
-                                Subtotal
-                                <span>$45.000</span>
-                            </li>
-                            <li class="list-group-item d-flex justify-content-between align-items-center bg-light fw-bold border-top border-dark">
-                                TOTAL
-                                <span class="fs-5">$45.000</span>
-                            </li>
-                        </ul>
-
-                        <div id="cart-controls">
-                            <button id="btn-continue-cart" class="btn btn-success w-100" 
-                                    onclick="toggleCartCollapse()">
-                                Continuar Compra &rarr;
-                            </button>
-                        </div>
-                        
-                    </div>
-                </div>
+                {% include 'summary.html' %}
             </div>
 
         </div>
     </div>
 {% endblock %}
 {% block script %}
-<script>
-        const cartListCollapse = document.getElementById('cartListCollapse');
-        const checkoutFormCollapse = document.getElementById('checkoutFormCollapse');
-        const cartControls = document.getElementById('cart-controls');
-
-        // Inicializar los objetos Collapse para interactuar programáticamente
-        const bsCartListCollapse = new bootstrap.Collapse(cartListCollapse, { toggle: false });
-        const bsCheckoutFormCollapse = new bootstrap.Collapse(checkoutFormCollapse, { toggle: false });
-
-        // Función principal para alternar entre las vistas
-        function toggleCartCollapse() {
-            if (checkoutFormCollapse.classList.contains('show')) {
-                // Si el formulario está abierto, volvemos a la lista de carrito
-                bsCheckoutFormCollapse.hide();
-                bsCartListCollapse.show();
-            } else {
-                // Si la lista está abierta, vamos al formulario
-                bsCartListCollapse.hide();
-                bsCheckoutFormCollapse.show();
-            }
-        }
-
-        // --- Lógica de actualización de botones y scroll ---
-
-        // Cuando el formulario está visible (mostrándose)
-        checkoutFormCollapse.addEventListener('shown.bs.collapse', function () {
-            // 1. Reemplazar los botones en el resumen
-            cartControls.innerHTML = `
-                <button id="btn-continue-payment" class="btn btn-primary w-100 mb-2">Continuar con el Pago &rarr;</button>
-                <button id="btn-back" class="btn btn-outline-secondary w-100" onclick="toggleCartCollapse()">
-                    &larr; Volver o Cancelar
-                </button>
-            `;
-            // 2. Desplazar la vista al formulario para mejor UX
-            document.getElementById('checkoutFormCollapse').scrollIntoView({ behavior: 'smooth', block: 'start' });
-        });
-
-        // Cuando la lista de carrito está visible (mostrándose)
-        cartListCollapse.addEventListener('shown.bs.collapse', function () {
-            // 1. Volver a colocar el botón inicial
-            cartControls.innerHTML = `
-                <button id="btn-continue-cart" class="btn btn-success w-100" 
-                        onclick="toggleCartCollapse()">
-                    Continuar Compra &rarr;
-                </button>
-            `;
-        });
-
-
-        // --- Lógica para el dropdown de local de retiro (Tarjeta) ---
-        function showLocalCard(localId) {
-            const localCard = document.getElementById('localCard');
-            const localCardName = document.getElementById('localCardName');
-            const localCardAddress = document.getElementById('localCardAddress');
-            
-            // Datos de los locales
-            const locales = {
-                'local1': { name: 'Local Centro - Santiago', address: 'Calle Principal 123, Santiago. Horario: 9:00 - 18:00.' },
-                'local2': { name: 'Local Mall Costanera - Providencia', address: 'Av. Andrés Bello 2420, Providencia. Horario: 10:00 - 20:00.' }
-            };
-
-            if (localId && locales[localId]) {
-                localCardName.textContent = locales[localId].name;
-                localCardAddress.textContent = locales[localId].address;
-                localCard.classList.remove('d-none'); // Mostrar tarjeta
-            } else {
-                localCard.classList.add('d-none'); // Ocultar tarjeta
-            }
-        }
-    </script>
+<script src="{% static 'cart/js/vista_carrito.js' %}"></script>
 {% endblock %}
