@@ -136,27 +136,6 @@
   <!-- !Bootstrap JS -->
   <script src="{% static 'js/bootstrap.min.js' %}"></script>
   <script src="{% static 'js/whatsapp.js' %}"></script>
-  <script>
-    document.querySelector("#add-btn").addEventListener("click", e => {
-      const contentType = e.target.dataset.content;
-      const objectId = e.target.dataset.id;
-
-      fetch("add_to_cart", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "X-CSRFToken": "{{ csrf_token }}"
-        },
-        body: JSON.stringify({
-          content_type_id: contentType,
-          object_id: objectId,
-          cantidad: 1
-        })
-      })
-        .then(res => res.json())
-        .then(data => alert(data.message));
-    });
-  </script>
   {% block script %}{% endblock %}
 </body>
 
