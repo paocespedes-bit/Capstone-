@@ -1,28 +1,25 @@
 {% load static %}
-
+{% load myfilters %}
 <div class="card bg-light shadow summary-sticky">
     <div class="card-header bg-secondary text-white">
         <h5 class="mb-0">Sumario de Compra</h5>
     </div>
     <div class="card-body">
 
-        <ul class="list-group list-group-flush mb-3">
-            <li class="list-group-item d-flex justify-content-between align-items-center bg-light">
-                Producto A x 2
-                <span>$20.000</span>
+        <ul class="list-group list-group-flush mb-3" id="summary-list">
+            {% for item in productos_carrito %}
+            <li class="list-group-item d-flex justify-content-between align-items-center bg-light summary-item-{{ item.producto.id }}">
+                {{ item.producto.nombre }} x <span class="cantidad-summary-{{ item.producto.id }}">{{ item.cantidad }}</span>
+                <span class="acumulado-summary-{{ item.producto.id }}">${{ item.acumulado|floatformat:0|punto_miles }}</span>
             </li>
-            <li class="list-group-item d-flex justify-content-between align-items-center bg-light">
-                Producto B x 1
-                <span>$25.000</span>
-            </li>
-            <li class="list-group-item d-flex justify-content-between align-items-center bg-light fw-bold text-success">
+            {% endfor %}
+            <li lass="list-group-item d-flex justify-content-between align-items-center bg-light fw-bold text-success">
                 Subtotal
-                <span>$45.000</span>
+                <span id="subtotal_sumary">${{ total_carrito|default:0|floatformat:0|punto_miles }}</span>
             </li>
-            <li
-                class="list-group-item d-flex justify-content-between align-items-center bg-light fw-bold border-top border-dark">
+            <li class="list-group-item d-flex justify-content-between align-items-center bg-light fw-bold border-top border-dark">
                 TOTAL
-                <span class="fs-5">$45.000</span>
+                <span class="fs-5" id="total_sumary">${{ total_carrito|default:0|floatformat:0|punto_miles }}</span>
             </li>
         </ul>
 
