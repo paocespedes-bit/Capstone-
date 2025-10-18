@@ -1,11 +1,12 @@
 // cart/js/carrito_ajax.js
+
+// Funciones de utilidad AJAX
 function getCookie(name) {
   let cookieValue = null;
   if (document.cookie && document.cookie !== "") {
     const cookies = document.cookie.split(";");
     for (let i = 0; i < cookies.length; i++) {
       const cookie = cookies[i].trim();
-      // Does this cookie string begin with the name we want?
       if (cookie.substring(0, name.length + 1) === name + "=") {
         cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
         break;
@@ -75,9 +76,8 @@ document.addEventListener("DOMContentLoaded", function () {
 
       const productoId = this.dataset.id;
       const contentTypeId = this.dataset.ctid;
-      const url = this.dataset.url;
+      const url = this.dataset.url; // Obtener la cantidad del span adyacente
 
-      // Obtener la cantidad del span adyacente
       const cantidadSpan =
         this.closest(".actions").querySelector(".cantidad-input");
       const cantidad = parseInt(cantidadSpan ? cantidadSpan.textContent : 1);
@@ -89,7 +89,7 @@ document.addEventListener("DOMContentLoaded", function () {
       };
 
       manejarPeticionCarrito(url, "POST", data, (data) => {
-        // No se necesita ninguna acción adicional aquí, el badge ya se actualiza
+        // El badge ya se actualiza.
       });
     });
   });
@@ -97,7 +97,21 @@ document.addEventListener("DOMContentLoaded", function () {
 
 // * Funcionalidad de la vista del carrito (carrito.html) *
 if (document.querySelector(".cart")) {
-  // Función para formatear a moneda (ejemplo: Chile, sin biblioteca)
+  // ⚠️ Importante: La variable 'urlModificar' debe ser definida globalmente en el HTML
+  // Ejemplo en carrito.html: <script>const urlModificar = '{% url "modificar_ajax" "ACCION_PLACEHOLDER" %}';</script>
+
+  // Función auxiliar para obtener la URL correcta
+  function obtenerUrlAccion(accion) {
+    // Asegúrate de que 'ACCION_PLACEHOLDER' coincida con tu placeholder de Django
+    if (typeof urlModificar === "undefined") {
+      console.error(
+        "Error: 'urlModificar' no está definida en el template HTML."
+      );
+      return "";
+    }
+    return urlModificar.replace("ACCION_PLACEHOLDER", accion);
+  } // Función para formatear a moneda
+
   function formatearMoneda(valor) {
     return new Intl.NumberFormat("es-CL", {
       style: "currency",
@@ -105,25 +119,26 @@ if (document.querySelector(".cart")) {
       minimumFractionDigits: 0,
     })
       .format(valor)
-      .replace("CLP", "$"); // Reemplazar CLP por $
-  }
+      .replace("CLP", "$");
+  } // Actualiza la lista de productos y el resumen después de una acción
 
-  // Actualiza la lista de productos y el resumen después de una acción
   function actualizarVistaCarrito(data) {
     // * 1. Actualizar Resumen (Summary) *
-    document.getElementById("subtotal_sumary").textContent = formatearMoneda(
-      data.total_carrito
-    );
-    document.getElementById("total_sumary").textContent = formatearMoneda(
-      data.total_carrito
-    );
+    const totalFormateado = formatearMoneda(data.total_carrito);
+    document.getElementById("subtotal_sumary").textContent = totalFormateado;
+    document.getElementById("total_sumary").textContent = totalFormateado; // * 2. Actualizar Listas de Productos *
 
-    // * 2. Actualizar Listas de Productos *
     const carritoData = data.carrito_data;
     const keysEnCarrito = Object.keys(carritoData);
+    const productosContainer = document.querySelector(
+      ".productos-carrito-list"
+    ); // Asume que tienes un contenedor padre // Iterar sobre los items visibles para ver cuáles eliminar o actualizar
 
     document.querySelectorAll('[class^="product-item-"]').forEach((itemEl) => {
-      const itemId = itemEl.className.match(/product-item-(\d+)/)[1];
+      const match = itemEl.className.match(/product-item-(\d+)/);
+      if (!match) return; // Si no hay match, salta este elemento
+
+      const itemId = match[1];
 
       if (keysEnCarrito.includes(itemId)) {
         // Producto existe: actualizar sus valores
@@ -133,9 +148,8 @@ if (document.querySelector(".cart")) {
         itemEl.querySelector(".cantidad-carrito-input").value = item.cantidad;
         itemEl.querySelector(
           `.total-item-${itemId}`
-        ).textContent = `Total: ${acumuladoFormateado}`;
+        ).textContent = `Total: ${acumuladoFormateado}`; // Actualizar resumen
 
-        // Actualizar resumen
         const summaryItem = document.querySelector(`.summary-item-${itemId}`);
         if (summaryItem) {
           summaryItem.querySelector(`.cantidad-summary-${itemId}`).textContent =
@@ -150,24 +164,29 @@ if (document.querySelector(".cart")) {
         const summaryItem = document.querySelector(`.summary-item-${itemId}`);
         if (summaryItem) summaryItem.remove();
       }
-    });
+    }); // Lógica para mostrar mensaje de carrito vacío si es necesario
 
-    // Lógica para mostrar mensaje de carrito vacío si es necesario
     if (keysEnCarrito.length === 0) {
-      const cartBody = document.querySelector(".card-body");
-      // Si el carrito está vacío y no hay un mensaje, lo agregamos
+      // Asegúrate de que el contenedor de productos se vacíe
+      if (productosContainer) {
+        productosContainer.innerHTML = "";
+      }
+
+      const cartBody = document.querySelector(".card-body"); // Si el carrito está vacío y no hay un mensaje, lo agregamos
       if (cartBody && !cartBody.querySelector(".text-center.text-muted")) {
         cartBody.innerHTML =
           '<p class="text-center text-muted">Tu carrito está vacío.</p>';
       }
+      // Desactivar el botón de pagar/checkout si existe
+      const checkoutBtn = document.querySelector(".btn-checkout");
+      if (checkoutBtn) checkoutBtn.disabled = true;
+    } else {
+      // Activar el botón de pagar/checkout si existe y hay productos
+      const checkoutBtn = document.querySelector(".btn-checkout");
+      if (checkoutBtn) checkoutBtn.disabled = false;
     }
-  }
+  } // ---------------------------------------------------- // * Botones de Restar/Eliminar (product-item) * // ----------------------------------------------------
 
-  const urlModificar = '{% url "modificar_ajax" "" %}'; // Base URL para modificaciones
-
-  // ----------------------------------------------------
-  // * Botones de Restar/Eliminar (product-item) *
-  // ----------------------------------------------------
   document.addEventListener("click", function (e) {
     const target = e.target.closest(
       ".btn-restar-carrito, .btn-eliminar-carrito"
@@ -177,45 +196,38 @@ if (document.querySelector(".cart")) {
       const productoId = target.dataset.id;
       const accion = target.dataset.accion;
 
-      const url = urlModificar.replace("", accion);
+      const url = obtenerUrlAccion(accion);
       const data = { producto_id: productoId };
 
       manejarPeticionCarrito(url, "POST", data, actualizarVistaCarrito);
     }
-  });
+  }); // ---------------------------------------------------- // * Botón de Limpiar Carrito * // ----------------------------------------------------
 
-  // ----------------------------------------------------
-  // * Botón de Limpiar Carrito *
-  // ----------------------------------------------------
   document.addEventListener("click", function (e) {
     const target = e.target.closest(".btn-limpiar-carrito");
     if (target) {
       e.preventDefault();
-      const url = urlModificar.replace("", "limpiar");
+      const url = obtenerUrlAccion("limpiar");
+
       manejarPeticionCarrito(url, "POST", {}, () => {
-        // Al limpiar, recargamos la página para un estado limpio si no queremos AJAX total
-        // Pero para mantener AJAX, solo actualizamos la vista
+        // Cuando se limpia, el total es 0 y no hay datos de carrito.
         actualizarVistaCarrito({ total_carrito: 0, carrito_data: {} });
       });
     }
-  });
+  }); // ---------------------------------------------------- // * Input de Cantidad (product-item) * // ----------------------------------------------------
 
-  // ----------------------------------------------------
-  // * Input de Cantidad (product-item) *
-  // ----------------------------------------------------
   document.addEventListener("change", function (e) {
     const target = e.target.closest(".cantidad-carrito-input");
     if (target) {
       const productoId = target.dataset.id;
-      let nuevaCantidad = parseInt(target.value);
+      let nuevaCantidad = parseInt(target.value); // Asegurarse de que la cantidad no sea negativa o NaN
 
-      // Asegurarse de que la cantidad no sea negativa o NaN
       if (isNaN(nuevaCantidad) || nuevaCantidad < 1) {
         nuevaCantidad = 1;
         target.value = 1;
       }
 
-      const url = urlModificar.replace("", "actualizar");
+      const url = obtenerUrlAccion("actualizar");
       const data = {
         producto_id: productoId,
         cantidad: nuevaCantidad,
@@ -223,11 +235,8 @@ if (document.querySelector(".cart")) {
 
       manejarPeticionCarrito(url, "POST", data, actualizarVistaCarrito);
     }
-  });
+  }); // ---------------------------------------------------- // * Botón Sumar (product-item) * // ----------------------------------------------------
 
-  // ----------------------------------------------------
-  // * Botón Sumar (product-item) *
-  // ----------------------------------------------------
   document.addEventListener("click", function (e) {
     const target = e.target.closest(".btn-sumar-carrito");
     if (target) {
@@ -239,7 +248,7 @@ if (document.querySelector(".cart")) {
 
       const productoId = target.dataset.id;
 
-      const url = urlModificar.replace("", "actualizar");
+      const url = obtenerUrlAccion("actualizar");
       const data = {
         producto_id: productoId,
         cantidad: nuevaCantidad,

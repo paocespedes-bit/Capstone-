@@ -34,7 +34,7 @@ def carrito(request):
     context = {
         'productos_carrito': productos_completos,
     }
-    return render(request, "cart/carrito.html", context)
+    return render(request, "carrito.html", context)
 
 @require_POST
 def agregar_producto(request):
