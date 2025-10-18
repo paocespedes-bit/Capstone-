@@ -1,0 +1,63 @@
+{% load static %}
+
+<div class="collapse" id="checkoutFormCollapse">
+    <div class="card shadow-sm mb-4">
+        <div class="card-header bg-success text-white">
+            <h5 class="mb-0">Información de Pedido y Cliente</h5>
+        </div>
+        <div class="card-body">
+            <form>
+
+                <fieldset class="mb-4 p-3 border rounded">
+                    <legend class="float-none w-auto px-2 fs-6 text-success">Información Pedido</legend>
+
+                    <div class="mb-3">
+                        <label for="localSelect" class="form-label">Local de Retiro</label>
+                        <select class="form-select" id="localSelect" onchange="showLocalCard(this.value)" required>
+                            <option value="" selected disabled>Selecciona un local...</option>
+                            <option value="local1">Local Centro - Santiago</option>
+                            <option value="local2">Local Mall Costanera - Providencia</option>
+                        </select>
+                    </div>
+
+                    <div class="card text-bg-light mb-3 d-none" id="localCard">
+                        <div class="card-body">
+                            <h6 class="card-title" id="localCardName"></h6>
+                            <p class="card-text" id="localCardAddress"></p>
+                        </div>
+                    </div>
+                </fieldset>
+
+                <fieldset class="p-3 border rounded">
+                    <legend class="float-none w-auto px-2 fs-6 text-success">Información Cliente (para boleta)</legend>
+
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label for="clientName" class="form-label">Nombre Cliente</label>
+                            <input type="text" class="form-control" id="clientName" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="clientRut" class="form-label">RUT</label>
+                            <input type="text" class="form-control" id="clientRut" required
+                                placeholder="Ej: 12.345.678-9">
+                        </div>
+                        <div class="col-md-6">
+                            <label for="clientEmail" class="form-label">Correo Electrónico</label>
+                            <input type="email" class="form-control" id="clientEmail" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="clientPhone" class="form-label">Celular de Contacto</label>
+                            <input type="tel" class="form-control" id="clientPhone" required>
+                        </div>
+                        <div class="col-12">
+                            <label for="clientAddress" class="form-label">Ubicación (para boleta)</label>
+                            <input type="text" class="form-control" id="clientAddress" required
+                                placeholder="Calle, número, comuna/ciudad">
+                            <div class="form-text">Ubicación solo para fines de boleta/facturación.</div>
+                        </div>
+                    </div>
+                </fieldset>
+            </form>
+        </div>
+    </div>
+</div>

@@ -1,4 +1,5 @@
 {% load static %}
+
 {% load myfilters %}
 <!-- !css -->
 {% block link %}
@@ -46,7 +47,8 @@
           <span>1</span>
           <button type="button" class="btn rounded-circle custom-icon-btn"><i class="bi bi-plus-lg"></i></button>
         </div>
-        <button class="add-cart" data-id="{{ panel.id }}" data-contenttype="panelsip">Añadir al Carrito&nbsp;<i class="bi bi-cart3"></i></button>
+        <button class="add-cart add-btn btn-agregar" id="add-btn" data-id="{{ panel.id }}" data-ctid="{{ panel|content_type }}" data-url="{% url 'add' %}"
+        >Añadir al Carrito&nbsp;<i class="bi bi-cart3"></i></button >
       </div>
 
     </div>
@@ -66,5 +68,5 @@
 {% block script %}
 <script src="{% static 'store/js/mas_menos.js' %}"></script>
 <script src="{% static 'store/js/click.js' %}"></script>
-<script src="{% static 'cart/js/agregar_carrito.js' %}"></script>
+<script src="{% static 'cart/js/carrito.js' %}"></script>
 {% endblock %}

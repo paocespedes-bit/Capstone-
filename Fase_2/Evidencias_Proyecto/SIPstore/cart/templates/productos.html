@@ -1,0 +1,59 @@
+{% load static %}
+
+<div class="collapse show" id="cartListCollapse">
+    <div class="card shadow-sm mb-4">
+        <div class="card-header bg-primary text-white">
+            <h5 class="mb-0">Productos en tu Carrito</h5>
+        </div>
+        <div class="card-body">
+
+            <div class="d-flex align-items-center border-bottom pb-3 mb-3">
+                <img src="{% static 'img/SinImagen.png' %}" class="img-fluid rounded me-3" alt="Producto A"
+                    style="width: 60px; height: 60px; object-fit: cover;">
+
+                <div class="flex-grow-1">
+                    <h6 class="mb-0">Producto A <small class="text-muted fs-6">(ID: 45678)</small></h6>
+
+                    <div class="d-flex align-items-center mt-1">
+                        <span class="small text-muted">Precio Unitario: $10.000</span>
+
+                        <div class="input-group input-group-sm me-3" style="width: 120px;">
+                            <button class="btn btn-outline-secondary" type="button">-</button>
+                            <input type="number" class="form-control text-center" value="2" min="1">
+                            <button class="btn btn-outline-secondary" type="button">+</button>
+                        </div>
+                    </div>
+                </div>
+
+                <button class="btn btn-sm btn-outline-danger" title="Eliminar elemento">
+                    <i class="bi bi-trash"></i> Borrar
+                </button>
+            </div>
+
+            <div class="d-flex align-items-center pb-3 mb-3">
+                <img src="{% static 'img/SinImagen.png' %}" class="img-fluid rounded me-3" alt="Producto B"
+                    style="width: 60px; height: 60px; object-fit: cover;">
+                <div class="flex-grow-1">
+                    <h6 class="mb-0">Producto B <small class="text-muted fs-6">(ID: 98765)</small></h6>
+                    <div class="d-flex align-items-center mt-1">
+                        <span class="small text-muted">Precio Unitario: $10.000</span>
+
+                        <div class="input-group input-group-sm me-3" style="width: 120px;">
+                            <button class="btn btn-outline-secondary" type="button">-</button>
+                            <input type="number" class="form-control text-center" value="2" min="1">
+                            <button class="btn btn-outline-secondary" type="button">+</button>
+                        </div>
+                    </div>
+                </div>
+                <button class="btn btn-sm btn-outline-danger" title="Eliminar elemento">
+                    <i class="bi bi-trash"></i> Borrar
+                </button>
+            </div>
+
+            <div class="text-end">
+                <button class="btn btn-sm btn-outline-danger"><i class="bi bi-eraser"></i> Vaciar Carrito</button>
+            </div>
+
+        </div>
+    </div>
+</div>

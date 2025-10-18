@@ -1,116 +1,92 @@
-from django.shortcuts import render,redirect
+from django.shortcuts import render
 from django.http import JsonResponse
 from django.contrib.contenttypes.models import ContentType
-from django.views.decorators.csrf import csrf_exempt
-import json
-from store.models import PanelSIP, KitConstruccion 
+from .carrito import Carrito
+from django.views.decorators.http import require_POST
 
-# Create your views here.
 def carrito(request):
-    carrito = request.session.get("carrito", [])
-    productos = []
-    
-    nuevo_carrito = []
-    
-    for item in carrito:
-        content_type_model = item["content_type"]
-        product_id = item["product_id"]
-        cantidad = item["quantity"]
+    return render(request, "carrito.html", {})
 
-        try:
-            content_type = ContentType.objects.get(model=content_type_model)
-            producto = content_type.get_object_for_this_type(id=product_id)
-            
-            productos.append({
-                "nombre":getattr(producto, "nombre","Sin nombre"),
-                "precio":getattr(producto, "precio", 0),
-                "precio_anterior":getattr(producto, "precio", 0), #!Cambiar una vez implementado descuento
-                "cantidad": cantidad,
-                "subtotal": getattr(producto, "precio", 0) * cantidad,
-                "tipo": content_type_model,
-                "id": product_id
-            })
-            nuevo_carrito.append(item)
-        except content_type.model_class().DoesNotExist:
-            productos.append({
-                "nombre": "Producto inexistente",
-                "precio": 0,
-                "precio_anterior": 0,
-                "cantidad": cantidad,
-                "subtotal": 0,
-                "tipo": content_type_model,
-                "id": product_id
-            })
-            
-    request.session["carrito"] = nuevo_carrito
-    total = sum(p["subtotal"] for p in productos)
-    context = {
-        "carrito": carrito,
-        "productos": productos,
-        "total": total
-        
-    }
-    return render(request, "carrito.html",context)
 
-def agregar_carrito(request):
+# Función para obtener producto por content_type + id
+def get_producto(content_type_id, producto_id):
+    try:
+        content_type = ContentType.objects.get(id=content_type_id)
+        return content_type.get_object_for_this_type(id=producto_id)
+    except (ContentType.DoesNotExist, ValueError):
+        return None
+
+# Agregar producto al carrito
+def agregar_producto(request):
     if request.method == "POST":
-        data = json.loads(request.body)
-        content_type = data.get("content_type")
-        product_id = data.get("product_id")
-        quantity = int(data.get("quantity", 1))
-        
-        carrito = request.session.get("carrito", [])
-        for item in carrito:
-            if item["content_type"] == content_type and item["product_id"] == product_id:
-                item["quantity"] += quantity
-                break
-        else:
-            carrito.append({
-                "content_type": content_type,
-                "product_id": product_id,
-                "quantity": quantity
-            })
+        producto_id = request.POST.get("producto_id")
+        content_type_id = request.POST.get("content_type")
+        cantidad = int(request.POST.get("cantidad", 1))
 
-        request.session["carrito"] = carrito
-        total_items = sum(item["quantity"] for item in carrito)
-        
+        producto = get_producto(content_type_id, producto_id)
+        if not producto:
+            return JsonResponse({"ok": False, "msg": "Producto no encontrado."}, status=404)
+
+        carrito = Carrito(request)
+        carrito.agregar(producto, cantidad)
+
         return JsonResponse({
-            "message": "Producto añadido al carrito",
-            "total_items": total_items
-        })
-    
-    return JsonResponse({"error": "Método no permitido"}, status=405)
-
-def vaciar_carrito(request):
-    if "carrito" in request.session:
-        del request.session["carrito"]  
-        request.session.modified = True  
-    return redirect("carrito") 
-
-def eliminar_item_carrito(request):
-    if request.method == "POST":
-        data = json.loads(request.body)
-        content_type = data.get("content_type")
-        product_id = data.get("product_id")
-
-        if not content_type or not product_id:
-            return JsonResponse({"error": "Datos inválidos"}, status=400)
-
-        carrito = request.session.get("carrito", [])
-
-        # Buscar el item y eliminarlo
-        for item in carrito:
-            if item["content_type"] == content_type and item["product_id"] == int(product_id):
-                carrito.remove(item)
-                break  
-
-        
-        request.session["carrito"] = carrito
-        total_items = sum(item.get("quantity", 0) for item in carrito)
-        
-        return JsonResponse({
-            "message": "Producto eliminado del carrito",
-            "total_items": total_items
+            "ok": True,
+            "msg": f"✅ {producto.nombre} agregado al carrito.",
+            "total": carrito.total_precio(),
+            "cantidad_total": carrito.total_productos(),
         })
 
-    return JsonResponse({"error": "Método no permitido"}, status=405)
+# Restar unidades de un producto
+def restar_producto(request):
+    if request.method == "POST":
+        producto_id = request.POST.get("producto_id")
+        content_type_id = request.POST.get("content_type")
+        cantidad = int(request.POST.get("cantidad", 1))
+
+        producto = get_producto(content_type_id, producto_id)
+        if not producto:
+            return JsonResponse({"ok": False, "msg": "Producto no encontrado."}, status=404)
+
+        carrito = Carrito(request)
+        carrito.restar(producto, cantidad)
+
+        return JsonResponse({
+            "ok": True,
+            "msg": f"➖ Se restó {cantidad} unidad(es) de {producto.nombre}.",
+            "total": carrito.total_precio(),
+            "cantidad_total": carrito.total_productos(),
+        })
+
+# Eliminar producto del carrito
+def eliminar_producto(request):
+    if request.method == "POST":
+        producto_id = request.POST.get("producto_id")
+        content_type_id = request.POST.get("content_type")
+
+        producto = get_producto(content_type_id, producto_id)
+        if not producto:
+            return JsonResponse({"ok": False, "msg": "Producto no encontrado."}, status=404)
+
+        carrito = Carrito(request)
+        carrito.eliminar(producto)
+
+        return JsonResponse({
+            "ok": True,
+            "msg": f"🗑️ {producto.nombre} eliminado del carrito.",
+            "total": carrito.total_precio(),
+            "cantidad_total": carrito.total_productos(),
+        })
+
+# Limpiar carrito completo
+def limpiar_carrito(request):
+    if request.method == "POST":
+        carrito = Carrito(request)
+        carrito.limpiar()
+        return JsonResponse({
+            "ok": True,
+            "msg": "🧹 Carrito vaciado.",
+            "total": 0,
+            "cantidad_total": 0,
+        })
+    return JsonResponse({"ok": False, "msg": "Método no permitido"}, status=405)

@@ -67,8 +67,9 @@
         <!-- !Boton carrito  -->
         <a href="{% url 'carrito' %}" class="btn btn-success cart-button position-relative">
           <i class="bi bi-cart3"></i> Carrito
-          <span id="cart-badge" class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger hidden">
-            0
+          <span id="contar_carrito"
+            class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+            {{ cantidad_total|default:0 }}
           </span>
         </a>
       </div>
@@ -130,14 +131,31 @@
     <i class="bi bi-whatsapp"></i>
   </a>
   <form style="display:none;">
-  {% csrf_token %}
+    {% csrf_token %}
   </form>
   <!-- !Bootstrap JS -->
   <script src="{% static 'js/bootstrap.min.js' %}"></script>
   <script src="{% static 'js/whatsapp.js' %}"></script>
   <script>
-    const URL_AGREGAR_CARRITO = "{% url 'agregar_carrito' %}";
-    const URL_ELIMINAR_CARRITO = "{% url 'eliminar_item_carrito' %}";
+    document.querySelector("#add-btn").addEventListener("click", e => {
+      const contentType = e.target.dataset.content;
+      const objectId = e.target.dataset.id;
+
+      fetch("add_to_cart", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "X-CSRFToken": "{{ csrf_token }}"
+        },
+        body: JSON.stringify({
+          content_type_id: contentType,
+          object_id: objectId,
+          cantidad: 1
+        })
+      })
+        .then(res => res.json())
+        .then(data => alert(data.message));
+    });
   </script>
   {% block script %}{% endblock %}
 </body>
