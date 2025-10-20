@@ -6,14 +6,29 @@ def totales_carrito(request):
     total = 0
     cantidad_articulos = 0
     
-    for key, value in carrito.items():
+    productos_detalles = []
+    
+    for key, item in carrito.items():
         try:
-            total += int(value["precio_unitario"]) * value["cantidad"]
-            cantidad_articulos += value["cantidad"]
-        except (TypeError, ValueError, KeyError):
+            nombre = item.get("nombre", "Producto Desconocido")
+            cantidad = item.get("cantidad", 0)
+            acumulado = item.get("acumulado", 0)
+            total += acumulado
+            cantidad_articulos += cantidad
+            
+            productos_detalles.append({
+                "nombre": nombre,
+                "cantidad": cantidad,
+                "acumulado": acumulado,
+                "producto_id": key, 
+            })
+            
+        except (TypeError, ValueError, KeyError) as e:
+            print(f"Error procesando ítem en el carrito: {e}")
             continue 
 
     return {
-        "total_carrito": total,
-        "cantidad_articulos_carrito": cantidad_articulos
+        "total_carrito": int(total),
+        "cantidad_articulos_carrito": cantidad_articulos,
+        "productos_detalles": productos_detalles,
     }
