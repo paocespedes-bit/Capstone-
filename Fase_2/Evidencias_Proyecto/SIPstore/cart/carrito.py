@@ -6,9 +6,10 @@ class Carrito:
         self.request = request
         self.session = request.session
         carrito = self.session.get("carrito")
-        if not carrito:
+        if not carrito or not isinstance(carrito, dict):
             self.session["carrito"] = {}
             self.carrito = self.session["carrito"]
+            self.session.modified = True
         else:
             self.carrito = carrito
             
@@ -44,7 +45,7 @@ class Carrito:
             self.carrito[id_str]["cantidad"] -= cantidad
             
             if self.carrito[id_str]["cantidad"] <= 0:
-                self.elimiar(producto_id)
+                self.eliminar(producto_id)
             else:
                 self.carrito[id_str]["acumulado"] = self.carrito[id_str]["precio_unitario"] * self.carrito[id_str]["cantidad"]
                 
@@ -88,6 +89,6 @@ class Carrito:
                 })
                 
             except Exception as e:
-                print(f"Error al cargar producto {item['producto_id']}: {e}")
+                print(f"Error al cargar producto {item.get('producto_id','Desconocido')}: {e}")
                 
         return productos_completos    
