@@ -1,3 +1,4 @@
+
 // * Funciones de Utilidad y Token CSRF *
 function getCookie(name) {
     let cookieValue = null;
@@ -13,7 +14,7 @@ function getCookie(name) {
     }
     return cookieValue;
 }
-var csrftoken = getCookie("csrftoken");
+const csrftoken = getCookie("csrftoken");
 
 // * Mostrar Toast *
 function mostrarToast(mensaje) {

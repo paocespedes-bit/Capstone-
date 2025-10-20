@@ -11,11 +11,10 @@
             <li class="list-group-item d-flex justify-content-between bg-light summary-item-{{ item.producto.id }}">
                 <div style="width: 10vw;">{{ item.producto.nombre|truncate_chars:10 }}</div>
                 <div class="px-3 text-center" style="max-width: 15vw;">
-                    <span id="cantidad-summary-{{ item.producto.id }}"> X {{ item.cantidad }}</span>
+                    <span class="cantidad-summary-{{ item.producto.id }}"> X {{ item.cantidad }}</span>
                 </div>
-
                 <div class="ms-3 text-end" style="width: 10vw;">
-                    <span id="acumulado-summary-{{ item.producto.id }}">${{ item.acumulado|floatformat:0|punto_miles}}</span>
+                    <span class="acumulado-summary-{{ item.producto.id }}">${{ item.acumulado|floatformat:0|punto_miles}}</span>
                 </div>
             </li>
             {% endfor %}

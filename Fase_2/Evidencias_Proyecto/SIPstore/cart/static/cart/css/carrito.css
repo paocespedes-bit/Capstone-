@@ -13,7 +13,21 @@
   top: 20px; 
 }
 
+.btn-sumar-carrito, .btn-restar-carrito{
+  background-color: #008c9e;
+  color: aliceblue;
+  border: none;
+}
 
+.btn-sumar-carrito:hover{
+  background-color: #20d500;
+  color: aliceblue;
+}
+
+.btn-restar-carrito:hover{
+  background-color: #d50000;
+  color: aliceblue;
+}
 
 /* input number  */
 .input-group{

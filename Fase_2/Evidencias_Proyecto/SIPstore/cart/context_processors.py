@@ -8,7 +8,7 @@ def totales_carrito(request):
     
     for key, value in carrito.items():
         try:
-            total += int(value["precio"]) * value["cantidad"]
+            total += int(value["precio_unitario"]) * value["cantidad"]
             cantidad_articulos += value["cantidad"]
         except (TypeError, ValueError, KeyError):
             continue 
