@@ -1,5 +1,3 @@
-// cart/js/carrito_ajax.js
-
 // * Funciones de Utilidad y Token CSRF *
 function getCookie(name) {
     let cookieValue = null;
@@ -15,7 +13,7 @@ function getCookie(name) {
     }
     return cookieValue;
 }
-const csrftoken = getCookie("csrftoken");
+var csrftoken = getCookie("csrftoken");
 
 // * Mostrar Toast *
 function mostrarToast(mensaje) {
