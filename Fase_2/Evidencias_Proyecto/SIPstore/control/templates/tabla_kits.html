@@ -87,13 +87,12 @@
                 {% for kit in kits %}
                 <tr>
                     <td data-label="ID" >#{{ kit.id }}</td>
-                    <td data-label="Cantidad" >
-                        {% if kit.inventario.first.modo_stock == 'stock' %}
-                            {% if kit.inventario.first.disponible == 0 %}Sin Stock
-                            {% else %}{{ kit.inventario.first.disponible }}
-                            {% endif %}
-                        {% else %}Por Pedido{% endif %}
-                    </td>
+                    {% if kit.inventario.first.modo_stock == 'stock' %}
+                        {% if kit.inventario.first.disponible == 0 %}<td data-label="Cantidad" title="Sin Stock - Reservado: {{ kit.inventario.first.reservado }} ">Sin Stock</td>
+                        {% else %}<td data-label="Cantidad" title="Disponible: {{ kit.inventario.first.disponible }} - Reservado: {{ kit.inventario.first.reservado }} ">{{ kit.inventario.first.disponible }}</td>
+                        {% endif %}
+                    {% else %}<td data-label="Cantidad" title="Por Pedido">Por Pedido</td>
+                    {% endif %}
                     <td data-label="Nombre" >{{ kit.nombre }}</td>
                     <td data-label="Precio" >${{ kit.precio_actual|floatformat:0|punto_miles }}</td>
                     <td data-label="Oferta" >{% if kit.oferta %}{{ kit.oferta }}%{% else %}N/A{% endif %}</td>
