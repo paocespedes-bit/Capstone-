@@ -60,7 +60,6 @@ class DetallePedido(models.Model):
     pedido = models.ForeignKey(Pedido, on_delete=models.CASCADE, related_name='detalles')
     
     content_type = models.ForeignKey(ContentType, on_delete=models.SET_NULL, null=True, blank=True)
-    tipo = models.CharField(max_length=50)
     object_id = models.PositiveIntegerField(null=True, blank=True)
     producto = GenericForeignKey('content_type', 'object_id')
     nombre_producto = models.CharField(max_length=255)

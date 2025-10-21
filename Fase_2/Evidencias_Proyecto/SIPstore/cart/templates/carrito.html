@@ -31,10 +31,5 @@
     {% include 'toast.html' %}
 {% endblock %}
 {% block script %}
-<script>
-    // 💡 IMPORTANTE: Usa un placeholder (marcador) que no sea un número para evitar confusiones.
-    const urlModificar = '{% url "modificar_ajax" "ACCION_PLACEHOLDER" %}';
-</script>
 <script src="{% static 'cart/js/vista_carrito.js' %}"></script>
-<script src="{% static 'cart/js/carrito.js' %}"></script>
 {% endblock %}

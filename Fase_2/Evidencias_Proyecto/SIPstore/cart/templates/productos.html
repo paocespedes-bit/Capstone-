@@ -5,7 +5,7 @@
         <div class="card-header bg-primary text-white">
             <h5 class="mb-0">Productos en tu Carrito</h5>
         </div>
-        <div class="card-body">
+        <div class="card-body ">
             {% if productos_carrito %}
             {% for item in productos_carrito %}
             <div class="d-flex align-items-center border-bottom pb-3 mb-3 product-item-{{ item.producto.id }}">
@@ -13,7 +13,7 @@
                     style="width: 60px; height: 60px; object-fit: cover;">
 
                 <div class="flex-grow-1">
-                    <h6 class="mb-0">{{ item.producto.nombre }} <small class="text-muted fs-6">(ID: {{ item.producto.id }})</small></h6>
+                    <h6 class="mb-0" >{{ item.producto.nombre }} <small class="text-muted fs-6">(ID: {{ item.producto.id }})</small></h6>
 
                     <div class="d-flex align-items-center mt-1">
                         <span class="small text-muted">Precio Unitario: ${{ item.precio_unitario|floatformat:0|punto_miles }}</span>

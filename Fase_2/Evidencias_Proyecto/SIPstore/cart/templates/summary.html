@@ -9,7 +9,7 @@
         <ul class="list-group list-group-flush mb-3" id="summary-list">
             {% for item in productos_detalles %}
             <li class="list-group-item d-flex justify-content-between bg-light summary-item-{{ item.producto.id }}">
-                <div style="width: 10vw;">{{ item.nombre|truncate_chars:10 }}</div>
+                <div style="width: 10vw;" title="{{item.nombre}}.">{{ item.nombre|truncate_chars:10 }}</div>
                 <div class="px-3 text-center" style="max-width: 15vw;">
                     <span class="cantidad-summary-{{ item.producto.id }}"> X {{ item.cantidad }}</span>
                 </div>
