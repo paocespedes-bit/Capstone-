@@ -31,3 +31,24 @@
         </div>
     </div>
 </div>
+
+
+{% block script %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const finishOrderBtn = document.getElementById('btn-finish-order');
+    const checkoutForm = document.getElementById('checkoutForm');
+
+    if (finishOrderBtn && checkoutForm) {
+        finishOrderBtn.addEventListener('click', function(e) {
+            e.preventDefault(); // evita recarga inmediata
+            if (checkoutForm.checkValidity()) {
+                checkoutForm.submit(); // envía el formulario al backend
+            } else {
+                checkoutForm.reportValidity(); // muestra los campos faltantes
+            }
+        });
+    }
+});
+</script>
+{% endblock %}

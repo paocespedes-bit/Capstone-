@@ -10,7 +10,7 @@ class Local(models.Model):
     nombre = models.CharField(max_length=200, unique=True)
     ubicacion = models.CharField(max_length=300)
     telefono = models.CharField(max_length=20,blank=True,null=True)
-    def _str_(self):
+    def __str__(self):
         return self.nombre
     
 # ! Modelo Pedido
@@ -51,7 +51,7 @@ class Pedido(models.Model):
         total = sum(detalle.subtotal for detalle in self.detalles.all())
         Pedido.objects.filter(pk=self.pk).update(monto_total=total)
 
-    def _str_(self):
+    def __str__(self):
         return f"Pedido #{self.id} - {self.comprador}"
     
 # ! Modelo detalle Pedido

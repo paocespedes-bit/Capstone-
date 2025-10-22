@@ -6,17 +6,21 @@
             <h5 class="mb-0">Información de Pedido y Cliente</h5>
         </div>
         <div class="card-body">
-            <form>
-
+            <form id="pedidoForm" method="POST" action="{% url 'crear_pedido' %}">
+                {% csrf_token %}
                 <fieldset class="mb-4 p-3 border rounded">
                     <legend class="float-none w-auto px-2 fs-6 text-success">Información Pedido</legend>
 
                     <div class="mb-3">
                         <label for="localSelect" class="form-label">Local de Retiro</label>
-                        <select class="form-select" id="localSelect" onchange="showLocalCard(this.value)" required>
+                        <select name="localSelect" class="form-select" id="localSelect" onchange="showLocalCard(this.value)" required>
                             <option value="" selected disabled>Selecciona un local...</option>
-                            <option value="local1">Local Centro - Santiago</option>
-                            <option value="local2">Local Mall Costanera - Providencia</option>
+                            {% for local in locales %}
+                            <option value="{{ local.id }}" data-nombre="{{ local.nombre }}"
+                                data-ubicacion="{{ local.ubicacion }}">
+                                {{ local.nombre }}
+                            </option>
+                            {% endfor %}
                         </select>
                     </div>
 
@@ -27,19 +31,22 @@
                         </div>
                     </div>
                 </fieldset>
-                
+
                 <fieldset class="mb-4 p-3 border rounded">
                     <legend class="float-none w-auto px-2 fs-6 text-success">Método de Pago</legend>
 
                     <div class="form-check">
-                        <input class="form-check-input" type="radio" name="paymentMethod" id="paymentOnline" value="online" required checked>
+                        <input class="form-check-input" type="radio" name="paymentMethod" id="paymentOnline"
+                            value="online" required checked>
                         <label class="form-check-label" for="paymentOnline">
-                            <strong class="text-primary">Pago en línea</strong> (Paga ahora con tarjeta de crédito/débito)
+                            <strong class="text-primary">Pago en línea</strong> (Paga ahora con tarjeta de
+                            crédito/débito)
                         </label>
                     </div>
 
                     <div class="form-check">
-                        <input class="form-check-input" type="radio" name="paymentMethod" id="paymentStore" value="store" required>
+                        <input class="form-check-input" type="radio" name="paymentMethod" id="paymentStore"
+                            value="store" required>
                         <label class="form-check-label" for="paymentStore">
                             <strong class="text-secondary">Pago en tienda</strong> (Paga al momento de retirar)
                         </label>
@@ -51,24 +58,24 @@
                     <div class="row g-3">
                         <div class="col-md-6">
                             <label for="clientName" class="form-label">Nombre Cliente</label>
-                            <input type="text" class="form-control" id="clientName" required>
+                            <input type="text" class="form-control" id="clientName"  name="clientName" required>
                         </div>
                         <div class="col-md-6">
                             <label for="clientRut" class="form-label">RUT</label>
-                            <input type="text" class="form-control" id="clientRut" required
+                            <input type="text" class="form-control" id="clientRut" name="clientRut" required
                                 placeholder="Ej: 12.345.678-9">
                         </div>
                         <div class="col-md-6">
                             <label for="clientEmail" class="form-label">Correo Electrónico</label>
-                            <input type="email" class="form-control" id="clientEmail" required>
+                            <input type="email" class="form-control" id="clientEmail" name="clientEmail" required>
                         </div>
                         <div class="col-md-6">
                             <label for="clientPhone" class="form-label">Celular de Contacto</label>
-                            <input type="tel" class="form-control" id="clientPhone" required>
+                            <input type="tel" class="form-control" id="clientPhone" name="clientPhone" required>
                         </div>
                         <div class="col-12">
                             <label for="clientAddress" class="form-label">Ubicación (para boleta)</label>
-                            <input type="text" class="form-control" id="clientAddress" required
+                            <input type="text" class="form-control" id="clientAddress" name="clientAddress" required
                                 placeholder="Calle, número, comuna/ciudad">
                             <div class="form-text">Ubicación solo para fines de boleta/facturación.</div>
                         </div>
@@ -78,3 +85,5 @@
         </div>
     </div>
 </div>
+
+

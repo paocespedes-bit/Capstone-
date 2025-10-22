@@ -2,9 +2,27 @@ from django.shortcuts import render, redirect
 from django.http import JsonResponse
 import json
 from store.models import PanelSIP, KitConstruccion
+from control.models import Local, Pedido, DetallePedido 
 from django.contrib.contenttypes.models import ContentType
 from django.views.decorators.http import require_POST
 from .carrito import Carrito
+from django.utils import timezone
+from django.contrib import messages
+from django.utils import timezone
+
+
+
+def carrito(request):
+    carrito = Carrito(request)
+    productos_completos = carrito.obtener_productos_completos()
+    locales = Local.objects.all()
+    
+    context = {
+        'productos_carrito': productos_completos,
+        'locales': locales,
+    }
+    return render(request, "carrito.html", context)
+
 
 def obtener_producto_concreto(producto_id, content_type_id):
     try:
@@ -27,14 +45,7 @@ def generar_respuesta(carrito):
         "carrito_data": carrito.carrito
     }
 
-def carrito(request):
-    carrito = Carrito(request)
-    productos_completos = carrito.obtener_productos_completos()
-    
-    context = {
-        'productos_carrito': productos_completos,
-    }
-    return render(request, "carrito.html", context)
+
 
 @require_POST
 def agregar_producto(request):
@@ -102,3 +113,65 @@ def modificar_carrito(request, accion):
         
     except Exception as e:
         return JsonResponse({"error": str(e)}, status=500)
+    
+
+# !Pedidos 
+def crear_pedido(request):
+    if request.method == 'POST':
+        carrito = Carrito(request)
+        
+        if not carrito.carrito:
+            messages.error(request, "Tu carrito esta vacio")
+            return redirect('carrito')
+        
+        try:
+            local_id = request.POST.get('localSelect')
+            metodo_pago = request.POST.get('paymentMethod')
+            comprador = request.POST.get('clientName')
+            rut_cli = request.POST.get('clientRut')
+            correo_cli = request.POST.get('clientEmail')
+            celular_cli = request.POST.get('clientPhone')
+            ubicacion_cli = request.POST.get('clientAddress')
+            
+            local = Local.objects.get(id=local_id) if local_id else None
+            
+            pedido = Pedido.objects.create(
+                local=local,
+                nombre_local=local.nombre if local else None,
+                comprador=comprador,
+                rut_cli=rut_cli,
+                correo_cli=correo_cli,
+                celular_cli=celular_cli,
+                ubicacion_cli=ubicacion_cli,
+                fecha_pedido=timezone.now(),
+                estado='pendiente',
+                metodo_pago='pago_web' if metodo_pago == 'online' else 'pago_tienda',
+                monto_total=0
+            )
+            
+            monto_total = 0
+            
+            for item in carrito.carrito.values():
+                content_type = ContentType.objects.get_for_id(item['content_type_id'])
+                producto_obj = content_type.get_object_for_this_type(id=item['producto_id'])
+                cantidad = item['cantidad']
+                
+                detalle = DetallePedido.objects.create(
+                    pedido = pedido,
+                    content_type = content_type,
+                    object_id = producto_obj.id,
+                    cantidad = cantidad
+                )
+                monto_total += detalle.subtotal
+            
+            pedido.monto_total = monto_total
+            pedido.save()
+            carrito.limpiar()
+            
+            messages.success(request, f"Pedido #{pedido.id} creado exitosamente.")
+            return redirect('pedido_exitoso') 
+            
+        except Exception as e:
+            messages.error(request, "Ocurrió un error al crear el pedido. Intenta nuevamente.", e)
+            return redirect('carrito')
+    return redirect('ver_carrito')
