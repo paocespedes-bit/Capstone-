@@ -156,34 +156,55 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Restar producto
     document.body.addEventListener("click", (e) => {
-        const btn = e.target.closest(".btn-restar-carrito");
-        if (!btn) return;
+    const btn = e.target.closest(".btn-restar-carrito");
+    if (!btn) return;
 
-        e.preventDefault();
-        const input = btn.closest(".input-group")?.querySelector(".cantidad-carrito-input");
-        if (!input) return;
+    e.preventDefault();
+    const input = btn.closest(".input-group")?.querySelector(".cantidad-carrito-input");
+    if (!input) return;
 
-        const productoId = btn.dataset.id;
-        const nuevaCantidad = parseInt(input.value) - 1;
+    const productoId = btn.dataset.id;
+    const nuevaCantidad = parseInt(input.value) - 1;
 
-        if (nuevaCantidad > 0) {
-            input.value = nuevaCantidad;
-            manejarPeticionCarrito(obtenerUrlAccion("actualizar"), "POST", { producto_id: productoId, cantidad: nuevaCantidad }, actualizarVistaCarrito);
-        } else {
-            manejarPeticionCarrito(obtenerUrlAccion("eliminar"), "POST", { producto_id: productoId }, actualizarVistaCarrito);
-            location.reload();
-        }
-    });
+    if (nuevaCantidad > 0) {
+        input.value = nuevaCantidad;
+        manejarPeticionCarrito(
+            obtenerUrlAccion("actualizar"),
+            "POST",
+            { producto_id: productoId, cantidad: nuevaCantidad },
+            actualizarVistaCarrito
+        );
+    } else {
+        manejarPeticionCarrito(
+            obtenerUrlAccion("eliminar"),
+            "POST",
+            { producto_id: productoId },
+            (data) => {
+                actualizarVistaCarrito(data);
+                // recargar página solo después de procesar la eliminación
+                location.reload();
+            }
+        );
+    }
+});
 
     // Eliminar producto
     document.body.addEventListener("click", (e) => {
-        const btn = e.target.closest(".btn-eliminar-carrito");
-        if (!btn) return;
+    const btn = e.target.closest(".btn-eliminar-carrito");
+    if (!btn) return;
 
-        e.preventDefault();
-        manejarPeticionCarrito(obtenerUrlAccion("eliminar"), "POST", { producto_id: btn.dataset.id }, actualizarVistaCarrito);
-        location.reload();
-    });
+    e.preventDefault();
+    manejarPeticionCarrito(
+        obtenerUrlAccion("eliminar"),
+        "POST",
+        { producto_id: btn.dataset.id },
+        (data) => {
+            actualizarVistaCarrito(data);
+            // recargar página después de eliminar
+            location.reload();
+        }
+    );
+});
 
     // Vaciar carrito
     document.body.addEventListener("click", (e) => {
