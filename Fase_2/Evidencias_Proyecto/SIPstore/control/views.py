@@ -327,13 +327,29 @@ def subir_imagenes_panel(request, panel_id):
     panel = get_object_or_404(PanelSIP, id=panel_id)
 
     if request.method == "POST":
-        for imagen in request.FILES.getlist('imagenes'):
-            imagenProducto.objects.create(
-                imagen=imagen,
-                content_type=ContentType.objects.get_for_model(panel),
-                object_id=panel.id
-            )
-        return redirect('stock')  
+        archivos = request.FILES.getlist('imagenes')
+        errores = []
+
+        for archivo in archivos:
+            # Crear formulario individual para cada archivo
+            form = ImagenProductoForm(files={'imagen': archivo})
+            if form.is_valid():
+                nueva_imagen = form.save(commit=False)
+                nueva_imagen.content_type = ContentType.objects.get_for_model(panel)
+                nueva_imagen.object_id = panel.id
+                nueva_imagen.full_clean()  # ✅ Ejecuta validaciones del modelo también
+                nueva_imagen.save()
+            else:
+                # Agregar error al listado para mostrarlo en la plantilla
+                errores.append(f"{archivo.name}: {form.errors.get('imagen')[0]}")
+
+        if errores:
+            for err in errores:
+                messages.error(request, err)
+        else:
+            messages.success(request, "Imágenes subidas correctamente.")
+
+        return redirect('stock')
 
     return render(request, 'stock.html', {'panel': panel})
 
@@ -341,13 +357,27 @@ def subir_imagenes_kit(request, kit_id):
     kit = get_object_or_404(KitConstruccion, id=kit_id)
 
     if request.method == "POST":
-        for imagen in request.FILES.getlist('imagenes'):
-            imagenProducto.objects.create(
-                imagen=imagen,
-                content_type=ContentType.objects.get_for_model(kit),
-                object_id=kit.id
-            )
-        return redirect('/stock/?tab=kits') 
+        archivos = request.FILES.getlist('imagenes')
+        errores = []
+
+        for archivo in archivos:
+            form = ImagenProductoForm(files={'imagen': archivo})
+            if form.is_valid():
+                nueva_imagen = form.save(commit=False)
+                nueva_imagen.content_type = ContentType.objects.get_for_model(kit)
+                nueva_imagen.object_id = kit.id
+                nueva_imagen.full_clean()
+                nueva_imagen.save()
+            else:
+                errores.append(f"{archivo.name}: {form.errors.get('imagen')[0]}")
+
+        if errores:
+            for err in errores:
+                messages.error(request, err)
+        else:
+            messages.success(request, "Imágenes subidas correctamente.")
+
+        return redirect('/stock/?tab=kits')
 
     return render(request, 'tabla_kits.html', {"kit": kit})
 # !======================

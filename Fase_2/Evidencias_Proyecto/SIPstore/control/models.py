@@ -3,6 +3,7 @@ from django.utils import timezone
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
 from store.models import PanelSIP, KitConstruccion,Inventario
+from django.core.mail import send_mail
 # Create your models here.
 
 # ! Modelo Local (local retiro)
@@ -42,22 +43,41 @@ class Pedido(models.Model):
     monto_total = models.DecimalField(max_digits=10,decimal_places=2, default=0)
     metodo_pago = models.CharField(max_length=20,choices=METODO ,default='pago_tienda')
     
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self._estado_original = self.estado  # Guardamos el estado inicial
+
     def save(self, *args, **kwargs):
+        # Mantener el nombre del local
         if self.local and not self.nombre_local:
             self.nombre_local = self.local.nombre
+
+        # Guardar el estado anterior antes de guardar
+        estado_anterior = getattr(self, "_estado_original", None)
+
+        # Guardar el pedido normalmente
         super().save(*args, **kwargs)
+
+        # Si el estado cambió, actualizar el stock
+        if estado_anterior != self.estado:
+            self.actualizar_stock_por_estado()
+
+        # Actualizar el estado original para futuras comparaciones
+        self._estado_original = self.estado
 
     def actualizar_monto_total(self):
         total = sum(detalle.subtotal for detalle in self.detalles.all())
         Pedido.objects.filter(pk=self.pk).update(monto_total=total)
-
-    def __str__(self):
-        return f"Pedido #{self.id} - {self.comprador}"
     
     def actualizar_stock_por_estado(self):
         """
-        Ajusta el stock de los productos del pedido según el estado.
+        Ajusta el stock de los productos del pedido según el cambio de estado.
+        Evita duplicar reservas al pasar entre 'pendiente' y 'en_proceso'.
         """
+        # Si el estado no cambió, no hacemos nada
+        if self.estado == getattr(self, "_estado_original", None):
+            return
+        
         for detalle in self.detalles.all():  # related_name='detalles' en DetallePedido
             if not detalle.content_type or not detalle.object_id:
                 continue  # Saltar si no hay producto
@@ -69,22 +89,42 @@ class Pedido(models.Model):
             if not inventario:
                 continue  # Si no existe inventario, ignorar
 
-            if self.estado in ['pendiente', 'en_proceso']:
-                # Mantener en reservado
-                inventario.ajustar_reservado(inventario.reservado + detalle.cantidad)
+            estado_anterior = getattr(self, "_estado_original", None)
+            estado_actual = self.estado
 
-            elif self.estado == 'completado':
-                # Reducir reservado porque el pedido se completó
+            # 🟢 Caso 1: Cambio a completado → liberar reserva (pedido entregado)
+            if estado_anterior in ['pendiente', 'en_proceso'] and estado_actual == 'completado':
                 nuevo_reservado = max(inventario.reservado - detalle.cantidad, 0)
                 inventario.ajustar_reservado(nuevo_reservado)
 
-            elif self.estado == 'cancelado':
-                # Devolver stock reservado a disponible
+            # 🔴 Caso 2: Cambio a cancelado → liberar reserva y devolver stock a disponible
+            elif estado_anterior in ['pendiente', 'en_proceso'] and estado_actual == 'cancelado':
                 nuevo_reservado = max(inventario.reservado - detalle.cantidad, 0)
                 inventario.ajustar_reservado(nuevo_reservado)
                 inventario.disponible += detalle.cantidad
                 inventario.save(update_fields=['disponible', 'reservado'])
-        
+
+            # 🟡 Caso 3: Cambio desde cancelado/completado → pendiente o en_proceso → volver a reservar
+            elif estado_anterior in ['completado', 'cancelado'] and estado_actual in ['pendiente', 'en_proceso']:
+                inventario.ajustar_reservado(inventario.reservado + detalle.cantidad)
+
+            # 🟣 Caso 4: Cambio de completado → cancelado (devolución)
+            elif estado_anterior == 'completado' and estado_actual == 'cancelado':
+                inventario.disponible += detalle.cantidad 
+                inventario.save(update_fields=['disponible'])
+
+            elif estado_anterior == 'cancelado' and estado_actual == 'completado':
+                # Reducir el stock disponible porque el pedido ahora se completó
+                if inventario.disponible >= detalle.cantidad:
+                    inventario.disponible -= detalle.cantidad
+                else:
+                    # Manejo de excepción opcional: no hay suficiente stock
+                    inventario.disponible = 0
+                inventario.save(update_fields=['disponible'])
+
+    def __str__(self):
+        return f"Pedido #{self.id} - {self.comprador}"
+            
 # ! Modelo detalle Pedido
 
 class DetallePedido(models.Model):
@@ -125,3 +165,4 @@ class DetallePedido(models.Model):
                 inventario.disponible = max(inventario.disponible - self.cantidad, 0)
                 inventario.reservado += self.cantidad
                 inventario.save(update_fields=['disponible', 'reservado'])
+

@@ -1,6 +1,7 @@
 from django.db import models
 from django.core.validators import MinValueValidator, MaxValueValidator
 from django.utils import timezone
+from django.core.exceptions import ValidationError
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.contenttypes.fields import GenericRelation
@@ -36,7 +37,6 @@ class Producto(models.Model):
     def __str__(self):
         return self.nombre
     
-
 # * Paneles SiP
 class PanelSIP(Producto):
     tipo_obs = models.CharField(max_length=100, blank=True,null=True)
@@ -69,6 +69,17 @@ class imagenProducto(models.Model):
     producto = GenericForeignKey('content_type', 'object_id')
     imagen = models.ImageField(upload_to=ruta_imagen) #Guardar la imagen en carpeta correspondiente
 
+    def clean(self):
+        """Validar que el archivo subido sea realmente una imagen."""
+        if self.imagen:
+            # Verificar tipo MIME
+            if not self.imagen.file.content_type.startswith('image/'):
+                raise ValidationError("Solo puedes subir archivos de imagen (jpg, png, etc).")
+
+            # Validar tamaño máximo (opcional, ej: 5 MB)
+            if self.imagen.size > 5 * 1024 * 1024:
+                raise ValidationError("La imagen no puede superar los 5 MB.")
+            
     def __str__(self):
         return f"Imagen de {self.producto}"
 
