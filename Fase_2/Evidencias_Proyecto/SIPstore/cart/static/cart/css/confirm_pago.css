@@ -1,0 +1,107 @@
+.confirm-container {
+  padding: 2vw 5vw;
+  font-family: "Segoe UI", sans-serif;
+}
+
+.titulo {
+  font-size: 2rem;
+  font-weight: bold;
+  color: #008c9e;
+  margin-bottom: 1rem;
+}
+
+/* ------- Tabla de productos ------- */
+.tabla-productos {
+  width: 100%;
+  border-collapse: collapse;
+  background-color: #fff;
+  box-shadow: 0 0 8px rgba(0,0,0,0.1);
+  margin-bottom: 2rem;
+}
+
+.tabla-productos th {
+  background-color: #008c9e;
+  color: white;
+  padding: 10px;
+  text-align: left;
+}
+
+.tabla-productos td {
+  padding: 10px;
+  border-bottom: 1px solid #ddd;
+  vertical-align: middle;
+}
+
+.tabla-productos img {
+  width: 80px;
+  border-radius: 6px;
+}
+
+.detalle {
+  font-size: 0.9rem;
+  color: #555;
+}
+
+.total-label {
+  text-align: right;
+  font-weight: bold;
+  font-size: 1.1rem;
+}
+
+.total-valor {
+  font-weight: bold;
+  color: #008c9e;
+  font-size: 1.3rem;
+}
+
+/* ------- Formulario ------- */
+.formulario-pedido {
+  background-color: #f9f9f9;
+  padding: 2rem;
+  border-radius: 10px;
+  box-shadow: 0 0 6px rgba(0,0,0,0.1);
+}
+
+.formulario-pedido h2 {
+  color: #008c9e;
+  margin-bottom: 1.5rem;
+}
+
+.formulario-pedido form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+}
+
+.formulario-pedido input,
+.formulario-pedido select {
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 1rem;
+}
+
+.modo-pago {
+  margin-top: 1rem;
+}
+
+.opciones-pago {
+  display: flex;
+  gap: 2rem;
+  margin-top: 0.5rem;
+}
+
+.btn-pagar {
+  margin-top: 1.5rem;
+  background-color: #008c9e;
+  color: white;
+  padding: 10px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 1rem;
+}
+
+.btn-pagar:hover {
+  background-color: #007b8b;
+}

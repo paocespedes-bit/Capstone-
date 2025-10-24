@@ -1,0 +1,110 @@
+{% extends "base.html" %}
+{% load static %}
+{% load myfilters %}
+
+{% block title %}Confirmar Pago{% endblock %}
+
+{% block link %}
+<link rel="stylesheet" href="{% static 'cart/css/confirm_pago.css' %}" />
+{% endblock %}
+
+{% block content %}
+
+<div class="confirm-container">
+
+  <h1 class="titulo">Resumen de Pedido</h1>
+
+  <table class="tabla-productos">
+    <thead>
+      <tr>
+        <th>Producto</th>
+        <th>Imagen</th>
+        <th>Cantidad</th>
+        <th>Valor unitario</th>
+        <th>Total</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>
+          <strong>Panel Sip PROPANEL 9 cm</strong><br>
+          <span class="detalle">Piso, Muro interior, Muro exterior, Cielo</span>
+        </td>
+        <td><img src="{% static 'img/panel.jpg' %}" alt="Panel"></td>
+        <td>190</td>
+        <td>$119.574</td>
+        <td>$22.719.242</td>
+      </tr>
+      <tr>
+        <td>
+          <strong>Madera tirante Mutila. 45mmx67mmxUd</strong><br>
+          <span class="detalle">Piso, Muro interior, Cielo</span>
+        </td>
+        <td><img src="{% static 'img/madera.jpg' %}" alt="Madera"></td>
+        <td>236</td>
+        <td>$11.572</td>
+        <td>$2.731.010</td>
+      </tr>
+      <tr>
+        <td>
+          <strong>Madera Tabla Pino 25mmx90mmxUd Pie de Solera</strong><br>
+          <span class="detalle">Piso, Muro interior, Cielo</span>
+        </td>
+        <td><img src="{% static 'img/tabla.jpg' %}" alt="Tabla"></td>
+        <td>42</td>
+        <td>$3.744</td>
+        <td>$157.248</td>
+      </tr>
+    </tbody>
+    <tfoot>
+      <tr>
+        <td colspan="4" class="total-label">Total:</td>
+        <td class="total-valor">$25.607.500</td>
+      </tr>
+    </tfoot>
+  </table>
+
+  <div class="formulario-pedido">
+    <h2>Datos para pedido</h2>
+    <form>
+      <label>Nombre completo:</label>
+      <input type="text" placeholder="Nombre completo" required>
+
+      <label>RUT:</label>
+      <input type="text" placeholder="Ej: 11.111.111-1" required>
+
+      <label>Número celular:</label>
+      <input type="tel" placeholder="+56 9 1234 5678" required>
+
+      <label>Correo electrónico:</label>
+      <input type="email" placeholder="correo@ejemplo.com" required>
+
+      <label>Dirección:</label>
+      <input type="text" placeholder="Dirección completa">
+
+      <label>Centro de retiro:</label>
+      <select>
+        <option value="">Seleccionar...</option>
+        <option>Santiago</option>
+        <option>Valparaíso</option>
+        <option>Concepción</option>
+      </select>
+
+      <label>Fecha de retiro:</label>
+      <input type="date" required>
+
+      <div class="modo-pago">
+        <label>Modo de pago:</label>
+        <div class="opciones-pago">
+          <label><input type="radio" name="pago"> Pago en tienda</label>
+          <label><input type="radio" name="pago"> Web Pay</label>
+        </div>
+      </div>
+
+      <button type="submit" class="btn-pagar">Ir al portal de pago (Web Pay)</button>
+    </form>
+  </div>
+
+</div>
+
+{% endblock %}

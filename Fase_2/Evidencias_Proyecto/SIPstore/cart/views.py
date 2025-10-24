@@ -9,7 +9,7 @@ from .carrito import Carrito
 from django.utils import timezone
 from django.contrib import messages
 from django.utils import timezone
-
+from django.shortcuts import render, get_object_or_404
 
 
 def carrito(request):
@@ -175,3 +175,8 @@ def crear_pedido(request):
             messages.error(request, "Ocurrió un error al crear el pedido. Intenta nuevamente.", e)
             return redirect('carrito')
     return redirect('ver_carrito')
+
+# Vista de confirmación de pago
+def confirm_pago(request, pk):
+    carrito = get_object_or_404(carrito, pk=pk)
+    return render(request, 'confirm_pago.html', {'carrito': carrito})
