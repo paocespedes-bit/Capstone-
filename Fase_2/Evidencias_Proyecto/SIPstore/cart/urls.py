@@ -6,5 +6,7 @@ urlpatterns = [
     path('agregar/', views.agregar_producto, name="add_ajax"),
     path('modificar/<str:accion>/', views.modificar_carrito, name="modificar_ajax" ),
     path('crear-pedido/', views.crear_pedido, name='crear_pedido'),
-    path('confirmacion-pago/<int:pk>/', views.confirm_pago, name='confirm_pago'),
+    path('confirmacion-pago/', views.confirm_pago, name='confirm_pago'),
+    path('info-pedido/', views.info_pedido, name='info_pedido'),
+
     ]

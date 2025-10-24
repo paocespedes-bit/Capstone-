@@ -180,3 +180,13 @@ def crear_pedido(request):
 def confirm_pago(request, pk):
     carrito = get_object_or_404(carrito, pk=pk)
     return render(request, 'confirm_pago.html', {'carrito': carrito})
+
+def info_pedido(request):
+    carrito = Carrito(request)
+    locales = Local.objects.all()
+    total = sum(item["acumulado"] for item in carrito.carrito.values())
+
+    return render(request, 'info_pedido.html', {
+        'locales': locales,
+        'total_carrito': total,
+    })
