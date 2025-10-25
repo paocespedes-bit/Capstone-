@@ -1,6 +1,5 @@
 {% extends "base.html" %}
 {% load static %}
-{% load myfilters %}
 
 {% block title %}Confirmar Pago{% endblock %}
 
@@ -9,7 +8,40 @@
 {% endblock %}
 
 {% block content %}
+<div class="confirmacion-container">
+    <h2>¡Gracias por tu compra!</h2>
 
+    <!-- Datos del pedido -->
+    <div class="pedido-info">
+        <h3>Detalle del Pedido</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>Producto</th>
+                    <th>Cantidad</th>
+                    <th>Subtotal</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in productos %}
+                <tr>
+                    <td>{{ item.nombre }}</td>
+                    <td>{{ item.cantidad }}</td>
+                    <td>${{ item.subtotal }}</td>
+                </tr>
+                {% endfor %}
+                <tr>
+                    <td colspan="2"><strong>Total</strong></td>
+                    <td><strong>${{ pedido.monto_total }}</strong></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
 
-
+    <!-- Medio de pago -->
+    <div class="pago-info">
+        <h3>Medio de Pago</h3>
+        <p>{{ pedido.metodo_pago|capfirst }}</p>
+    </div>
+</div>
 {% endblock %}

@@ -176,10 +176,25 @@ def crear_pedido(request):
             return redirect('carrito')
     return redirect('ver_carrito')
 
-# Vista de confirmación de pago
-def confirm_pago(request, pk):
-    carrito = get_object_or_404(carrito, pk=pk)
-    return render(request, 'confirm_pago.html', {'carrito': carrito})
+def confirm_pago(request, pedido_id):
+    pedido = get_object_or_404(Pedido, id=pedido_id)
+    detalles = DetallePedido.objects.filter(pedido=pedido)
+
+
+    productos = []
+    for detalle in detalles:
+        producto_obj = detalle.content_object 
+        productos.append({
+            'nombre': getattr(producto_obj, 'nombre', 'Producto'),
+            'cantidad': detalle.cantidad,
+            'subtotal': detalle.subtotal
+        })
+
+    context = {
+        'pedido': pedido,
+        'productos': productos
+    }
+    return render(request, 'confirm_pago.html', context)
 
 def info_pedido(request):
     carrito = Carrito(request)
