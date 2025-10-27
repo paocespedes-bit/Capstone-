@@ -16,7 +16,7 @@ SECRET_KEY = 'django-insecure-h8pccql3i)qwzfhzdqj8$f-^a30f^p&b!%nmo+r^j-bsyp1u74
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['127.0.0.1', 'localhost','.ngrok-free.app']
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -97,7 +97,6 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-
 # Internationalization
 # https://docs.djangoproject.com/en/5.2/topics/i18n/
 
@@ -133,3 +132,7 @@ MEDIA_ROOT = os.path.join(BASE_DIR,'media')
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# Mercado Pago
+MERCADOPAGO_ACCESS_TOKEN = "APP_USR-5406155653869173-102715-50b766c7e8906c02233879cd7248c020-1070404569"
+MERCADOPAGO_PUBLIC_KEY = "APP_USR-a258475f-6cf0-4d2d-a4a3-42fd9394b013"
