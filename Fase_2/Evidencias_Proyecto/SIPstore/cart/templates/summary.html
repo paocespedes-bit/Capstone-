@@ -14,11 +14,13 @@
                     <span class="cantidad-summary-{{ item.producto.id }}"> X {{ item.cantidad }}</span>
                 </div>
                 <div class="ms-3 text-end" style="width: 10vw;">
-                    <span class="acumulado-summary-{{ item.producto.id }}">${{ item.acumulado|floatformat:0|punto_miles}}</span>
+                    <span class="acumulado-summary-{{ item.producto.id }}">
+                        ${{item.acumulado|floatformat:0|punto_miles}}</span>
                 </div>
             </li>
             {% endfor %}
-            <li class="list-group-item d-flex justify-content-between align-items-center bg-light fw-bold border-top border-dark">
+            <li
+                class="list-group-item d-flex justify-content-between align-items-center bg-light fw-bold border-top border-dark">
                 TOTAL
                 <span class="fs-5" id="total_sumary">${{ total_carrito|default:0|floatformat:0|punto_miles }}</span>
             </li>
@@ -28,27 +30,26 @@
             <button id="btn-continue-cart" class="btn btn-success w-100" onclick="toggleCartCollapse()">
                 Continuar Compra &rarr;
             </button>
+
+            <button type="submit" form="pedidoForm" id="btn-finish-order" class="btn btn-success w-100 mb-2 d-none">
+                Terminar Pedido &check;
+            </button>
+            <button id="btn-back-store" class="btn btn-outline-secondary w-100 d-none" onclick="toggleCartCollapse()">
+                &larr; Volver
+            </button>
+            
+            <div id="walletBrick_container" class="btn w-100 mb-2 d-none"></div>
+            <button id="btn-back-online" class="btn btn-outline-secondary w-100 d-none" onclick="toggleCartCollapse()">
+                &larr; Volver
+            </button>
         </div>
     </div>
+
 </div>
 
 
 {% block script %}
+<script src="https://sdk.mercadopago.com/js/v2"></script>
 <script>
-document.addEventListener('DOMContentLoaded', function() {
-    const finishOrderBtn = document.getElementById('btn-finish-order');
-    const checkoutForm = document.getElementById('checkoutForm');
-
-    if (finishOrderBtn && checkoutForm) {
-        finishOrderBtn.addEventListener('click', function(e) {
-            e.preventDefault(); // evita recarga inmediata
-            if (checkoutForm.checkValidity()) {
-                checkoutForm.submit(); // envía el formulario al backend
-            } else {
-                checkoutForm.reportValidity(); // muestra los campos faltantes
-            }
-        });
-    }
-});
 </script>
 {% endblock %}

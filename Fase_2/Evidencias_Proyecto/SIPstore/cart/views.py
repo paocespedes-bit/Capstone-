@@ -8,8 +8,9 @@ from django.views.decorators.http import require_POST
 from .carrito import Carrito
 from django.utils import timezone
 from django.contrib import messages
-from django.utils import timezone
-
+from django.urls import reverse, NoReverseMatch
+from django.conf import settings
+from django.views.decorators.csrf import csrf_exempt
 
 
 def carrito(request):
@@ -46,7 +47,7 @@ def generar_respuesta(carrito):
     }
 
 
-
+@csrf_exempt
 @require_POST
 def agregar_producto(request):
     try:
@@ -77,6 +78,7 @@ def agregar_producto(request):
     except Exception as e:
         return JsonResponse({"error": str(e)}, status=500)
 
+@csrf_exempt
 @require_POST
 def modificar_carrito(request, accion):
     try:
@@ -175,3 +177,71 @@ def crear_pedido(request):
             messages.error(request, "Ocurrió un error al crear el pedido. Intenta nuevamente.", e)
             return redirect('carrito')
     return redirect('ver_carrito')
+
+
+# !Mercado PAGO:
+@csrf_exempt
+def crear_preferencia(request):
+    carrito = Carrito(request)
+    if not carrito.carrito:
+            messages.error(request, "Tu carrito esta vacio")
+            return redirect('carrito')
+    try:
+        sdk = settings.SDK
+        items = []
+        total = 0
+        
+        host = request.get_host()
+        scheme = 'https'
+        
+        success_path = reverse('pago_exitoso')
+        failure_path = reverse('pago_fallido')
+        pending_path = reverse('pago_pendiente')
+        
+        success_url = f"{scheme}://{host}{success_path}"
+        failure_url = f"{scheme}://{host}{failure_path}"
+        pending_url = f"{scheme}://{host}{pending_path}"
+
+        print(f"DEBUG MP Success URL: {success_url}")
+        
+        for item in carrito.carrito.values():
+            items.append({
+                "title": item["nombre"],
+                "quantity": int(item["cantidad"]),
+                "currency_id": "CLP",
+                "unit_price": float(item["precio_unitario"]),
+                
+            })
+            total += float(item["acumulado"])
+            
+        preference_data = {
+            "items": items,
+            "back_urls": {
+            "success": success_url,
+            "failure": failure_url,
+            "pending": pending_url
+            },
+            "auto_return": "approved" 
+        }
+        
+        preference_response = sdk.preference().create(preference_data)
+        preference = preference_response["response"]
+        
+        print(preference_response)  # <--- depuración
+        preference = preference_response.get("response")
+        print(preference)
+        return JsonResponse(preference)
+    
+    except Exception as e:
+        return JsonResponse({"error": str(e)}, status=500)
+    
+
+
+def pago_exitoso(request):
+    return render(request, "pago_exitoso.html")
+
+def pago_fallido(request):
+    return render(request, "pago_fallido.html")
+
+def pago_pendiente(request):
+    return render(request, "pago_pendiente.html")
