@@ -9,8 +9,7 @@ from .carrito import Carrito
 from django.utils import timezone
 from django.contrib import messages
 from django.utils import timezone
-from transbank.webpay.webpay_plus.transaction import Transaction
-from django.shortcuts import redirect
+
 
 
 def carrito(request):
@@ -176,43 +175,3 @@ def crear_pedido(request):
             messages.error(request, "Ocurrió un error al crear el pedido. Intenta nuevamente.", e)
             return redirect('carrito')
     return redirect('ver_carrito')
-
-def iniciar_pago(request, pedido_id):
-    from control.models import Pedido
-
-    pedido = Pedido.objects.get(id=pedido_id)
-    total = int(pedido.monto_total)  # Webpay requiere un entero (sin decimales)
-    
-    # URL de retorno luego del pago
-    url_return = request.build_absolute_uri('/pago_exitoso/')
-    
-    # Crear la transacción
-    try:
-        response = Transaction.create(
-            buy_order=str(pedido.id),
-            session_id=str(request.session.session_key),
-            amount=total,
-            return_url=url_return
-        )
-        # response tiene la URL de Webpay y token
-        return redirect(response.get("url") + "?token_ws=" + response.get("token"))
-    except Exception as e:
-        messages.error(request, f"Error al crear la transacción: {str(e)}")
-        return redirect('carrito')
-    
-def pago_exitoso(request):
-    from transbank.webpay.webpay_plus.transaction import Transaction
-
-    token = request.GET.get('token_ws')
-    if not token:
-        messages.error(request, "No se recibió token de Webpay")
-        return redirect('carrito')
-    
-    try:
-        response = Transaction.commit(token)
-        messages.success(request, f"Pago aprobado, orden: {response.buy_order}, monto: {response.amount}")
-        # Aquí puedes actualizar el pedido como pagado
-        return redirect('pedido_exitoso')
-    except Exception as e:
-        messages.error(request, f"Pago fallido: {str(e)}")
-        return redirect('carrito')
