@@ -1,0 +1,204 @@
+{% load static %}
+{% load myfilters %}
+
+<style>
+    /* Estilos de tu tarjeta original, si no están en tarjeta.css */
+    /* Aquí se define el tamaño de 200x400 de tu tarjeta. */
+    .contenedor-card {
+        width: 200px;
+        height: 400px;
+        /* Puedes añadir aquí el line art grueso o cel-shading */
+    }
+
+    /* -------------------------------------------------------------------------- */
+    /* Estilos del Carrusel para mover 1 tarjeta a la vez */
+    /* -------------------------------------------------------------------------- */
+    #carouselExampleControls {
+        /* Define el ancho visible del carrusel (ej: para mostrar 4 tarjetas y un poco de la 5ta) */
+        max-width: 820px;
+        margin: auto;
+        position: relative;
+        overflow: hidden;
+        /* Oculta las tarjetas fuera del límite */
+    }
+
+    .carousel-inner {
+        display: flex;
+        overflow-x: scroll;
+        /* Permite el desplazamiento horizontal con el script */
+        scroll-behavior: smooth;
+        -ms-overflow-style: none;
+        /* Oculta la barra de desplazamiento IE and Edge */
+        scrollbar-width: none;
+        /* Oculta la barra de desplazamiento Firefox */
+    }
+
+    .carousel-inner::-webkit-scrollbar {
+        display: none;
+        /* Oculta la barra de desplazamiento Chrome, Safari, Opera */
+    }
+
+    /* Cada item debe tener el ancho de UNA tarjeta + su margen (200px + 10px) */
+    .carousel-item {
+        min-width: 200px;
+        /* Ancho de tu tarjeta */
+        flex: 0 0 200px;
+        /* Ancho fijo para el desplazamiento */
+        margin-right: 10px;
+        /* Margen entre tarjetas */
+    }
+
+    /* -------------------------------------------------------------------------- */
+    /* Estilos de los Botones de Navegación */
+    /* -------------------------------------------------------------------------- */
+    .carousel-control-prev,
+    .carousel-control-next {
+        width: 50px;
+        height: 50px;
+        top: 50%;
+        transform: translateY(-50%);
+        background-color: rgba(0, 0, 0, 0.5);
+        border-radius: 50%;
+        opacity: 1;
+        z-index: 10;
+    }
+
+    .carousel-control-prev {
+        left: -60px;
+    }
+
+    .carousel-control-next {
+        right: -60px;
+    }
+</style>
+
+<div class="container my-5">
+    <h2 class="text-center">Nuestros Kits de Construcción</h2>
+
+    <div id="carouselExampleControls" class="carousel slide" data-bs-ride="carousel" data-bs-interval="3000"
+        data-bs-wrap="false">
+
+        <div class="carousel-inner">
+            {% for kit in kits %}
+            <div class="carousel-item {% if forloop.first %}active{% endif %}">
+                {% if kit.inventario.first.modo_stock == 'stock' and kit.inventario.first.disponible > 0  or kit.inventario.first.modo_stock == 'pedido' %}
+                <div class="contenedor-card" data-url="{% url 'kit_detail' kit.pk %}">
+                      <div class="card">
+                            {% if kit.imagenes.all %}
+                            <img src="{{kit.imagenes.first.imagen.url  }}" alt="{{kit.nombre}}" />
+                            {% else %}
+                            <img src="{% static 'img/SinImagen.png' %}" alt="Imagen no disponible" />
+                            {% endif %}
+                                        <div class="card-body">
+                                  <div class="card-title">{{kit.nombre}}</div>
+                                                    <div class="card-description">
+                                        {% if kit.inventario.first.modo_stock == 'pedido' %}
+                                          Disponible bajo pedido
+                                        {% else %}
+                                          Stock Disponible ({{kit.inventario.first.disponible}})
+                                        {% endif %}
+
+                                      </div>
+                                  <div class="prices">
+                                        <p class="price">${{kit.precio|floatformat:0|punto_miles}}</p>
+                                                <p class="tachado">${{kit.precio|floatformat:0|punto_miles}}</p>
+                                      </div>
+
+                                  <div class="actions">
+                                        <div class="quantity">
+                                              <button type="button"
+                                        class="btn rounded-circle custom-icon-btn btn-menos"><i
+                                            class="bi bi-dash-lg"></i></button>
+                                                <span class="cantidad-input"
+                                        data-max="{% if kit.inventario.first.modo_stock == 'stock' %}{{ kit.inventario.first.disponible }}{% else %}9999{% endif %}">1</span>
+                                              <button type="button"
+                                        class="btn rounded-circle custom-icon-btn btn-mas"><i
+                                            class="bi bi-plus-lg"></i></button>
+                                            </div>
+                                        <button class="add-cart add-btn add-btn-ajax" id="add-btn-{{ kit.id }}"
+                                    data-id="{{ kit.id }}" data-ctid="{{ kit|content_type }}"
+                                    data-url="{% url 'add_ajax' %}"        >Añadir al Carrito&nbsp;<i
+                                        class="bi bi-cart3"></i></button>
+                                      </div>
+                                </div>
+                            <div class="expansion">
+                                  <p class="info"><i class="fa-solid fa-ruler-combined"></i>m²<br>{{kit.m2}}</p>
+                                  <p class="info"><i class="fa-solid fa-shower"></i>Baños<br>{{kit.banos}}</p>
+                                  <p class="info"><i class="fa-solid fa-bed"></i>Habitaciones<br>{{kit.dormitorios}}</p>
+                                </div>
+                          </div>
+                </div>
+            {% endif %}
+
+            </div>
+            {% empty %}
+            <p class="text-center">No hay kits de construcción disponibles.</p>
+            {% endfor %}
+        </div>
+        <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleControls"
+            data-bs-slide="prev">
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Anterior</span>
+        </button>
+
+        <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleControls"
+            data-bs-slide="next">
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Siguiente</span>
+        </button>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const carousel = document.querySelector('#carouselExampleControls');
+        const carouselInner = carousel.querySelector('.carousel-inner');
+        // Ancho de la tarjeta (200px) + margen derecho (10px) = 210px
+        const CARD_MOVEMENT_WIDTH = 210; 
+
+        // Intercepta el evento de desplazamiento de Bootstrap (tanto manual como automático)
+        carousel.addEventListener('slide.bs.carousel', function (e) {
+            // Detiene el comportamiento de animación predeterminado de Bootstrap
+            e.preventDefault(); 
+            
+            const isNext = e.direction === 'next';
+            let newScroll = carouselInner.scrollLeft;
+
+            if (isNext) {
+                newScroll += CARD_MOVEMENT_WIDTH;
+            } else {
+                newScroll -= CARD_MOVEMENT_WIDTH;
+            }
+
+            // Aplicamos el desplazamiento basado en el ancho de una sola tarjeta
+            carouselInner.scrollTo({
+                left: newScroll,
+                behavior: 'smooth'
+            });
+            
+            // --- Lógica para el bucle (wrap) (Opcional) ---
+            // Si el desplazamiento es negativo (llegó al inicio y va hacia atrás)
+            if (newScroll < 0) {
+                 setTimeout(() => {
+                    carouselInner.scrollTo({ 
+                        left: carouselInner.scrollWidth, // Va al final
+                        behavior: 'instant' 
+                    });
+                }, 600);
+            } 
+            // Si el desplazamiento es mayor al total (llegó al final y va hacia adelante)
+            else if (newScroll >= carouselInner.scrollWidth) {
+                 setTimeout(() => {
+                    carouselInner.scrollTo({ 
+                        left: 0, // Va al inicio
+                        behavior: 'instant' 
+                    });
+                }, 600);
+            }
+            // --- Fin de la Lógica para el bucle ---
+        });
+        
+        // Cierre de document.addEventListener('DOMContentLoaded', function () {
+    }); 
+    // Cierre del bloque de script
+</script>

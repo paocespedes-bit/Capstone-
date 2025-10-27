@@ -1,0 +1,7 @@
+
+.carrusel_producto{
+    width: 100%;
+    border: 1px solid blue;
+    display: flex;
+    overflow: hidden;
+}
