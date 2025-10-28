@@ -178,24 +178,45 @@ async function renderWalletBrick(preferenceId) {
 
 // --- Event Listener para Continuar el Carrito ---
 btnContinueCart.addEventListener("click", async function () {
-    // Verificar si mp está inicializado antes de continuar
-    if (!mp) {
-        mostrarMensaje("El sistema de pago no está disponible temporalmente.", true);
+    const pedidoForm = document.getElementById("pedidoForm");
+
+    // --- 1️⃣ VALIDAR CAMPOS DEL FORMULARIO ---
+    if (!pedidoForm) {
+        mostrarMensaje("No se encontró el formulario de pedido.", true);
         return;
     }
 
+    // Usamos la API nativa de validación de formularios HTML5
+    if (!pedidoForm.checkValidity()) {
+        pedidoForm.reportValidity(); // Muestra errores visuales en el navegador
+        mostrarMensaje("Por favor completa todos los campos requeridos antes de continuar.", true);
+        return;
+    }
+
+    // --- 2️⃣ ENVIAR DATOS AL SERVIDOR PARA CREAR PEDIDO ---
     try {
-        // 1. Solicitar la preferencia de pago a Django
+        const formData = new FormData(pedidoForm);
+        const responsePedido = await fetch(pedidoForm.action, {
+            method: "POST",
+            headers: { "X-CSRFToken": csrftoken },
+            body: formData,
+        });
+
+        if (!responsePedido.ok) {
+            mostrarMensaje("No se pudo crear el pedido. Revisa los datos.", true);
+            return;
+        }
+
+        const pedidoData = await responsePedido.json().catch(() => ({}));
+        if (pedidoData.error) {
+            mostrarMensaje(pedidoData.error, true);
+            return;
+        }
+
+        // --- 3️⃣ GENERAR LA PREFERENCIA DE MERCADO PAGO ---
         const response = await fetch("/crear_preferencia/");
-        
         if (!response.ok) {
-            // Manejar errores de Django o Mercado Pago API
-            const errorData = await response.json();
-            mostrarMensaje(
-                "No se pudo generar la preferencia de pago: " +
-                (errorData.message || errorData.error || "Error desconocido en el backend"),
-                true
-            );
+            mostrarMensaje("No se pudo generar la preferencia de pago.", true);
             return;
         }
 
@@ -203,22 +224,77 @@ btnContinueCart.addEventListener("click", async function () {
         const preferenceId = preference.id;
 
         if (!preferenceId) {
-            console.error("Preference ID no recibido:", preference);
-            mostrarMensaje("Ocurrió un error al generar la preferencia de pago. (ID no encontrado)", true);
+            mostrarMensaje("Error: no se obtuvo un ID de preferencia válido.", true);
             return;
         }
 
-        // 2. Renderizar el Brick
+        // --- 4️⃣ MOSTRAR INTERFAZ DE PAGO ---
         await renderWalletBrick(preferenceId);
-
-        // 3. Mostrar la interfaz de checkout
-        // Asegúrate de que tienes un elemento con ID 'walletBrick_container' en tu HTML
-        // para que el Brick pueda renderizarse.
         bsCartListCollapse.hide();
         bsCheckoutFormCollapse.show();
-        
+        mostrarMensaje("Pedido validado correctamente. Procede con el pago.", false);
     } catch (err) {
-        console.error("Error al inicializar el pago/Brick:", err);
-        mostrarMensaje("Ocurrió un error al intentar iniciar el pago.", true);
+        console.error("Error durante la validación/pago:", err);
+        mostrarMensaje("Ocurrió un error al procesar el pedido o iniciar el pago.", true);
+    }
+});
+
+document.addEventListener("DOMContentLoaded", () => {
+    const pedidoForm = document.getElementById("pedidoForm");
+    const btnCheckout = document.getElementById("walletBrick_container");
+    const btnContinueCart = document.getElementById("btn-continue-cart");
+
+    // Función que habilita/deshabilita el botón Mercado Pago
+    const validarFormulario = () => {
+        if (!pedidoForm || !btnCheckout) return;
+
+        // checkValidity valida todos los campos requeridos
+        const esValido = pedidoForm.checkValidity() && !isCartEmpty();
+
+        if (esValido) {
+            btnCheckout.classList.remove("d-none");
+        } else {
+            btnCheckout.classList.add("d-none");
+        }
+    };
+
+    // --- Paso 1: Cuando se presiona Continuar Compra ---
+    if (btnContinueCart) {
+        btnContinueCart.addEventListener("click", () => {
+            bsCartListCollapse.hide(); // ocultar Summary
+            bsCheckoutFormCollapse.show(); // mostrar form_pedido
+
+            // Validar inmediatamente
+            validarFormulario();
+
+            // --- Paso 2: Escuchar cambios en los inputs del formulario ---
+            pedidoForm.querySelectorAll("input, select, textarea").forEach((input) => {
+                input.addEventListener("input", validarFormulario);
+                input.addEventListener("change", validarFormulario); // para selects
+            });
+        });
+    }
+
+    // --- Paso 3: Clic en botón Mercado Pago ---
+    if (btnCheckout) {
+        btnCheckout.addEventListener("click", async () => {
+            if (!pedidoForm.checkValidity()) {
+                pedidoForm.reportValidity();
+                mostrarMensaje("Completa todos los campos requeridos antes de pagar.", true);
+                return;
+            }
+
+            try {
+                const response = await fetch("/crear_preferencia/");
+                if (!response.ok) {
+                    mostrarMensaje("Error al generar preferencia de pago.", true);
+                    return;
+                }
+                const preference = await response.json();
+                await renderWalletBrick(preference.id);
+            } catch (err) {
+                mostrarMensaje("Error al iniciar pago.", true);
+            }
+        });
     }
 });
