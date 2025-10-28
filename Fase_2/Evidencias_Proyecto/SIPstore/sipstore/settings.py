@@ -2,6 +2,8 @@
 import os
 from pathlib import Path
 
+import mercadopago
+
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -133,6 +135,5 @@ MEDIA_ROOT = os.path.join(BASE_DIR,'media')
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-# Mercado Pago
-MERCADOPAGO_ACCESS_TOKEN = "APP_USR-5406155653869173-102715-50b766c7e8906c02233879cd7248c020-1070404569"
-MERCADOPAGO_PUBLIC_KEY = "APP_USR-a258475f-6cf0-4d2d-a4a3-42fd9394b013"
+
+SDK = mercadopago.SDK("APP_USR-8532999191396686-102714-25ef2fab014edb2c9879321f6668e72b-2950256807") #! reemplazar

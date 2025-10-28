@@ -1,6 +1,7 @@
 from django.db.models import Min, Max
 from django.shortcuts import render, get_object_or_404
 from .models import PanelSIP, KitConstruccion
+from django.core.paginator import Paginator
 
 #! Aqui se agregan las views (templates).
 def paneles(request):
@@ -14,7 +15,7 @@ def paneles(request):
     precio_min = precios['precio_min'] or 0
     precio_max_dataset = precios['precio_max'] or 0
 
-    paneles_sip = PanelSIP.objects.all()
+    paneles_sip = PanelSIP.objects.all().order_by('nombre')
 
     # filtros no relacionados con precio
     if tipo_obs_filtro:
@@ -47,8 +48,14 @@ def paneles(request):
     espesores = PanelSIP.objects.values_list('espesor', flat=True).distinct()
     maderas = PanelSIP.objects.values_list('madera_union', flat=True).distinct()
 
+    paginator = Paginator(paneles_sip, 20)
+    
+    page_number = request.GET.get('page')
+    
+    page_obj = paginator.get_page(page_number)
+    
     context = {
-        'paneles': paneles_sip,
+        'paneles': page_obj,
         'tipos_obs': tipos_obs,
         'espesores': espesores,
         'maderas': maderas,
@@ -73,7 +80,7 @@ def kits(request):
     precio_max_dataset = precios['precio_max'] or 0
 
     # queryset base
-    kits = KitConstruccion.objects.all()
+    kits = KitConstruccion.objects.all().order_by('nombre')
 
     # aplicar filtros opcionales
     if m2_filtro:
@@ -107,8 +114,14 @@ def kits(request):
     dormitorios = KitConstruccion.objects.values_list('dormitorios', flat=True).distinct()
     banos = KitConstruccion.objects.values_list('banos', flat=True).distinct()
 
+    paginator = Paginator(kits, 20)
+    
+    page_number = request.GET.get('page')
+    
+    page_obj = paginator.get_page(page_number)
+    
     context = {
-        'kits': kits,
+        'kits': page_obj,
         'm2': m2,
         'dormitorios': dormitorios,
         'banos': banos,
