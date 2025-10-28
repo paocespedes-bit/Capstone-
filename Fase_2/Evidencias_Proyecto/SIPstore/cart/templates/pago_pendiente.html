@@ -1,1 +1,39 @@
-<h1>PENDIENTE</h1>
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Pago Pendiente{% endblock %}
+
+{% block content %}
+<div class="container py-5 text-center">
+    <div class="card shadow-lg p-4 mx-auto" style="max-width: 600px; height: 500px;">
+        <div class="card-body" style="display: flex; justify-content: center; align-items: center; flex-direction: column;">
+            <div class="mb-4">
+                <h2 class="text-warning fw-bold">Pago Pendiente ⏳</h2>
+            </div>
+
+            <p class="lead text-muted">
+                Tu pago aún no ha sido confirmado,  
+                esto puede deberse a un retraso del sistema o a una validación del medio de pago.
+            </p>
+
+            <div class="border-top pt-3 mt-4">
+                <h5 class="fw-semibold">¿Qué hacer ahora?</h5>
+                <ul class="list-unstyled text-start mx-auto" style="max-width: 400px;">
+                    <li>🔄 Espera unos minutos y revisa tu correo electrónico.</li>
+                    <li>💳 Si no se confirma, intenta realizar nuevamente el pago.</li>
+                    <li>📞 Ante dudas, contacta con nuestro equipo de soporte.</li>
+                </ul>
+            </div>
+
+            <div class="mt-4">
+                <a href="{% url 'carrito' %}" class="btn btn-outline-warning me-2">
+                    <i class="bi bi-arrow-repeat"></i> Intentar de nuevo
+                </a>
+                <a href="/" class="btn btn-warning text-white">
+                    <i class="bi bi-house-door"></i> Ir al Inicio
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,2 +1,39 @@
-<h1>EXITOSO</h1>
-<p>Lorem ipsum dolor sit, amet consectetur adipisicing elit. Eius repudiandae dolore magnam veritatis esse porro, ex neque omnis modi, quis voluptate nostrum velit unde dolor distinctio, impedit iste consequuntur amet?</p>
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Pago Exitoso{% endblock %}
+
+{% block content %}
+<div class="container py-5 text-center">
+    <div class="card shadow-lg p-4 mx-auto" style="max-width: 600px; height: 500px;">
+        <div class="card-body" style="display: flex; justify-content: center; align-items: center; flex-direction: column;">
+            <div class="mb-4">
+                <h2 class="text-success fw-bold">¡Pago realizado con éxito! 💳✅</h2>
+            </div>
+
+            <p class="lead text-muted">
+                Tu transacción ha sido procesada correctamente,  
+                en breve recibirás un correo de confirmación con los detalles de tu compra.
+            </p>
+
+            <div class="border-top pt-3 mt-4">
+                <h5 class="fw-semibold">¿Qué sigue?</h5>
+                <ul class="list-unstyled text-start mx-auto" style="max-width: 400px;">
+                    <li>📦 Prepararemos tu pedido en el local seleccionado.</li>
+                    <li>📧 Te enviaremos un correo con el comprobante.</li>
+                    <li>🏪 Podrás retirar tu compra mostrando tu RUT o número de pedido.</li>
+                </ul>
+            </div>
+
+            <div class="mt-4">
+                <a href="{% url 'carrito' %}" class="btn btn-outline-success me-2">
+                    <i class="bi bi-cart"></i> Volver al Carrito
+                </a>
+                <a href="/" class="btn btn-success">
+                    <i class="bi bi-house-door"></i> Ir al Inicio
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
