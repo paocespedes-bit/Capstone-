@@ -11,6 +11,7 @@ from django.contrib import messages
 from django.urls import reverse, NoReverseMatch
 from django.conf import settings
 from django.views.decorators.csrf import csrf_exempt
+import mercadopago
 
 
 def carrito(request):
@@ -19,6 +20,7 @@ def carrito(request):
     locales = Local.objects.all()
     
     context = {
+        "public_key": settings.MERCADOPAGO_PUBLIC_KEY,
         'productos_carrito': productos_completos,
         'locales': locales,
     }
@@ -196,7 +198,8 @@ def crear_preferencia(request):
             messages.error(request, "Tu carrito esta vacio")
             return redirect('carrito')
     try:
-        sdk = settings.SDK
+        MERCADOPAGO_ACCESS_TOKEN = settings.MERCADOPAGO_ACCESS_TOKEN 
+        sdk = mercadopago.SDK(MERCADOPAGO_ACCESS_TOKEN)
         items = []
         total = 0
         
@@ -222,6 +225,11 @@ def crear_preferencia(request):
                 
             })
             total += float(item["acumulado"])
+        
+        payer_data = {
+        # Es crucial para pasar las validaciones del formulario de pago (422)
+        "email": "" 
+        }
             
         preference_data = {
             "items": items,
@@ -230,7 +238,8 @@ def crear_preferencia(request):
             "failure": failure_url,
             "pending": pending_url
             },
-            "auto_return": "approved" 
+            "auto_return": "approved",
+            "payer_data":payer_data,
         }
         
         preference_response = sdk.preference().create(preference_data)
