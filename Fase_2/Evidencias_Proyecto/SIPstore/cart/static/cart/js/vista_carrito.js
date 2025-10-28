@@ -284,3 +284,27 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 });
+
+btnContinueCart.addEventListener("click", async () => {
+  const pedidoForm = document.getElementById("pedidoForm");
+  if (!pedidoForm.checkValidity()) {
+    pedidoForm.reportValidity();
+    return;
+  }
+
+  try {
+    const response = await fetch("/crear_preferencia/");
+    if (!response.ok) throw new Error("No se pudo generar preferencia");
+    const { id: preferenceId } = await response.json();
+
+    const btnCheckout = document.getElementById("walletBrick_container");
+    btnCheckout.classList.remove("d-none"); // muestra el contenedor
+    await renderWalletBrick(preferenceId); // renderiza el Brick
+
+    bsCartListCollapse.hide();
+    bsCheckoutFormCollapse.show();
+  } catch (err) {
+    console.error(err);
+    alert("Error al generar el pago. Intenta nuevamente.");
+  }
+});
