@@ -7,12 +7,7 @@ from sendgrid import SendGridAPIClient
 
 
 def enviar_correo_estado(correo_cli, asunto, mensaje_html):
-    """
-    Envía un correo al cliente utilizando SendGrid.
-    destinatario: string con el email del cliente
-    asunto: string
-    mensaje_html: contenido HTML del correo
-    """
+    
     sg = sendgrid.SendGridAPIClient(api_key=settings.SENDGRID_API_KEY)
     message = Mail(
         from_email=settings.DEFAULT_FROM_EMAIL,
