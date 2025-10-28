@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% load static %}
 
-{% block title %}Pago en Línea Exitoso{% endblock %}
+{% block title %}Confirmar Pago Manual{% endblock %}
 
 {% block link %}
 <link rel="stylesheet" href="{% static 'store/css/confirm_pago.css' %}">
@@ -9,18 +9,19 @@
 
 {% block content %}
 <div class="container mt-5 mb-5">
-    <div class="card shadow-lg p-5">
+    <div class="card shadow-lg p-4">
         <div class="text-center mb-4">
-            <img src="{% static 'store/img/check.png' %}" alt="Pago Exitoso" width="100" class="mb-3">
-            <h2 class="text-success fw-bold">¡Pago realizado con éxito!</h2>
-            <p class="text-muted">Tu pago en línea fue procesado correctamente. A continuación, puedes ver los detalles de tu compra.</p>
+            <h2 class="text-success fw-bold">Confirmación Manual de Pago</h2>
+            <p class="text-muted">Revisa los detalles de tu pedido antes de confirmar el pago manualmente.</p>
         </div>
 
         <div class="pedido-info mb-4">
             <h5 class="text-primary">Pedido #{{ pedido.id }}</h5>
             <p><strong>Cliente:</strong> {{ pedido.comprador }}</p>
             <p><strong>Correo:</strong> {{ pedido.correo_cli }}</p>
-            <p><strong>Método de pago:</strong> Pago en línea</p>
+            <p><strong>Método de pago:</strong> 
+                {% if pedido.metodo_pago == 'pago_web' %}Pago en línea{% else %}Pago en tienda{% endif %}
+            </p>
             <p><strong>Estado:</strong> 
                 <span class="badge 
                     {% if pedido.estado == 'pendiente' %}bg-warning
@@ -29,7 +30,6 @@
                     {{ pedido.estado|title }}
                 </span>
             </p>
-            <p><strong>Fecha de compra:</strong> {{ pedido.fecha_pedido|date:"d/m/Y H:i" }}</p>
         </div>
 
         <div class="productos-list mb-4">
@@ -55,17 +55,20 @@
         </div>
 
         <div class="text-end mb-4">
-            <h4>Total pagado: <strong class="text-success">${{ pedido.monto_total|floatformat:0 }}</strong></h4>
+            <h4>Total: <strong class="text-success">${{ pedido.monto_total|floatformat:0 }}</strong></h4>
         </div>
 
-        <div class="text-center">
-            <a href="{% url 'tienda' %}" class="btn btn-primary btn-lg px-4">
-                Seguir comprando
-            </a>
-            <a href="{% url 'detalle_pedido' pedido.id %}" class="btn btn-outline-secondary btn-lg ms-2">
-                Ver detalle completo
-            </a>
-        </div>
+        <form method="post">
+            {% csrf_token %}
+            <div class="text-center">
+                <button type="submit" class="btn btn-success btn-lg px-4">
+                    Confirmar Pago
+                </button>
+                <a href="{% url 'carrito' %}" class="btn btn-outline-secondary btn-lg ms-2">
+                    Volver a la tienda
+                </a>
+            </div>
+        </form>
     </div>
 </div>
 {% endblock %}

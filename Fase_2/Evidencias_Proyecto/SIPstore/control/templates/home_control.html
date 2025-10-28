@@ -67,7 +67,7 @@
         </tr>
       </thead>
       <tbody>
-        {% for pedido in pedidos_hoy %}
+        {% for pedido in pedido_hoy %}
         <tr>
           <td>#{{ pedido.id }}</td>
           <td>{{ pedido.fecha_pedido|date:"d/m/Y H:i" }}</td>

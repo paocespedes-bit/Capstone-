@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.http import JsonResponse
 import json
 from store.models import PanelSIP, KitConstruccion
@@ -8,8 +8,7 @@ from django.views.decorators.http import require_POST
 from .carrito import Carrito
 from django.utils import timezone
 from django.contrib import messages
-from django.utils import timezone
-from django.shortcuts import render, get_object_or_404
+
 
 
 def carrito(request):
@@ -27,7 +26,6 @@ def carrito(request):
 def obtener_producto_concreto(producto_id, content_type_id):
     try:
         content_type = ContentType.objects.get_for_id(content_type_id)
-        # Usamos content_type para obtener el modelo concreto y su objeto.
         ProductoModelo = content_type.model_class()
         return ProductoModelo.objects.get(id=producto_id)
     except ContentType.DoesNotExist:
@@ -35,6 +33,7 @@ def obtener_producto_concreto(producto_id, content_type_id):
     except Exception:
         return None
     
+
 def generar_respuesta(carrito):
     total = sum(item["acumulado"] for item in carrito.carrito.values())
     cantidad_total = sum(item["cantidad"] for item in carrito.carrito.values())
@@ -44,7 +43,6 @@ def generar_respuesta(carrito):
         "cantidad_total": cantidad_total,
         "carrito_data": carrito.carrito
     }
-
 
 
 @require_POST
@@ -76,6 +74,7 @@ def agregar_producto(request):
     
     except Exception as e:
         return JsonResponse({"error": str(e)}, status=500)
+
 
 @require_POST
 def modificar_carrito(request, accion):
@@ -115,13 +114,13 @@ def modificar_carrito(request, accion):
         return JsonResponse({"error": str(e)}, status=500)
     
 
-# !Pedidos 
+
 def crear_pedido(request):
     if request.method == 'POST':
         carrito = Carrito(request)
         
         if not carrito.carrito:
-            messages.error(request, "Tu carrito esta vacio")
+            messages.error(request, "Tu carrito está vacío.")
             return redirect('carrito')
         
         try:
@@ -157,10 +156,10 @@ def crear_pedido(request):
                 cantidad = item['cantidad']
                 
                 detalle = DetallePedido.objects.create(
-                    pedido = pedido,
-                    content_type = content_type,
-                    object_id = producto_obj.id,
-                    cantidad = cantidad
+                    pedido=pedido,
+                    content_type=content_type,
+                    object_id=producto_obj.id,
+                    cantidad=cantidad
                 )
                 monto_total += detalle.subtotal
             
@@ -169,32 +168,43 @@ def crear_pedido(request):
             carrito.limpiar()
             
             messages.success(request, f"Pedido #{pedido.id} creado exitosamente.")
-            return redirect('pedido_exitoso') 
+            return redirect('pedido_exitoso')
             
         except Exception as e:
-            messages.error(request, "Ocurrió un error al crear el pedido. Intenta nuevamente.", e)
+            messages.error(request, f"Ocurrió un error al crear el pedido: {str(e)}")
             return redirect('carrito')
     return redirect('ver_carrito')
 
-def confirm_pago(request, pedido_id):
+
+
+def confirmar_pago_manual(request, pedido_id):
     pedido = get_object_or_404(Pedido, id=pedido_id)
     detalles = DetallePedido.objects.filter(pedido=pedido)
 
-
     productos = []
     for detalle in detalles:
-        producto_obj = detalle.content_object 
+        producto_obj = detalle.content_object
         productos.append({
             'nombre': getattr(producto_obj, 'nombre', 'Producto'),
             'cantidad': detalle.cantidad,
             'subtotal': detalle.subtotal
         })
 
+   
+    if request.method == 'POST':
+        
+        pedido.estado = 'pendiente'
+        pedido.save()
+        messages.success(request, f"Tu solicitud de confirmación del pedido #{pedido.id} ha sido enviada. Está pendiente de revisión.")
+        return redirect('pedido_exitoso')
+
     context = {
         'pedido': pedido,
         'productos': productos
     }
-    return render(request, 'confirm_pago.html', context)
+    return render(request, 'confirmar_pago_manual.html', context)
+
+
 
 def info_pedido(request):
     carrito = Carrito(request)
