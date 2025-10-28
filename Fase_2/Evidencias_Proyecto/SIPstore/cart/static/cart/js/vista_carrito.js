@@ -127,7 +127,6 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 
 // --- CONFIGURACIÓN GLOBAL DE MERCADO PAGO ---
-// NOTA: Es crucial inicializar la instancia una sola vez en el scope global.
 const PUBLIC_KEY = "APP_USR-72031fd5-9b5f-48d6-9f43-0b881194724c";
 
 // Crea una referencia global al objeto de MercadoPago
@@ -139,21 +138,17 @@ if (window.MercadoPago) {
 } else {
     console.error("SDK de Mercado Pago no cargado. Revisa la etiqueta script.");
 }
-// ----------------------------------------------
 
 
-// Función simple para mostrar mensajes de error/éxito (reemplazando alert())
+
 function mostrarMensaje(mensaje, esError = true) {
     console.log(`${esError ? 'ERROR' : 'INFO'}: ${mensaje}`);
-    // Aquí puedes implementar una lógica para mostrar un modal o un toast en la UI
-    // Por ahora, usaremos console.error para los errores.
     if (esError) {
         console.error(mensaje);
     }
 }
 
 // Función para renderizar el Wallet Brick
-// Usamos la instancia 'mp' creada globalmente.
 async function renderWalletBrick(preferenceId) {
     if (!mp) {
         mostrarMensaje("Mercado Pago SDK no inicializado.", true);
@@ -167,33 +162,29 @@ async function renderWalletBrick(preferenceId) {
             initialization: {
                 preferenceId: preferenceId,
             },
-            // Aquí puedes añadir personalizaciones si las necesitas
         });
-        // Ocultar cualquier loading indicator si existía
     } catch (e) {
         mostrarMensaje("Error al renderizar el Wallet Brick.", true);
         console.error("Detalle del error del Brick:", e);
     }
 }
 
-// --- Event Listener para Continuar el Carrito ---
+
 btnContinueCart.addEventListener("click", async function () {
     const pedidoForm = document.getElementById("pedidoForm");
 
-    // --- 1️⃣ VALIDAR CAMPOS DEL FORMULARIO ---
     if (!pedidoForm) {
         mostrarMensaje("No se encontró el formulario de pedido.", true);
         return;
     }
 
-    // Usamos la API nativa de validación de formularios HTML5
+
     if (!pedidoForm.checkValidity()) {
-        pedidoForm.reportValidity(); // Muestra errores visuales en el navegador
+        pedidoForm.reportValidity(); 
         mostrarMensaje("Por favor completa todos los campos requeridos antes de continuar.", true);
         return;
     }
 
-    // --- 2️⃣ ENVIAR DATOS AL SERVIDOR PARA CREAR PEDIDO ---
     try {
         const formData = new FormData(pedidoForm);
         const responsePedido = await fetch(pedidoForm.action, {
@@ -213,7 +204,6 @@ btnContinueCart.addEventListener("click", async function () {
             return;
         }
 
-        // --- 3️⃣ GENERAR LA PREFERENCIA DE MERCADO PAGO ---
         const response = await fetch("/crear_preferencia/");
         if (!response.ok) {
             mostrarMensaje("No se pudo generar la preferencia de pago.", true);
@@ -228,7 +218,6 @@ btnContinueCart.addEventListener("click", async function () {
             return;
         }
 
-        // --- 4️⃣ MOSTRAR INTERFAZ DE PAGO ---
         await renderWalletBrick(preferenceId);
         bsCartListCollapse.hide();
         bsCheckoutFormCollapse.show();
@@ -244,11 +233,9 @@ document.addEventListener("DOMContentLoaded", () => {
     const btnCheckout = document.getElementById("walletBrick_container");
     const btnContinueCart = document.getElementById("btn-continue-cart");
 
-    // Función que habilita/deshabilita el botón Mercado Pago
     const validarFormulario = () => {
         if (!pedidoForm || !btnCheckout) return;
 
-        // checkValidity valida todos los campos requeridos
         const esValido = pedidoForm.checkValidity() && !isCartEmpty();
 
         if (esValido) {
@@ -258,24 +245,23 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     };
 
-    // --- Paso 1: Cuando se presiona Continuar Compra ---
     if (btnContinueCart) {
         btnContinueCart.addEventListener("click", () => {
-            bsCartListCollapse.hide(); // ocultar Summary
-            bsCheckoutFormCollapse.show(); // mostrar form_pedido
+            bsCartListCollapse.hide();
+            bsCheckoutFormCollapse.show(); 
 
-            // Validar inmediatamente
+
             validarFormulario();
 
-            // --- Paso 2: Escuchar cambios en los inputs del formulario ---
+
             pedidoForm.querySelectorAll("input, select, textarea").forEach((input) => {
                 input.addEventListener("input", validarFormulario);
-                input.addEventListener("change", validarFormulario); // para selects
+                input.addEventListener("change", validarFormulario); 
             });
         });
     }
 
-    // --- Paso 3: Clic en botón Mercado Pago ---
+
     if (btnCheckout) {
         btnCheckout.addEventListener("click", async () => {
             if (!pedidoForm.checkValidity()) {
