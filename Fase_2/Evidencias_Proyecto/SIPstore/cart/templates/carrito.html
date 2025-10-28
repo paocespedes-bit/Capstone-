@@ -31,5 +31,6 @@
     {% include 'toast.html' %}
 {% endblock %}
 {% block script %}
+<script>window.MERCADOPAGO_PUBLIC_KEY = "{{ public_key }}";</script>
 <script src="{% static 'cart/js/vista_carrito.js' %}"></script>
 {% endblock %}

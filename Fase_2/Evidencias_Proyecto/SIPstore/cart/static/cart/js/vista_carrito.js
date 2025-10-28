@@ -128,7 +128,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
 // --- CONFIGURACIÓN GLOBAL DE MERCADO PAGO ---
 // NOTA: Es crucial inicializar la instancia una sola vez en el scope global.
-const PUBLIC_KEY = "APP_USR-72031fd5-9b5f-48d6-9f43-0b881194724c";
+const PUBLIC_KEY = window.MERCADOPAGO_PUBLIC_KEY;
 
 // Crea una referencia global al objeto de MercadoPago
 let mp;
