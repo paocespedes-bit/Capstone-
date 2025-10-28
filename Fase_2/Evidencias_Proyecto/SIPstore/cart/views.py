@@ -8,7 +8,9 @@ from django.views.decorators.http import require_POST
 from .carrito import Carrito
 from django.utils import timezone
 from django.contrib import messages
-
+from django.urls import reverse, NoReverseMatch
+from django.conf import settings
+from django.views.decorators.csrf import csrf_exempt
 
 
 def carrito(request):
@@ -45,6 +47,7 @@ def generar_respuesta(carrito):
     }
 
 
+@csrf_exempt
 @require_POST
 def agregar_producto(request):
     try:
@@ -75,7 +78,7 @@ def agregar_producto(request):
     except Exception as e:
         return JsonResponse({"error": str(e)}, status=500)
 
-
+@csrf_exempt
 @require_POST
 def modificar_carrito(request, accion):
     try:
@@ -176,42 +179,69 @@ def crear_pedido(request):
     return redirect('ver_carrito')
 
 
-
-def confirmar_pago_manual(request, pedido_id):
-    pedido = get_object_or_404(Pedido, id=pedido_id)
-    detalles = DetallePedido.objects.filter(pedido=pedido)
-
-    productos = []
-    for detalle in detalles:
-        producto_obj = detalle.content_object
-        productos.append({
-            'nombre': getattr(producto_obj, 'nombre', 'Producto'),
-            'cantidad': detalle.cantidad,
-            'subtotal': detalle.subtotal
-        })
-
-   
-    if request.method == 'POST':
-        
-        pedido.estado = 'pendiente'
-        pedido.save()
-        messages.success(request, f"Tu solicitud de confirmación del pedido #{pedido.id} ha sido enviada. Está pendiente de revisión.")
-        return redirect('pedido_exitoso')
-
-    context = {
-        'pedido': pedido,
-        'productos': productos
-    }
-    return render(request, 'confirmar_pago_manual.html', context)
-
-
-
-def info_pedido(request):
+# !Mercado PAGO:
+@csrf_exempt
+def crear_preferencia(request):
     carrito = Carrito(request)
-    locales = Local.objects.all()
-    total = sum(item["acumulado"] for item in carrito.carrito.values())
+    if not carrito.carrito:
+            messages.error(request, "Tu carrito esta vacio")
+            return redirect('carrito')
+    try:
+        sdk = settings.SDK
+        items = []
+        total = 0
+        
+        host = request.get_host()
+        scheme = 'https'
+        
+        success_path = reverse('pago_exitoso')
+        failure_path = reverse('pago_fallido')
+        pending_path = reverse('pago_pendiente')
+        
+        success_url = f"{scheme}://{host}{success_path}"
+        failure_url = f"{scheme}://{host}{failure_path}"
+        pending_url = f"{scheme}://{host}{pending_path}"
 
-    return render(request, 'info_pedido.html', {
-        'locales': locales,
-        'total_carrito': total,
-    })
+        print(f"DEBUG MP Success URL: {success_url}")
+        
+        for item in carrito.carrito.values():
+            items.append({
+                "title": item["nombre"],
+                "quantity": int(item["cantidad"]),
+                "currency_id": "CLP",
+                "unit_price": float(item["precio_unitario"]),
+                
+            })
+            total += float(item["acumulado"])
+            
+        preference_data = {
+            "items": items,
+            "back_urls": {
+            "success": success_url,
+            "failure": failure_url,
+            "pending": pending_url
+            },
+            "auto_return": "approved" 
+        }
+        
+        preference_response = sdk.preference().create(preference_data)
+        preference = preference_response["response"]
+        
+        print(preference_response)  # <--- depuración
+        preference = preference_response.get("response")
+        print(preference)
+        return JsonResponse(preference)
+    
+    except Exception as e:
+        return JsonResponse({"error": str(e)}, status=500)
+    
+
+
+def pago_exitoso(request):
+    return render(request, "pago_exitoso.html")
+
+def pago_fallido(request):
+    return render(request, "pago_fallido.html")
+
+def pago_pendiente(request):
+    return render(request, "pago_pendiente.html")
