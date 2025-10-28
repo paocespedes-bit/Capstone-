@@ -5,7 +5,7 @@
 {% block link %}
   <!-- !CSS  -->
   <link rel="stylesheet" href="{% static 'core/style/index.css' %}" />
-  <link rel="stylesheet" href="{% static 'core/style/producto.carrusel.css' %}" />
+  <link rel="stylesheet" href="{% static 'core/style/carrusel_producto.css' %}" />
 {% endblock %}
 
 {% block content %}
@@ -19,16 +19,27 @@
     
   </div>
   <div class="cards">
-    {% include "t_kit.html" with kits=kits %}
+    {% include "kit_carrusel.html" with kits=kits %}
   </div>
 
   <div class="titulo">
     <h1>Paneles SIP</h1>
   </div>
   <div class="cards">
-    {% include "t_paneles.html" with paneles=paneles %}
+    {% include "panel_carrusel.html" with paneles=paneles %}
   </div>
 
   <p></p>
 </div>
+{% endblock %}
+
+{% block script %}
+<script src="{% static 'core/js/carrusel_productos.js' %}"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+      initInfiniteCarousel('#panel_carrusel', 5, 500, 3000);
+      initInfiniteCarousel('#kit_carrusel', 5, 500, 3000);
+    });
+</script>
+
 {% endblock %}
