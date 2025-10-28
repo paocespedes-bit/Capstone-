@@ -31,9 +31,13 @@
                 Continuar Compra &rarr;
             </button>
 
-            <button type="submit" form="pedidoForm" id="btn-finish-order" class="btn btn-success w-100 mb-2 d-none">
+            <form id="pedidoForm" action="{% url 'crear_pedido' %}" method="POST">
+                {% csrf_token %}
+    
+            <button type="button" id="btn-finish-order" class="btn btn-success w-100 mb-2">
                 Terminar Pedido &check;
             </button>
+        </form>
             <button id="btn-back-store" class="btn btn-outline-secondary w-100 d-none" onclick="toggleCartCollapse()">
                 &larr; Volver
             </button>
