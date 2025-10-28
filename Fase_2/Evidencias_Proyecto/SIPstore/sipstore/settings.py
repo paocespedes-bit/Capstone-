@@ -138,3 +138,14 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 
 SDK = mercadopago.SDK("APP_USR-8532999191396686-102714-25ef2fab014edb2c9879321f6668e72b-2950256807") #! reemplazar
+
+#! API EMAIL
+
+SENDGRID_API_KEY = "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"
+DEFAULT_FROM_EMAIL = "sipstore247@gmail.com"
+EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
+EMAIL_HOST = "smtp.sendgrid.net"
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = "apikey"  
+EMAIL_HOST_PASSWORD = SENDGRID_API_KEY
