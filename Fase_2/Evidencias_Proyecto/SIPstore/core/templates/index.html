@@ -14,16 +14,17 @@
 </div>
 
 <div class="tarjetas">
-  <div class="titulo">
+  <div class="titulo d-flex justify-content-between">
     <h1>Kits de Construccion</h1>
-    
+    <a href="{% url 'kits' %}">Ver mas productos...</a>
   </div>
   <div class="cards">
     {% include "kit_carrusel.html" with kits=kits %}
   </div>
 
-  <div class="titulo">
+  <div class="titulo d-flex justify-content-between">
     <h1>Paneles SIP</h1>
+    <a href="{% url 'paneles' %}">Ver mas productos...</a>
   </div>
   <div class="cards">
     {% include "panel_carrusel.html" with paneles=paneles %}
