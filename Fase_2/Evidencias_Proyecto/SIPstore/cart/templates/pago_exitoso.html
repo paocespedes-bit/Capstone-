@@ -1,38 +1,70 @@
 {% extends "base.html" %}
 {% load static %}
 
-{% block title %}Pago Exitoso{% endblock %}
+{% block title %}Pago en Línea Exitoso{% endblock %}
+
+{% block link %}
+<link rel="stylesheet" href="{% static 'store/css/confirm_pago.css' %}">
+{% endblock %}
 
 {% block content %}
-<div class="container py-5 text-center">
-    <div class="card shadow-lg p-4 mx-auto" style="max-width: 600px; height: 500px;">
-        <div class="card-body" style="display: flex; justify-content: center; align-items: center; flex-direction: column;">
-            <div class="mb-4">
-                <h2 class="text-success fw-bold">¡Pago realizado con éxito! 💳✅</h2>
-            </div>
+<div class="container mt-5 mb-5">
+    <div class="card shadow-lg p-5">
+        <div class="text-center mb-4">
+            <img src="{% static 'store/img/check.png' %}" alt="Pago Exitoso" width="100" class="mb-3">
+            <h2 class="text-success fw-bold">¡Pago realizado con éxito!</h2>
+            <p class="text-muted">Tu pago en línea fue procesado correctamente. A continuación, puedes ver los detalles de tu compra.</p>
+        </div>
 
-            <p class="lead text-muted">
-                Tu transacción ha sido procesada correctamente,  
-                en breve recibirás un correo de confirmación con los detalles de tu compra.
+        <div class="pedido-info mb-4">
+            <h5 class="text-primary">Pedido #{{ pedido.id }}</h5>
+            <p><strong>Cliente:</strong> {{ pedido.comprador }}</p>
+            <p><strong>Correo:</strong> {{ pedido.correo_cli }}</p>
+            <p><strong>Método de pago:</strong> Pago en línea</p>
+            <p><strong>Estado:</strong> 
+                <span class="badge 
+                    {% if pedido.estado == 'pendiente' %}bg-warning
+                    {% elif pedido.estado == 'pagado' %}bg-success
+                    {% else %}bg-secondary{% endif %}">
+                    {{ pedido.estado|title }}
+                </span>
             </p>
+            <p><strong>Fecha de compra:</strong> {{ pedido.fecha_pedido|date:"d/m/Y H:i" }}</p>
+        </div>
 
-            <div class="border-top pt-3 mt-4">
-                <h5 class="fw-semibold">¿Qué sigue?</h5>
-                <ul class="list-unstyled text-start mx-auto" style="max-width: 400px;">
-                    <li>📦 Prepararemos tu pedido en el local seleccionado.</li>
-                    <li>📧 Te enviaremos un correo con el comprobante.</li>
-                    <li>🏪 Podrás retirar tu compra mostrando tu RUT o número de pedido.</li>
-                </ul>
-            </div>
+        <div class="productos-list mb-4">
+            <h5 class="text-primary mb-3">Productos del pedido</h5>
+            <table class="table table-striped align-middle">
+                <thead>
+                    <tr>
+                        <th>Producto</th>
+                        <th class="text-center">Cantidad</th>
+                        <th class="text-end">Subtotal</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for producto in productos %}
+                    <tr>
+                        <td>{{ producto.nombre }}</td>
+                        <td class="text-center">{{ producto.cantidad }}</td>
+                        <td class="text-end">${{ producto.subtotal|floatformat:0 }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
 
-            <div class="mt-4">
-                <a href="{% url 'carrito' %}" class="btn btn-outline-success me-2">
-                    <i class="bi bi-cart"></i> Volver al Carrito
-                </a>
-                <a href="/" class="btn btn-success">
-                    <i class="bi bi-house-door"></i> Ir al Inicio
-                </a>
-            </div>
+        <div class="text-end mb-4">
+            <h4>Total pagado: <strong class="text-success">${{ pedido.monto_total|floatformat:0 }}</strong></h4>
+        </div>
+
+        <div class="text-center">
+            <a href="{% url 'tienda' %}" class="btn btn-primary btn-lg px-4">
+                Seguir comprando
+            </a>
+            <a href="{% url 'detalle_pedido' pedido.id %}" class="btn btn-outline-secondary btn-lg ms-2">
+                Ver detalle completo
+            </a>
         </div>
     </div>
 </div>

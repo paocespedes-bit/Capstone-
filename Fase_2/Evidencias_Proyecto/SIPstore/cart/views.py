@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.http import JsonResponse
 import json
 from store.models import PanelSIP, KitConstruccion
@@ -30,7 +30,6 @@ def carrito(request):
 def obtener_producto_concreto(producto_id, content_type_id):
     try:
         content_type = ContentType.objects.get_for_id(content_type_id)
-        # Usamos content_type para obtener el modelo concreto y su objeto.
         ProductoModelo = content_type.model_class()
         return ProductoModelo.objects.get(id=producto_id)
     except ContentType.DoesNotExist:
@@ -38,6 +37,7 @@ def obtener_producto_concreto(producto_id, content_type_id):
     except Exception:
         return None
     
+
 def generar_respuesta(carrito):
     total = sum(item["acumulado"] for item in carrito.carrito.values())
     cantidad_total = sum(item["cantidad"] for item in carrito.carrito.values())
@@ -119,15 +119,13 @@ def modificar_carrito(request, accion):
         return JsonResponse({"error": str(e)}, status=500)
     
 
-# !Pedidos 
+
 def crear_pedido(request):
     if request.method == 'POST':
         carrito = Carrito(request)
 
         if not carrito.carrito:
-            if request.headers.get('x-requested-with') == 'XMLHttpRequest':
-                return JsonResponse({"error": "Tu carrito está vacío."}, status=400)
-            messages.error(request, "Tu carrito esta vacio")
+            messages.error(request, "Tu carrito está vacío.")
             return redirect('carrito')
 
         try:
@@ -179,11 +177,9 @@ def crear_pedido(request):
 
             messages.success(request, f"Pedido #{pedido.id} creado exitosamente.")
             return redirect('pedido_exitoso')
-
+            
         except Exception as e:
-            if request.headers.get('x-requested-with') == 'XMLHttpRequest':
-                return JsonResponse({"error": str(e)}, status=500)
-            messages.error(request, "Ocurrió un error al crear el pedido. Intenta nuevamente.", e)
+            messages.error(request, f"Ocurrió un error al crear el pedido: {str(e)}")
             return redirect('carrito')
 
     return redirect('ver_carrito')
@@ -261,5 +257,7 @@ def pago_exitoso(request):
 def pago_fallido(request):
     return render(request, "pago_fallido.html")
 
-def pago_pendiente(request):
-    return render(request, "pago_pendiente.html")
+def pago_pendiente(request, pedido_id):
+    pedido = get_object_or_404(Pedido, id=pedido_id)
+    return render(request, 'pago_pendiente.html', {'pedido': pedido})
+

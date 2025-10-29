@@ -14,6 +14,8 @@ from django.db.models.functions import ExtractYear, ExtractMonth
 from django.http import FileResponse, Http404
 from .utils.boleta import generar_boleta_pdf
 from decimal import Decimal, InvalidOperation
+from control.utils.email_utils import enviar_correo_estado
+
 
 
 # !Views principales
@@ -515,15 +517,52 @@ def save(self,*args, **kwargs):
 # !======================
 
 
+
+
 def cambiar_estado_pedido(request, pedido_id):
     pedido = get_object_or_404(Pedido, id=pedido_id)
     
     if request.method == "POST":
         nuevo_estado = request.POST.get("nuevo_estado")
+
         if nuevo_estado in dict(Pedido.ESTADOS).keys():
             pedido.estado = nuevo_estado
             pedido.save()
-            messages.success(request, f"Estado del pedido #{pedido.id} actualizado a {pedido.get_estado_display()}.")
+
+            
+            asunto = f"Actualización de tu pedido #{pedido.id}"
+            saludo = f"<h2>Hola {pedido.comprador},</h2>"
+
+            if nuevo_estado == "pendiente":
+                cuerpo = "<p>Tu pedido ha sido recibido y está pendiente de confirmación.</p>"
+            elif nuevo_estado == "en_proceso":
+                cuerpo = "<p>Tu pedido está siendo procesado 📦</p>"
+            elif nuevo_estado == "completado":
+                cuerpo = "<p>Tu pedido fue completado con éxito 🎉</p>"
+            elif nuevo_estado == "cancelado":
+                cuerpo = "<p>Tu pedido ha sido cancelado ❌</p>"
+            else:
+                cuerpo = f"<p>El estado de tu pedido cambió a {pedido.get_estado_display()}.</p>"
+
+            detalles_html = f"""
+                <p><strong>Detalles del pedido:</strong></p>
+                <ul>
+                    <li><strong>ID:</strong> {pedido.id}</li>
+                    <li><strong>Monto total:</strong> ${(pedido.monto_total)}</li>
+                    <li><strong>Método de pago:</strong> {pedido.get_metodo_pago_display()}</li>
+                    <li><strong>Nuevo estado:</strong> {pedido.get_estado_display()}</li>
+                </ul>
+                <p>Gracias por confiar en nosotros 💚</p>
+            """
+
+            mensaje_html = saludo + cuerpo + detalles_html
+
+            # Enviar correo
+            try:
+                enviar_correo_estado(pedido.correo_cli, asunto, mensaje_html)
+                messages.success(request, f"Estado del pedido #{pedido.id} actualizado a {pedido.get_estado_display()} y correo enviado correctamente.")
+            except Exception as e:
+                messages.warning(request, f"Estado actualizado, pero no se pudo enviar el correo: {e}")
         else:
             messages.error(request, "Estado no válido.")
     

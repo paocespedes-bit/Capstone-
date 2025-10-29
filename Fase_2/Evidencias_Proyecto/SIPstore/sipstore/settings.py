@@ -20,7 +20,7 @@ SECRET_KEY = os.getenv('SECRET_KEY')
 
 DEBUG = os.getenv('DEBUG', 'False') == 'True'
 
-ALLOWED_HOSTS = ['127.0.0.1', 'localhost','.ngrok-free.app', '*']
+ALLOWED_HOSTS = ['127.0.0.1', 'localhost','.ngrok-free.app','*']
 
 
 # Application definition
@@ -143,3 +143,14 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 MERCADOPAGO_PUBLIC_KEY = os.getenv('MERCADOPAGO_PUBLIC_KEY')
 
 MERCADOPAGO_ACCESS_TOKEN = os.getenv('MERCADOPAGO_ACCESS_TOKEN')
+
+SDK = mercadopago.SDK("APP_USR-8532999191396686-102714-25ef2fab014edb2c9879321f6668e72b-2950256807") #! reemplazar
+
+# Email para las pruebas de testin inventario y avisos
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = 'paoloignaciocespedestolhuysen@gmail.com'
+EMAIL_HOST_PASSWORD = 'vcqd gbku mmrb cnvo'  # no tu contraseña real, usa una "App Password"
+DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
