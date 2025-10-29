@@ -241,9 +241,6 @@ def crear_preferencia(request):
         preference_response = sdk.preference().create(preference_data)
         preference = preference_response["response"]
         
-        print(preference_response)  # <--- depuración
-        preference = preference_response.get("response")
-        print(preference)
         return JsonResponse(preference)
     
     except Exception as e:

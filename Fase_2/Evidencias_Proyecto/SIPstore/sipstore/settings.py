@@ -4,8 +4,6 @@ from pathlib import Path
 
 from dotenv import load_dotenv
 
-import mercadopago
-
 load_dotenv()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -143,8 +141,6 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 MERCADOPAGO_PUBLIC_KEY = os.getenv('MERCADOPAGO_PUBLIC_KEY')
 
 MERCADOPAGO_ACCESS_TOKEN = os.getenv('MERCADOPAGO_ACCESS_TOKEN')
-
-SDK = mercadopago.SDK("APP_USR-8532999191396686-102714-25ef2fab014edb2c9879321f6668e72b-2950256807") #! reemplazar
 
 # Email para las pruebas de testin inventario y avisos
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
