@@ -4,70 +4,79 @@
 {% block link %}
 <link rel="stylesheet" href="{% static 'control/style/tablas.css' %}">
 {% endblock %}
-<script>
-    const editButtons = document.querySelectorAll('.btn-editar-kit');
 
-    editButtons.forEach(button => {
-        button.addEventListener('click', function () {
-            const kitId = this.dataset.id;
-            const modal = document.getElementById(`modalEditarKit_${kitId}`);
-            const form = modal.querySelector('#formEditarKit');
+    <!-- Filtro móvil -->
+    <div class="d-flex justify-content-end mb-3 d-md-none">
+        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalFiltrosKits">
+            <i class="bi bi-funnel"></i> Filtrar / Ordenar
+        </button>
+    </div>
 
-            // Actualizar la acción del formulario
-            form.action = `/editar-kit/${kitId}/`;
-
-            // Rellenar los inputs
-            form.querySelector('[name="nombre"]').value = this.dataset.nombre;
-            form.querySelector('[name="precio"]').value = this.dataset.precio;
-            form.querySelector('[name="descripcion"]').value = this.dataset.descripcion;
-            form.querySelector('[name="m2"]').value = this.dataset.m2;
-            form.querySelector('[name="dormitorios"]').value = this.dataset.dormitorios;
-            form.querySelector('[name="banos"]').value = this.dataset.banos;
-
-            // Para categorías múltiples
-            const categorias = this.dataset.categorias.split(',');
-            const select = form.querySelector('[name="categorias"]');
-            Array.from(select.options).forEach(option => {
-                option.selected = categorias.includes(option.value);
-            });
-        });
-    });
-</script>
-
-<div class="container-fluid">
+    <div class="container-fluid">
     <h2>Tabla de Kits</h2>
+
+    <!-- Modal Filtros (móvil) -->
+    <div class="modal fade" id="modalFiltrosKits" tabindex="-1" aria-labelledby="modalFiltrosKitsLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <form method="get" action="{% url 'stock' %}">
+                    <input type="hidden" name="tab" value="kits">
+                    <div class="modal-header bg-primary text-white">
+                        <h5 class="modal-title" id="modalFiltrosKitsLabel">Filtros y Ordenamiento</h5>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <label class="form-label">Ordenar por</label>
+                            <select name="ordenar" class="form-select">
+                                <option value="">Sin orden</option>
+                                <option value="id" {% if ordenar == 'id' %}selected{% endif %}>ID</option>
+                                <option value="nombre" {% if ordenar == 'nombre' %}selected{% endif %}>Nombre</option>
+                                <option value="precio" {% if ordenar == 'precio' %}selected{% endif %}>Precio</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <select name="direccion" class="form-select">
+                                <option value="asc" {% if direccion != 'desc' %}selected{% endif %}>Ordenar A-Z / Menor-Mayor</option>
+                                <option value="desc" {% if direccion == 'desc' %}selected{% endif %}>Ordenar Z-A / Mayor-Menor</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Categoría</label>
+                            <select name="categoria" class="form-select">
+                                <option value="">Todos</option>
+                                {% for cat in categorias_opciones %}
+                                    <option value="{{ cat.id }}" {% if selected_categoria == cat.id|stringformat:"s" %}selected{% endif %}>
+                                        {{ cat.nombre }}
+                                    </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <a href="{% url 'stock' %}?tab=kits" class="btn btn-outline-secondary">Limpiar</a>
+                        <button type="submit" class="btn btn-success">Aplicar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tabla principal -->
     <div class="table-responsive">
         <table class="table table-hover table-striped align-middle">
-            <thead class="table">
+            <thead>
                 <tr>
-                    <th>ID
-                        {% include 'filtro_columna.html' with columna_nombre="id" tab_activo="kits" %}
-                    </th>
-                    <th>Cantidad
-                        
-                    </th>
-                    <th>Nombre
-                        {% include 'filtro_columna.html' with columna_nombre="nombre" tab_activo="kits" %}
-                    </th>
-                    <th>Precio
-                        {% include 'filtro_columna.html' with columna_nombre="precio" tab_activo="kits" %}
-                    </th>
-                    <th>Oferta
-                        
-                    </th>
+                    <th>ID {% include 'filtro_columna.html' with columna_nombre="id" tab_activo="kits" %}</th>
+                    <th>Cantidad</th>
+                    <th>Nombre {% include 'filtro_columna.html' with columna_nombre="nombre" tab_activo="kits" %}</th>
+                    <th>Precio {% include 'filtro_columna.html' with columna_nombre="precio" tab_activo="kits" %}</th>
+                    <th>Oferta</th>
                     <th>Descripción</th>
-                    <th>m²
-                        
-                    </th>
-                    <th>Dormitorios
-                        
-                    </th>
-                    <th>Baños
-                        
-                    </th>
-                    <th>Categorías
-                        
-                    </th>
+                    <th>m²</th>
+                    <th>Dormitorios</th>
+                    <th>Baños</th>
+                    <th>Categorías</th>
                     <th>Imágenes</th>
                     <th class="text-center">Acciones</th>
                     <th>+ Imagenes</th>
@@ -77,65 +86,53 @@
             <tbody>
                 {% for kit in kits %}
                 <tr>
-                    <td>#{{ kit.id }}</td>
-                    <td>
-                        {% if kit.inventario.first.modo_stock == 'stock' %}
-                        {% if kit.inventario.first.disponible == 0 %}
-                        Sin Stock
-                        {% else %}
-                        {{kit.inventario.first.disponible}}
+                    <td data-label="ID" >#{{ kit.id }}</td>
+                    {% if kit.inventario.first.modo_stock == 'stock' %}
+                        {% if kit.inventario.first.disponible == 0 %}<td data-label="Cantidad" title="Sin Stock - Reservado: {{ kit.inventario.first.reservado }} ">Sin Stock</td>
+                        {% else %}<td data-label="Cantidad" title="Disponible: {{ kit.inventario.first.disponible }} - Reservado: {{ kit.inventario.first.reservado }} ">{{ kit.inventario.first.disponible }}</td>
                         {% endif %}
-                        {% else %}
-                        Por Pedido
-                        {% endif %}
-                    </td>
-                    <td>{{ kit.nombre }}</td>
-                    <td>${{ kit.precio_actual|floatformat:0|punto_miles }}</td>
-                    <td>
-                        {% if kit.oferta %}
-                        {{ kit.oferta }}%
-                        {% else %}
-                        N/A
-                        {% endif %}
-                    </td>
-                    <td title="{{ kit.descripcion }}">{{ kit.descripcion|truncatechars:20 }}...</td>
-                    <td>{{ kit.m2 }}</td>
-                    <td>{{ kit.dormitorios }}</td>
-                    <td>{{ kit.banos }}</td>
-                    <td>
+                    {% else %}<td data-label="Cantidad" title="Por Pedido">Por Pedido</td>
+                    {% endif %}
+                    <td data-label="Nombre" >{{ kit.nombre }}</td>
+                    <td data-label="Precio" >${{ kit.precio_actual|floatformat:0|punto_miles }}</td>
+                    <td data-label="Oferta" >{% if kit.oferta %}{{ kit.oferta }}%{% else %}N/A{% endif %}</td>
+                    <td data-label="Descripción" title="{{ kit.descripcion }}">{{ kit.descripcion|truncatechars:20 }}...</td>
+                    <td data-label="m²" >{{ kit.m2 }}</td>
+                    <td data-label="Dormitorios" >{{ kit.dormitorios }}</td>
+                    <td data-label="Baños" >{{ kit.banos }}</td>
+                    <td data-label="Categorías" >
                         {% for cat in kit.categorias.all %}
-                        <span class="badge bg-secondary">{{ cat.nombre }}</span>
+                            <span class="badge bg-secondary">{{ cat.nombre }}</span>
                         {% endfor %}
                     </td>
-                    <td>
-                        <button type="button" class="btn btn-primary" data-bs-toggle="modal"
-                            data-bs-target="#galeriaKit_{{ kit.id }}">
+                    <td data-label="Imágenes" >
+                        <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#galeriaKit_{{ kit.id }}">
                             <i class="bi bi-eye"></i> Ver({{ kit.imagenes.count }})
                         </button>
                     </td>
-                    <td class="text-center">
+                    <td data-label="Acciones" class="text-center">
                         <button class="btn btn-sm btn-primary btn-editar-kit" data-bs-toggle="modal"
-                            data-bs-target="#modalEditarKit_{{ kit.id }}" data-id="{{ kit.id }}"
-                            data-nombre="{{ kit.nombre }}" data-precio="{{ kit.precio }}"
-                            data-descripcion="{{ kit.descripcion }}" data-m2="{{ kit.m2 }}"
-                            data-dormitorios="{{ kit.dormitorios }}" data-banos="{{ kit.banos }}"
-                            data-categorias="{{ kit.categorias.all|join:',' }}">
+                                data-bs-target="#modalEditarKit_{{ kit.id }}" data-id="{{ kit.id }}"
+                                data-nombre="{{ kit.nombre }}" data-precio="{{ kit.precio }}"
+                                data-descripcion="{{ kit.descripcion }}" data-m2="{{ kit.m2 }}"
+                                data-dormitorios="{{ kit.dormitorios }}" data-banos="{{ kit.banos }}"
+                                data-categorias="{{ kit.categorias.all|join:',' }}">
                             Editar
                         </button>
                         <button type="button" class="btn btn-danger" data-bs-toggle="modal"
-                            data-bs-target="#modalEliminarKit_{{ kit.id }}">
+                                data-bs-target="#modalEliminarKit_{{ kit.id }}">
                             Eliminar
                         </button>
                     </td>
                     <td class="text-center">
                         <button type="button" class="btn btn-sm btn-info" data-bs-toggle="modal"
-                            data-bs-target="#modalSubirImagenesKit_{{ kit.id }}">
+                                data-bs-target="#modalSubirImagenesKit_{{ kit.id }}">
                             + <i class="bi bi-image-fill"></i>
                         </button>
                     </td>
                     <td class="text-center">
                         <button type="button" class="btn btn-sm btn-info" data-bs-toggle="modal"
-                            data-bs-target="#modalEliminarImagenesKit_{{ kit.id }}">
+                                data-bs-target="#modalEliminarImagenesKit_{{ kit.id }}">
                             - <i class="bi bi-image-fill"></i>
                         </button>
                     </td>
@@ -149,4 +146,32 @@
 
 {% block script %}
 <script src="{% static 'control/js/eliminar.js' %}"></script>
+
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+    const editButtons = document.querySelectorAll('.btn-editar-kit');
+
+    editButtons.forEach(button => {
+        button.addEventListener('click', function () {
+            const kitId = this.dataset.id;
+            const modal = document.getElementById(`modalEditarKit_${kitId}`);
+            const form = modal.querySelector('#formEditarKit');
+
+            form.action = `/editar-kit/${kitId}/`;
+            form.querySelector('[name="nombre"]').value = this.dataset.nombre;
+            form.querySelector('[name="precio"]').value = this.dataset.precio;
+            form.querySelector('[name="descripcion"]').value = this.dataset.descripcion;
+            form.querySelector('[name="m2"]').value = this.dataset.m2;
+            form.querySelector('[name="dormitorios"]').value = this.dataset.dormitorios;
+            form.querySelector('[name="banos"]').value = this.dataset.banos;
+
+            const categorias = this.dataset.categorias.split(',');
+            const select = form.querySelector('[name="categorias"]');
+            Array.from(select.options).forEach(option => {
+                option.selected = categorias.includes(option.value);
+            });
+        });
+    });
+});
+</script>
 {% endblock %}

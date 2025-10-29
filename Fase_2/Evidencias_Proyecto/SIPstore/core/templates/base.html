@@ -1,6 +1,6 @@
 {% load static %}
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 
 <head>
   <meta charset="UTF-8" />
@@ -67,8 +67,9 @@
         <!-- !Boton carrito  -->
         <a href="{% url 'carrito' %}" class="btn btn-success cart-button position-relative">
           <i class="bi bi-cart3"></i> Carrito
-          <span id="cart-badge" class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger hidden">
-            0
+          <span id="contar_carrito"
+            class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+            {{ cantidad_articulos_carrito|default:0 }}
           </span>
         </a>
       </div>
@@ -119,7 +120,11 @@
         <div class="col-12 col-md-6 mb-2 mb-md-0 ultimo">
           Derechos reservados
         </div>
-        <div class="col-12 col-md-6 ultimo">Medios de pago (iconos)</div>
+        <div class="col-12 col-md-6 ultimo">
+          <img class="medio_pago" src="{% static 'core/img/mercado_pago.svg' %}" alt="mercado_pago">
+          <img class="medio_pago" src="{% static 'core/img/visa.svg' %}" alt="visa">
+          <img class="medio_pago" src="{% static 'core/img/mastercard.svg' %}" alt="master_card">
+        </div>
       </div>
     </div>
   </footer>
@@ -130,15 +135,18 @@
     <i class="bi bi-whatsapp"></i>
   </a>
   <form style="display:none;">
-  {% csrf_token %}
+    {% csrf_token %}
   </form>
   <!-- !Bootstrap JS -->
   <script src="{% static 'js/bootstrap.min.js' %}"></script>
   <script src="{% static 'js/whatsapp.js' %}"></script>
   <script>
-    const URL_AGREGAR_CARRITO = "{% url 'agregar_carrito' %}";
-    const URL_ELIMINAR_CARRITO = "{% url 'eliminar_item_carrito' %}";
-  </script>
+    // 💡 IMPORTANTE: Usa un placeholder (marcador) que no sea un número para evitar confusiones.
+    const urlModificar = '{% url "modificar_ajax" "ACCION_PLACEHOLDER" %}';
+    const CSRF_TOKEN = "{{ csrf_token }}";
+</script>
+<script src="{% static 'cart/js/carrito.js' %}"></script>
+<script src="{% static 'cart/js/notifications.js' %}"></script>
   {% block script %}{% endblock %}
 </body>
 

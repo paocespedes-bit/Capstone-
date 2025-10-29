@@ -1,4 +1,5 @@
 from django import template
+from django.contrib.contenttypes.models import ContentType
 
 register = template.Library()
 
@@ -17,5 +18,13 @@ def punto_miles(value):
         return value
     
 @register.filter
-def multiply(value, arg):
-    return float(value) * int(arg)
+def content_type(obj):
+    if obj is None:
+        return None
+    return ContentType.objects.get_for_model(obj).id
+
+@register.filter
+def truncate_chars(value, max_length):
+    if len(value) > max_length:
+        return value[:max_length] + '...'
+    return value

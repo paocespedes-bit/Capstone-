@@ -2,6 +2,8 @@
 import os
 from pathlib import Path
 
+import mercadopago
+
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -44,7 +46,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'django.middleware.locale.LocaleMiddleware',
+    # 'django.middleware.locale.LocaleMiddleware',
 ]
 
 ROOT_URLCONF = 'sipstore.urls'
@@ -59,6 +61,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'cart.context_processors.totales_carrito',
             ],
         },
     },
@@ -109,6 +112,9 @@ USE_L10N = True
 
 LANGUAGE_CODE = 'es'
 
+LANGUAGES = [
+    ('es', 'Español'),
+]
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.2/howto/static-files/
@@ -130,6 +136,8 @@ MEDIA_ROOT = os.path.join(BASE_DIR,'media')
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
+
+SDK = mercadopago.SDK("APP_USR-8532999191396686-102714-25ef2fab014edb2c9879321f6668e72b-2950256807") #! reemplazar
 
 # Email para las pruebas de testin inventario y avisos
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'

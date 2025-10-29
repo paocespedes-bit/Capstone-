@@ -200,7 +200,7 @@ def stock(request):
     return render(request, "stock.html", context)
 
 def pedidos(request):
-    pedidos = Pedido.objects.all()
+    pedidos = Pedido.objects.all().order_by('-fecha_pedido')
     ordenar = request.GET.get("ordenar")
     direccion = request.GET.get("direccion")
 
