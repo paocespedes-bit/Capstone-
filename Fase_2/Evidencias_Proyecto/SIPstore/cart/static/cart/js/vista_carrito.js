@@ -309,3 +309,58 @@ btnContinueCart.addEventListener("click", async () => {
     alert("Error al generar el pago. Intenta nuevamente.");
   }
 });
+
+const btnValidateData = document.getElementById("btn-validate-data");
+
+// --- NUEVA LÓGICA DE VALIDACIÓN --- //
+btnContinueCart.addEventListener("click", function () {
+    bsCartListCollapse.hide();
+    bsCheckoutFormCollapse.show();
+    btnContinueCart.classList.add("d-none");
+    btnValidateData.classList.remove("d-none");
+});
+
+btnValidateData.addEventListener("click", async function () {
+    const pedidoForm = document.getElementById("pedidoForm");
+
+    if (!pedidoForm.checkValidity()) {
+        pedidoForm.reportValidity();
+        mostrarMensaje("Por favor completa todos los campos requeridos antes de continuar.", true);
+        return;
+    }
+
+    const rutInput = document.getElementById("clientRut");
+    if (rutInput && !/^(\d{1,3}(?:\.\d{3})*)\-\d|k|K$/.test(rutInput.value.trim())) {
+        mostrarMensaje("El RUT ingresado no es válido.", true);
+        return;
+    }
+
+    mostrarMensaje("Datos validados correctamente.", false);
+
+    btnValidateData.classList.add("d-none");
+
+    const paymentOnline = document.getElementById("paymentOnline");
+    const paymentStore = document.getElementById("paymentStore");
+
+    if (paymentOnline.checked) {
+        try {
+            const response = await fetch("/crear_preferencia/");
+            const preference = await response.json();
+
+            if (!preference.id) {
+                mostrarMensaje("No se pudo crear la preferencia de pago.", true);
+                return;
+            }
+
+            await renderWalletBrick(preference.id);
+            document.getElementById("walletBrick_container").classList.remove("d-none");
+            btnBackOnline.classList.remove("d-none");
+        } catch (err) {
+            mostrarMensaje("Error al iniciar Mercado Pago.", true);
+            console.error(err);
+        }
+    } else if (paymentStore.checked) {
+        btnFinishOrder.classList.remove("d-none");
+        btnBackStore.classList.remove("d-none");
+    }
+});
