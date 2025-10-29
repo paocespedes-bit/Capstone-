@@ -139,21 +139,17 @@ if (window.MercadoPago) {
 } else {
     console.error("SDK de Mercado Pago no cargado. Revisa la etiqueta script.");
 }
-// ----------------------------------------------
 
 
-// Función simple para mostrar mensajes de error/éxito (reemplazando alert())
+
 function mostrarMensaje(mensaje, esError = true) {
     console.log(`${esError ? 'ERROR' : 'INFO'}: ${mensaje}`);
-    // Aquí puedes implementar una lógica para mostrar un modal o un toast en la UI
-    // Por ahora, usaremos console.error para los errores.
     if (esError) {
         console.error(mensaje);
     }
 }
 
 // Función para renderizar el Wallet Brick
-// Usamos la instancia 'mp' creada globalmente.
 async function renderWalletBrick(preferenceId) {
     if (!mp) {
         mostrarMensaje("Mercado Pago SDK no inicializado.", true);
@@ -167,35 +163,51 @@ async function renderWalletBrick(preferenceId) {
             initialization: {
                 preferenceId: preferenceId,
             },
-            // Aquí puedes añadir personalizaciones si las necesitas
         });
-        // Ocultar cualquier loading indicator si existía
     } catch (e) {
         mostrarMensaje("Error al renderizar el Wallet Brick.", true);
         console.error("Detalle del error del Brick:", e);
     }
 }
 
-// --- Event Listener para Continuar el Carrito ---
+
 btnContinueCart.addEventListener("click", async function () {
-    // Verificar si mp está inicializado antes de continuar
-    if (!mp) {
-        mostrarMensaje("El sistema de pago no está disponible temporalmente.", true);
+    const pedidoForm = document.getElementById("pedidoForm");
+
+    if (!pedidoForm) {
+        mostrarMensaje("No se encontró el formulario de pedido.", true);
+        return;
+    }
+
+
+    if (!pedidoForm.checkValidity()) {
+        pedidoForm.reportValidity(); 
+        mostrarMensaje("Por favor completa todos los campos requeridos antes de continuar.", true);
         return;
     }
 
     try {
-        // 1. Solicitar la preferencia de pago a Django
+        const formData = new FormData(pedidoForm);
+        const responsePedido = await fetch(pedidoForm.action, {
+            method: "POST",
+            headers: { "X-CSRFToken": csrftoken },
+            body: formData,
+        });
+
+        if (!responsePedido.ok) {
+            mostrarMensaje("No se pudo crear el pedido. Revisa los datos.", true);
+            return;
+        }
+
+        const pedidoData = await responsePedido.json().catch(() => ({}));
+        if (pedidoData.error) {
+            mostrarMensaje(pedidoData.error, true);
+            return;
+        }
+
         const response = await fetch("/crear_preferencia/");
-        
         if (!response.ok) {
-            // Manejar errores de Django o Mercado Pago API
-            const errorData = await response.json();
-            mostrarMensaje(
-                "No se pudo generar la preferencia de pago: " +
-                (errorData.message || errorData.error || "Error desconocido en el backend"),
-                true
-            );
+            mostrarMensaje("No se pudo generar la preferencia de pago.", true);
             return;
         }
 
@@ -203,22 +215,97 @@ btnContinueCart.addEventListener("click", async function () {
         const preferenceId = preference.id;
 
         if (!preferenceId) {
-            console.error("Preference ID no recibido:", preference);
-            mostrarMensaje("Ocurrió un error al generar la preferencia de pago. (ID no encontrado)", true);
+            mostrarMensaje("Error: no se obtuvo un ID de preferencia válido.", true);
             return;
         }
 
-        // 2. Renderizar el Brick
         await renderWalletBrick(preferenceId);
-
-        // 3. Mostrar la interfaz de checkout
-        // Asegúrate de que tienes un elemento con ID 'walletBrick_container' en tu HTML
-        // para que el Brick pueda renderizarse.
         bsCartListCollapse.hide();
         bsCheckoutFormCollapse.show();
-        
+        mostrarMensaje("Pedido validado correctamente. Procede con el pago.", false);
     } catch (err) {
-        console.error("Error al inicializar el pago/Brick:", err);
-        mostrarMensaje("Ocurrió un error al intentar iniciar el pago.", true);
+        console.error("Error durante la validación/pago:", err);
+        mostrarMensaje("Ocurrió un error al procesar el pedido o iniciar el pago.", true);
     }
+});
+
+document.addEventListener("DOMContentLoaded", () => {
+    const pedidoForm = document.getElementById("pedidoForm");
+    const btnCheckout = document.getElementById("walletBrick_container");
+    const btnContinueCart = document.getElementById("btn-continue-cart");
+
+    const validarFormulario = () => {
+        if (!pedidoForm || !btnCheckout) return;
+
+        const esValido = pedidoForm.checkValidity() && !isCartEmpty();
+
+        if (esValido) {
+            btnCheckout.classList.remove("d-none");
+        } else {
+            btnCheckout.classList.add("d-none");
+        }
+    };
+
+    if (btnContinueCart) {
+        btnContinueCart.addEventListener("click", () => {
+            bsCartListCollapse.hide();
+            bsCheckoutFormCollapse.show(); 
+
+
+            validarFormulario();
+
+
+            pedidoForm.querySelectorAll("input, select, textarea").forEach((input) => {
+                input.addEventListener("input", validarFormulario);
+                input.addEventListener("change", validarFormulario); 
+            });
+        });
+    }
+
+
+    if (btnCheckout) {
+        btnCheckout.addEventListener("click", async () => {
+            if (!pedidoForm.checkValidity()) {
+                pedidoForm.reportValidity();
+                mostrarMensaje("Completa todos los campos requeridos antes de pagar.", true);
+                return;
+            }
+
+            try {
+                const response = await fetch("/crear_preferencia/");
+                if (!response.ok) {
+                    mostrarMensaje("Error al generar preferencia de pago.", true);
+                    return;
+                }
+                const preference = await response.json();
+                await renderWalletBrick(preference.id);
+            } catch (err) {
+                mostrarMensaje("Error al iniciar pago.", true);
+            }
+        });
+    }
+});
+
+btnContinueCart.addEventListener("click", async () => {
+  const pedidoForm = document.getElementById("pedidoForm");
+  if (!pedidoForm.checkValidity()) {
+    pedidoForm.reportValidity();
+    return;
+  }
+
+  try {
+    const response = await fetch("/crear_preferencia/");
+    if (!response.ok) throw new Error("No se pudo generar preferencia");
+    const { id: preferenceId } = await response.json();
+
+    const btnCheckout = document.getElementById("walletBrick_container");
+    btnCheckout.classList.remove("d-none"); // muestra el contenedor
+    await renderWalletBrick(preferenceId); // renderiza el Brick
+
+    bsCartListCollapse.hide();
+    bsCheckoutFormCollapse.show();
+  } catch (err) {
+    console.error(err);
+    alert("Error al generar el pago. Intenta nuevamente.");
+  }
 });

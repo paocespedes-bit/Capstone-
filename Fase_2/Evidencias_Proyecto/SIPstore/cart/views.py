@@ -123,11 +123,13 @@ def modificar_carrito(request, accion):
 def crear_pedido(request):
     if request.method == 'POST':
         carrito = Carrito(request)
-        
+
         if not carrito.carrito:
+            if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+                return JsonResponse({"error": "Tu carrito está vacío."}, status=400)
             messages.error(request, "Tu carrito esta vacio")
             return redirect('carrito')
-        
+
         try:
             local_id = request.POST.get('localSelect')
             metodo_pago = request.POST.get('paymentMethod')
@@ -136,9 +138,9 @@ def crear_pedido(request):
             correo_cli = request.POST.get('clientEmail')
             celular_cli = request.POST.get('clientPhone')
             ubicacion_cli = request.POST.get('clientAddress')
-            
+
             local = Local.objects.get(id=local_id) if local_id else None
-            
+
             pedido = Pedido.objects.create(
                 local=local,
                 nombre_local=local.nombre if local else None,
@@ -152,33 +154,40 @@ def crear_pedido(request):
                 metodo_pago='pago_web' if metodo_pago == 'online' else 'pago_tienda',
                 monto_total=0
             )
-            
+
             monto_total = 0
-            
+
             for item in carrito.carrito.values():
                 content_type = ContentType.objects.get_for_id(item['content_type_id'])
                 producto_obj = content_type.get_object_for_this_type(id=item['producto_id'])
                 cantidad = item['cantidad']
-                
+
                 detalle = DetallePedido.objects.create(
-                    pedido = pedido,
-                    content_type = content_type,
-                    object_id = producto_obj.id,
-                    cantidad = cantidad
+                    pedido=pedido,
+                    content_type=content_type,
+                    object_id=producto_obj.id,
+                    cantidad=cantidad
                 )
                 monto_total += detalle.subtotal
-            
+
             pedido.monto_total = monto_total
             pedido.save()
             carrito.limpiar()
-            
+
+            if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+                return JsonResponse({"ok": True, "pedido_id": pedido.id})
+
             messages.success(request, f"Pedido #{pedido.id} creado exitosamente.")
-            return redirect('pedido_exitoso') 
-            
+            return redirect('pedido_exitoso')
+
         except Exception as e:
+            if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+                return JsonResponse({"error": str(e)}, status=500)
             messages.error(request, "Ocurrió un error al crear el pedido. Intenta nuevamente.", e)
             return redirect('carrito')
+
     return redirect('ver_carrito')
+
 
 
 # !Mercado PAGO:
