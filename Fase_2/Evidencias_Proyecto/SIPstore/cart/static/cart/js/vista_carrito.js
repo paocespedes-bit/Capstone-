@@ -33,14 +33,21 @@ function isCartEmpty() {
 }
 
 function toggleCartCollapse() {
-  if (checkoutFormCollapse.classList.contains("show")) {
+  const isCheckoutVisible = checkoutFormCollapse.classList.contains("show");
+
+  if (isCheckoutVisible) {
     bsCheckoutFormCollapse.hide();
     bsCartListCollapse.show();
+    hideAllCheckoutButtons();
+    btnContinueCart.classList.remove("d-none");
   } else {
     bsCartListCollapse.hide();
     bsCheckoutFormCollapse.show();
+    hideAllCheckoutButtons();
+    btnValidateData.classList.remove("d-none");
   }
 }
+
 
 function hideAllCheckoutButtons() {
   btnFinishOrder.classList.add("d-none");
@@ -317,8 +324,16 @@ btnContinueCart.addEventListener("click", function () {
     bsCartListCollapse.hide();
     bsCheckoutFormCollapse.show();
     btnContinueCart.classList.add("d-none");
-    btnValidateData.classList.remove("d-none");
+
+    if (paymentOnline.checked) {
+        btnValidateData.classList.remove("d-none"); // 🔹 solo si es online
+    } else {
+        btnValidateData.classList.add("d-none"); // 🔹 ocultar en tienda
+        btnFinishOrder.classList.remove("d-none"); // mostrar botón terminar si es en tienda
+        btnBackStore.classList.remove("d-none");
+    }
 });
+
 
 btnValidateData.addEventListener("click", async function () {
     const pedidoForm = document.getElementById("pedidoForm");
@@ -364,3 +379,19 @@ btnValidateData.addEventListener("click", async function () {
         btnBackStore.classList.remove("d-none");
     }
 });
+
+function updatePaymentButton() {
+  const isStorePayment = paymentStore.checked;
+  const isOnlinePayment = paymentOnline.checked;
+
+  hideAllCheckoutButtons();
+
+  if (isStorePayment) {
+    btnFinishOrder.classList.remove("d-none");
+    btnBackStore.classList.remove("d-none");
+    btnValidateData.classList.add("d-none"); // 🔹 ocultar botón validar si es en tienda
+  } else if (isOnlinePayment) {
+    btnValidateData.classList.remove("d-none"); // 🔹 mostrar botón validar solo si es online
+    btnBackOnline.classList.remove("d-none");
+  }
+}
