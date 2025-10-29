@@ -529,7 +529,7 @@ def cambiar_estado_pedido(request, pedido_id):
             pedido.estado = nuevo_estado
             pedido.save()
 
-            # Preparar correo
+            
             asunto = f"Actualización de tu pedido #{pedido.id}"
             saludo = f"<h2>Hola {pedido.comprador},</h2>"
 

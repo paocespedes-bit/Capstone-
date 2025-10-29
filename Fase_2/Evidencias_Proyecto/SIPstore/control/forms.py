@@ -75,5 +75,20 @@ class ImagenProductoForm(forms.ModelForm):
         model = imagenProducto
         fields = ['imagen']
         widgets = {
-            'imagen': forms.ClearableFileInput(attrs={'class': 'form-control'})
+            'imagen': forms.ClearableFileInput(attrs={'class': 'form-control'}),
         }
+
+    def clean_imagen(self):
+        imagen = self.cleaned_data.get('imagen')
+
+        if imagen:
+            # Verificar tipo MIME
+            if not imagen.content_type.startswith('image/'):
+                raise forms.ValidationError("Solo puedes subir archivos de imagen (JPG, PNG, etc).")
+
+            # Validar tamaño máximo (opcional)
+            max_size_mb = 5
+            if imagen.size > max_size_mb * 1024 * 1024:
+                raise forms.ValidationError(f"La imagen no puede superar los {max_size_mb} MB.")
+
+        return imagen

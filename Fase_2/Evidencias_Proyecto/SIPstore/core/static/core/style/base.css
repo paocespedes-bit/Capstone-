@@ -182,7 +182,10 @@ main.container {
 .a-foot:hover {
   background-color: rgba(255, 255, 255, 0.25);
 }
-
+.medio_pago{
+  width: 5vw;
+  height: 2vw;
+}
 .fw-bold {
   font-size: large;
 }
