@@ -35,18 +35,31 @@ function isCartEmpty() {
 function toggleCartCollapse() {
   const isCheckoutVisible = checkoutFormCollapse.classList.contains("show");
 
+  hideAllCheckoutButtons();
+
   if (isCheckoutVisible) {
+    // 🔹 Si estamos en el formulario y se presiona volver:
     bsCheckoutFormCollapse.hide();
     bsCartListCollapse.show();
-    hideAllCheckoutButtons();
+
+    // 🔹 Solo mostrar “Continuar Compra”
     btnContinueCart.classList.remove("d-none");
   } else {
+    // 🔹 Si estamos en el carrito y se presiona continuar:
     bsCartListCollapse.hide();
     bsCheckoutFormCollapse.show();
-    hideAllCheckoutButtons();
-    btnValidateData.classList.remove("d-none");
+
+    // 🔹 Mostrar botón según método de pago
+    if (paymentOnline.checked) {
+      btnValidateData.classList.remove("d-none");
+      btnBackOnline.classList.remove("d-none");
+    } else if (paymentStore.checked) {
+      btnFinishOrder.classList.remove("d-none");
+      btnBackStore.classList.remove("d-none");
+    }
   }
 }
+
 
 
 function hideAllCheckoutButtons() {
@@ -55,7 +68,9 @@ function hideAllCheckoutButtons() {
   btnCheckout.classList.add("d-none");
   btnBackOnline.classList.add("d-none");
   btnContinueCart.classList.add("d-none");
+  btnValidateData.classList.add("d-none");
 }
+
 
 function updatePaymentButton() {
   const isStorePayment = paymentStore.checked;
@@ -177,65 +192,6 @@ async function renderWalletBrick(preferenceId) {
     }
 }
 
-
-btnContinueCart.addEventListener("click", async function () {
-    const pedidoForm = document.getElementById("pedidoForm");
-
-    if (!pedidoForm) {
-        mostrarMensaje("No se encontró el formulario de pedido.", true);
-        return;
-    }
-
-
-    if (!pedidoForm.checkValidity()) {
-        pedidoForm.reportValidity(); 
-        mostrarMensaje("Por favor completa todos los campos requeridos antes de continuar.", true);
-        return;
-    }
-
-    try {
-        const formData = new FormData(pedidoForm);
-        const responsePedido = await fetch(pedidoForm.action, {
-            method: "POST",
-            headers: { "X-CSRFToken": csrftoken },
-            body: formData,
-        });
-
-        if (!responsePedido.ok) {
-            mostrarMensaje("No se pudo crear el pedido. Revisa los datos.", true);
-            return;
-        }
-
-        const pedidoData = await responsePedido.json().catch(() => ({}));
-        if (pedidoData.error) {
-            mostrarMensaje(pedidoData.error, true);
-            return;
-        }
-
-        const response = await fetch("/crear_preferencia/");
-        if (!response.ok) {
-            mostrarMensaje("No se pudo generar la preferencia de pago.", true);
-            return;
-        }
-
-        const preference = await response.json();
-        const preferenceId = preference.id;
-
-        if (!preferenceId) {
-            mostrarMensaje("Error: no se obtuvo un ID de preferencia válido.", true);
-            return;
-        }
-
-        await renderWalletBrick(preferenceId);
-        bsCartListCollapse.hide();
-        bsCheckoutFormCollapse.show();
-        mostrarMensaje("Pedido validado correctamente. Procede con el pago.", false);
-    } catch (err) {
-        console.error("Error durante la validación/pago:", err);
-        mostrarMensaje("Ocurrió un error al procesar el pedido o iniciar el pago.", true);
-    }
-});
-
 document.addEventListener("DOMContentLoaded", () => {
     const pedidoForm = document.getElementById("pedidoForm");
     const btnCheckout = document.getElementById("walletBrick_container");
@@ -293,29 +249,6 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 });
 
-btnContinueCart.addEventListener("click", async () => {
-  const pedidoForm = document.getElementById("pedidoForm");
-  if (!pedidoForm.checkValidity()) {
-    pedidoForm.reportValidity();
-    return;
-  }
-
-  try {
-    const response = await fetch("/crear_preferencia/");
-    if (!response.ok) throw new Error("No se pudo generar preferencia");
-    const { id: preferenceId } = await response.json();
-
-    const btnCheckout = document.getElementById("walletBrick_container");
-    btnCheckout.classList.remove("d-none"); // muestra el contenedor
-    await renderWalletBrick(preferenceId); // renderiza el Brick
-
-    bsCartListCollapse.hide();
-    bsCheckoutFormCollapse.show();
-  } catch (err) {
-    console.error(err);
-    alert("Error al generar el pago. Intenta nuevamente.");
-  }
-});
 
 const btnValidateData = document.getElementById("btn-validate-data");
 
@@ -395,3 +328,4 @@ function updatePaymentButton() {
     btnBackOnline.classList.remove("d-none");
   }
 }
+
