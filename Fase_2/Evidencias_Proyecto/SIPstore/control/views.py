@@ -15,9 +15,8 @@ from django.utils import timezone
 from django.db.models import Sum, F
 from collections import Counter 
 
-
-
 # !Views principales
+
 def control(request):
     ahora = timezone.localtime(timezone.now())
     inicio_dia = ahora.replace(hour=0, minute=0, second=0, microsecond=0)
@@ -225,9 +224,11 @@ def pedido_detail(request, pk):
     }
     
     return render(request, 'pedido_detail.html', context)
+
 # !======================
 # !CREAR 
 # !======================
+
 def crear_categoria(request):
     if request.method == 'POST':
         form = CategoriaForm(request.POST)
@@ -323,6 +324,7 @@ def crear_kit(request):
 # !======================
 # !SUBIR IMAGENES 
 # !======================
+
 def subir_imagenes_panel(request, panel_id):
     panel = get_object_or_404(PanelSIP, id=panel_id)
 
@@ -380,9 +382,11 @@ def subir_imagenes_kit(request, kit_id):
         return redirect('/stock/?tab=kits')
 
     return render(request, 'tabla_kits.html', {"kit": kit})
+
 # !======================
 # !ELIMINAR IMAGENES
 # !======================
+
 def eliminar_imagen_kit(request, imagen_id):
     imagen = get_object_or_404(imagenProducto, id=imagen_id)
     kit = imagen.producto  # Instancia real: PanelSIP o KitConstruccion
@@ -402,6 +406,7 @@ def eliminar_imagen(request, imagen_id):
 # !======================
 # !EDITAR
 # !======================
+
 def editar_panel(request, pk):
     panel = get_object_or_404(PanelSIP, pk=pk)
 
@@ -486,6 +491,7 @@ def editar_categoria(request, pk):
 # !======================
 # !ELIMINAR
 # !======================
+
 # Eliminar categoría
 def eliminar_categoria(request, pk):
     categoria = get_object_or_404(Categoria, pk=pk)
