@@ -247,22 +247,3 @@ def pago_pendiente(request, pedido_id):
     pedido = get_object_or_404(Pedido, id=pedido_id)
     return render(request, 'pago_pendiente.html', {'pedido': pedido})
 
-def crear_pedido(request):
-    if request.method == "POST":
-        # Obtener datos del formulario
-        local_id = request.POST.get('localSelect')
-        local = Local.objects.get(id=local_id) if local_id else None
-
-        pedido = Pedido.objects.create(
-            local=local,
-            payment_method=request.POST.get('paymentMethod'),
-            client_name=request.POST.get('clientName'),
-            client_rut=request.POST.get('clientRut'),
-            client_email=request.POST.get('clientEmail'),
-            client_phone=request.POST.get('clientPhone'),
-            client_address=request.POST.get('clientAddress'),
-            estado_pago="pendiente"  
-        )
-        return JsonResponse({'success': True, 'pedido_id': pedido.id})
-    
-    return JsonResponse({'success': False})
