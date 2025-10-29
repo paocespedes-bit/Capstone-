@@ -259,10 +259,10 @@ btnContinueCart.addEventListener("click", function () {
     btnContinueCart.classList.add("d-none");
 
     if (paymentOnline.checked) {
-        btnValidateData.classList.remove("d-none"); // 🔹 solo si es online
+        btnValidateData.classList.remove("d-none"); 
     } else {
-        btnValidateData.classList.add("d-none"); // 🔹 ocultar en tienda
-        btnFinishOrder.classList.remove("d-none"); // mostrar botón terminar si es en tienda
+        btnValidateData.classList.add("d-none"); 
+        btnFinishOrder.classList.remove("d-none"); 
         btnBackStore.classList.remove("d-none");
     }
 });
@@ -322,9 +322,9 @@ function updatePaymentButton() {
   if (isStorePayment) {
     btnFinishOrder.classList.remove("d-none");
     btnBackStore.classList.remove("d-none");
-    btnValidateData.classList.add("d-none"); // 🔹 ocultar botón validar si es en tienda
+    btnValidateData.classList.add("d-none");
   } else if (isOnlinePayment) {
-    btnValidateData.classList.remove("d-none"); // 🔹 mostrar botón validar solo si es online
+    btnValidateData.classList.remove("d-none");
     btnBackOnline.classList.remove("d-none");
   }
 }
