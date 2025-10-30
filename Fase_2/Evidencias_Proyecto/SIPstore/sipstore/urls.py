@@ -10,7 +10,8 @@ urlpatterns = [
     path('', include('core.urls')),
     path('', include('store.urls')),
     path('', include('control.urls')),
-    path('', include('cart.urls'))
+    path('', include('cart.urls')),
+    path('',include('quote.urls'))
 ]
 
 if settings.DEBUG:
