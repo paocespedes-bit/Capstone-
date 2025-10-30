@@ -551,6 +551,8 @@ def cambiar_estado_pedido(request, pedido_id):
                     <li><strong>Monto total:</strong> ${(pedido.monto_total)}</li>
                     <li><strong>Método de pago:</strong> {pedido.get_metodo_pago_display()}</li>
                     <li><strong>Nuevo estado:</strong> {pedido.get_estado_display()}</li>
+                    <li><strong>Centro de retiro:</strong> {pedido.nombre_local }</li>
+                    <li><strong>Fecha de retiro:</strong> {pedido.fecha_retiro }</li>
                 </ul>
                 <p>Gracias por confiar en nosotros 💚</p>
             """
