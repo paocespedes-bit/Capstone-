@@ -189,66 +189,139 @@ def crear_pedido(request):
 def crear_preferencia(request):
     carrito = Carrito(request)
     if not carrito.carrito:
-            messages.error(request, "Tu carrito esta vacio")
-            return redirect('carrito')
-    try:
-        MERCADOPAGO_ACCESS_TOKEN = settings.MERCADOPAGO_ACCESS_TOKEN 
-        sdk = mercadopago.SDK(MERCADOPAGO_ACCESS_TOKEN)
-        items = []
-        total = 0
-        
-        host = request.get_host()
-        scheme = 'https'
-        
-        success_path = reverse('pago_exitoso')
-        failure_path = reverse('pago_fallido')
-        pending_path = reverse('pago_pendiente')
-        
-        success_url = f"{scheme}://{host}{success_path}"
-        failure_url = f"{scheme}://{host}{failure_path}"
-        pending_url = f"{scheme}://{host}{pending_path}"
+        messages.error(request, "Tu carrito está vacío")
+        return redirect('carrito')
 
-        print(f"DEBUG MP Success URL: {success_url}")
-        
+    try:
+        pedido_list = []
+        detalle_list = []
+
+        local_id = request.POST.get('localSelect')
+        metodo_pago = request.POST.get('paymentMethod')
+        comprador = request.POST.get('clientName')
+        rut_cli = request.POST.get('clientRut')
+        correo_cli = request.POST.get('clientEmail')
+        celular_cli = request.POST.get('clientPhone')
+        ubicacion_cli = request.POST.get('clientAddress')
+        local = Local.objects.get(id=local_id) if local_id else None
+
+        pedido_list.append({
+            "local_id": local.id if local else None,
+            "nombre_local": local.nombre if local else None,
+            "comprador": comprador,
+            "rut_cli": rut_cli,
+            "correo_cli": correo_cli,
+            "celular_cli": celular_cli,
+            "ubicacion_cli": ubicacion_cli,
+            "fecha_pedido": str(timezone.now()),
+            "estado": "pendiente",
+            "metodo_pago": "pago_web" if metodo_pago == "online" else "pago_tienda",
+            "monto_total": 0,
+        })
+
+        total = 0
         for item in carrito.carrito.values():
-            items.append({
+            detalle_list.append({
+                "content_type_id": item["content_type_id"],
+                "producto_id": item["producto_id"],
+                "cantidad": item["cantidad"],
+            })
+            total += float(item["acumulado"])
+
+        pedido_list[0]["monto_total"] = total
+
+        request.session["pedido_list"] = pedido_list
+        request.session["detalle_list"] = detalle_list
+
+        sdk = mercadopago.SDK(settings.MERCADOPAGO_ACCESS_TOKEN)
+        items = [
+            {
                 "title": item["nombre"],
                 "quantity": int(item["cantidad"]),
                 "currency_id": "CLP",
                 "unit_price": float(item["precio_unitario"]),
-                
-            })
-            total += float(item["acumulado"])
-        
-        payer_data = {
-        # Es crucial para pasar las validaciones del formulario de pago (422)
-        "email": "" 
-        }
-            
+            }
+            for item in carrito.carrito.values()
+        ]
+
+        host = request.get_host()
+        scheme = "https"
+
+        success_url = f"{scheme}://{host}{reverse('pago_exitoso')}"
+        failure_url = f"{scheme}://{host}{reverse('pago_fallido')}"
+        pending_url = f"{scheme}://{host}{reverse('pago_pendiente')}"
+
         preference_data = {
             "items": items,
             "back_urls": {
-            "success": success_url,
-            "failure": failure_url,
-            "pending": pending_url
+                "success": success_url,
+                "failure": failure_url,
+                "pending": pending_url,
             },
             "auto_return": "approved",
-            "payer_data":payer_data,
+            "notification_url": f"{scheme}://{host}{reverse('webhook_pago')}",
         }
-        
+
         preference_response = sdk.preference().create(preference_data)
         preference = preference_response["response"]
-        
+
         return JsonResponse(preference)
-    
+
     except Exception as e:
         return JsonResponse({"error": str(e)}, status=500)
-    
 
 
-def pago_exitoso(request, pedido_id):
-    pedido = get_object_or_404(Pedido, id=pedido_id)
-    return render(request, "pago_exitoso.html", {'pedido': pedido})
+def pago_exitoso(request):
+    payment_id = request.GET.get("payment_id")
+
+    if payment_id:
+        sdk = mercadopago.SDK(settings.MERCADOPAGO_ACCESS_TOKEN)
+        payment_info = sdk.payment().get(payment_id)["response"]
+
+        if payment_info["status"] == "approved":
+            pedido_list = request.session.get("pedido_list", [])
+            detalle_list = request.session.get("detalle_list", [])
+
+            if pedido_list and detalle_list:
+                pedido_data = pedido_list[0]
+                local = (
+                    Local.objects.get(id=pedido_data["local_id"])
+                    if pedido_data.get("local_id")
+                    else None
+                )
+
+                pedido = Pedido.objects.create(
+                    local=local,
+                    nombre_local=pedido_data["nombre_local"],
+                    comprador=pedido_data["comprador"],
+                    rut_cli=pedido_data["rut_cli"],
+                    correo_cli=pedido_data["correo_cli"],
+                    celular_cli=pedido_data["celular_cli"],
+                    ubicacion_cli=pedido_data["ubicacion_cli"],
+                    fecha_pedido=timezone.now(),
+                    estado="pagado",
+                    metodo_pago="pago_web",
+                    monto_total=pedido_data["monto_total"],
+                )
+
+                for item in detalle_list:
+                    content_type = ContentType.objects.get_for_id(item["content_type_id"])
+                    producto_obj = content_type.get_object_for_this_type(id=item["producto_id"])
+                    DetallePedido.objects.create(
+                        pedido=pedido,
+                        content_type=content_type,
+                        object_id=producto_obj.id,
+                        cantidad=item["cantidad"],
+                    )
+
+                # Limpia carrito y sesión
+                Carrito(request).limpiar()
+                request.session.pop("pedido_list", None)
+                request.session.pop("detalle_list", None)
+
+                return render(request, "pago_exitoso.html", {"pedido": pedido, "payment": payment_info})
+
+    return render(request, "pago_fallido.html")
 
 def pago_fallido(request):
     return render(request, "pago_fallido.html")
