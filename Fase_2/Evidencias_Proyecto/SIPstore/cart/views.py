@@ -49,7 +49,7 @@ def generar_respuesta(carrito):
     }
 
 
-@csrf_exempt
+
 @require_POST
 def agregar_producto(request):
     try:
@@ -80,7 +80,6 @@ def agregar_producto(request):
     except Exception as e:
         return JsonResponse({"error": str(e)}, status=500)
 
-@csrf_exempt
 @require_POST
 def modificar_carrito(request, accion):
     try:
@@ -118,7 +117,6 @@ def modificar_carrito(request, accion):
     except Exception as e:
         return JsonResponse({"error": str(e)}, status=500)
     
-
 
 def crear_pedido(request):
     if request.method == 'POST':
@@ -176,13 +174,13 @@ def crear_pedido(request):
                 return JsonResponse({"ok": True, "pedido_id": pedido.id})
 
             messages.success(request, f"Pedido #{pedido.id} creado exitosamente.")
-            return redirect('pedido_exitoso')
+            return redirect('pago_exitoso')
             
         except Exception as e:
             messages.error(request, f"Ocurrió un error al crear el pedido: {str(e)}")
             return redirect('carrito')
 
-    return redirect('ver_carrito')
+    return redirect('carrito')
 
 
 
@@ -248,8 +246,9 @@ def crear_preferencia(request):
     
 
 
-def pago_exitoso(request):
-    return render(request, "pago_exitoso.html")
+def pago_exitoso(request, pedido_id):
+    pedido = get_object_or_404(Pedido, id=pedido_id)
+    return render(request, "pago_exitoso.html", {'pedido': pedido})
 
 def pago_fallido(request):
     return render(request, "pago_fallido.html")

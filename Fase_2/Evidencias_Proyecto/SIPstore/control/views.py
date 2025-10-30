@@ -15,7 +15,7 @@ from django.http import FileResponse, Http404
 from .utils.boleta import generar_boleta_pdf
 from decimal import Decimal, InvalidOperation
 from control.utils.email_utils import enviar_correo_estado
-
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 
 # !Views principales
@@ -133,9 +133,9 @@ def safe_decimal(value):
         return None
 
 def stock(request):
-    paneles = PanelSIP.objects.all()
-    kits = KitConstruccion.objects.all()
-    categorias = Categoria.objects.all()
+    paneles = PanelSIP.objects.all().order_by('-id')
+    kits = KitConstruccion.objects.all().order_by('-id')
+    categorias = Categoria.objects.all().order_by('-id')
 
     # Parámetros de orden y pestaña
     ordenar = request.GET.get("ordenar")
@@ -180,11 +180,24 @@ def stock(request):
     espesor_opciones = PanelSIP.objects.values_list("espesor", flat=True).distinct()
     largo_opciones = PanelSIP.objects.values_list("largo", flat=True).distinct()
     ancho_opciones = PanelSIP.objects.values_list("ancho", flat=True).distinct()
-
+    
+    
+    items_por_pagina = 20 
+    paginator_panel = Paginator(paneles, items_por_pagina)
+    paginator_kit = Paginator(kits,items_por_pagina)
+    paginator_cat = Paginator(categorias, items_por_pagina) 
+    
+    page = request.GET.get('page')
+    
+    page_panel = paginator_panel.get_page(page)
+    page_kit = paginator_kit.get_page(page)
+    page_cat = paginator_cat.get_page(page)
+    
+    
     context = {
-        "paneles": paneles,
-        "kits": kits,
-        "categorias": categorias,
+        "paneles": page_panel,
+        "kits": page_kit,
+        "categorias": page_cat,
         "panel_form": PanelSIPForm(),
         "CategoriaForm": CategoriaForm(),
         "KitConstruccionForm": KitConstruccionForm(),
@@ -205,6 +218,12 @@ def pedidos(request):
     pedidos = Pedido.objects.all().order_by('-fecha_pedido')
     ordenar = request.GET.get("ordenar")
     direccion = request.GET.get("direccion")
+    
+    paginator = Paginator(pedidos, 20)
+    
+    page_number = request.GET.get('page')
+    
+    page_obj = paginator.get_page(page_number)
 
     if ordenar:
         if direccion == "desc":
@@ -213,7 +232,7 @@ def pedidos(request):
             pedidos = pedidos.order_by(ordenar)
 
     context = {
-        'pedidos' : pedidos   
+        'pedidos' : page_obj   
     }
     return render(request,'pedidos.html',context)
 
@@ -516,9 +535,6 @@ def save(self,*args, **kwargs):
 # !ESTADO DE PEDIDO----DISEÑO
 # !======================
 
-
-
-
 def cambiar_estado_pedido(request, pedido_id):
     pedido = get_object_or_404(Pedido, id=pedido_id)
     
@@ -551,6 +567,8 @@ def cambiar_estado_pedido(request, pedido_id):
                     <li><strong>Monto total:</strong> ${(pedido.monto_total)}</li>
                     <li><strong>Método de pago:</strong> {pedido.get_metodo_pago_display()}</li>
                     <li><strong>Nuevo estado:</strong> {pedido.get_estado_display()}</li>
+                    <li><strong>Centro de retiro:</strong> {pedido.nombre_local }</li>
+                    <li><strong>Fecha de retiro:</strong> {pedido.fecha_retiro }</li>
                 </ul>
                 <p>Gracias por confiar en nosotros 💚</p>
             """
