@@ -183,3 +183,77 @@ def crear_pedido(request):
     return redirect('carrito')
 
 
+
+# !Mercado PAGO:
+@csrf_exempt
+def crear_preferencia(request):
+    carrito = Carrito(request)
+    if not carrito.carrito:
+            messages.error(request, "Tu carrito esta vacio")
+            return redirect('carrito')
+    try:
+        MERCADOPAGO_ACCESS_TOKEN = settings.MERCADOPAGO_ACCESS_TOKEN 
+        sdk = mercadopago.SDK(MERCADOPAGO_ACCESS_TOKEN)
+        items = []
+        total = 0
+        
+        host = request.get_host()
+        scheme = 'https'
+        
+        success_path = reverse('pago_exitoso')
+        failure_path = reverse('pago_fallido')
+        pending_path = reverse('pago_pendiente')
+        
+        success_url = f"{scheme}://{host}{success_path}"
+        failure_url = f"{scheme}://{host}{failure_path}"
+        pending_url = f"{scheme}://{host}{pending_path}"
+
+        print(f"DEBUG MP Success URL: {success_url}")
+        
+        for item in carrito.carrito.values():
+            items.append({
+                "title": item["nombre"],
+                "quantity": int(item["cantidad"]),
+                "currency_id": "CLP",
+                "unit_price": float(item["precio_unitario"]),
+                
+            })
+            total += float(item["acumulado"])
+        
+        payer_data = {
+        # Es crucial para pasar las validaciones del formulario de pago (422)
+        "email": "" 
+        }
+            
+        preference_data = {
+            "items": items,
+            "back_urls": {
+            "success": success_url,
+            "failure": failure_url,
+            "pending": pending_url
+            },
+            "auto_return": "approved",
+            "payer_data":payer_data,
+        }
+        
+        preference_response = sdk.preference().create(preference_data)
+        preference = preference_response["response"]
+        
+        return JsonResponse(preference)
+    
+    except Exception as e:
+        return JsonResponse({"error": str(e)}, status=500)
+    
+
+
+def pago_exitoso(request, pedido_id):
+    pedido = get_object_or_404(Pedido, id=pedido_id)
+    return render(request, "pago_exitoso.html", {'pedido': pedido})
+
+def pago_fallido(request):
+    return render(request, "pago_fallido.html")
+
+def pago_pendiente(request, pedido_id):
+    pedido = get_object_or_404(Pedido, id=pedido_id)
+    return render(request, 'pago_pendiente.html', {'pedido': pedido})
+
