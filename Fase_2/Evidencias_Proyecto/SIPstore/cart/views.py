@@ -12,17 +12,23 @@ from django.urls import reverse, NoReverseMatch
 from django.conf import settings
 from django.views.decorators.csrf import csrf_exempt
 import mercadopago
+from datetime import timedelta
+
 
 
 def carrito(request):
     carrito = Carrito(request)
     productos_completos = carrito.obtener_productos_completos()
     locales = Local.objects.all()
+    fecha_pedido=timezone.now()
+    fecha_retiro = fecha_pedido + timedelta(days=5)
     
     context = {
         "public_key": settings.MERCADOPAGO_PUBLIC_KEY,
         'productos_carrito': productos_completos,
         'locales': locales,
+        'fecha_pedido': fecha_pedido.strftime("%d/%m/%Y"),
+        'fecha_retiro': fecha_retiro.strftime("%d/%m/%Y"),
     }
     return render(request, "carrito.html", context)
 
@@ -49,7 +55,7 @@ def generar_respuesta(carrito):
     }
 
 
-@csrf_exempt
+
 @require_POST
 def agregar_producto(request):
     try:
@@ -80,7 +86,6 @@ def agregar_producto(request):
     except Exception as e:
         return JsonResponse({"error": str(e)}, status=500)
 
-@csrf_exempt
 @require_POST
 def modificar_carrito(request, accion):
     try:
@@ -119,7 +124,6 @@ def modificar_carrito(request, accion):
         return JsonResponse({"error": str(e)}, status=500)
     
 
-
 def crear_pedido(request):
     if request.method == 'POST':
         carrito = Carrito(request)
@@ -148,11 +152,12 @@ def crear_pedido(request):
                 celular_cli=celular_cli,
                 ubicacion_cli=ubicacion_cli,
                 fecha_pedido=timezone.now(),
+                fecha_retiro=timezone.now() + timedelta(days=5),
                 estado='pendiente',
                 metodo_pago='pago_web' if metodo_pago == 'online' else 'pago_tienda',
                 monto_total=0
             )
-
+            
             monto_total = 0
 
             for item in carrito.carrito.values():
@@ -176,13 +181,14 @@ def crear_pedido(request):
                 return JsonResponse({"ok": True, "pedido_id": pedido.id})
 
             messages.success(request, f"Pedido #{pedido.id} creado exitosamente.")
-            return redirect('pedido_exitoso')
+            return redirect('pago_exitoso')
             
         except Exception as e:
             messages.error(request, f"Ocurrió un error al crear el pedido: {str(e)}")
             return redirect('carrito')
+        
 
-    return redirect('ver_carrito')
+    return redirect('carrito')
 
 
 
@@ -223,7 +229,7 @@ def crear_preferencia(request):
             total += float(item["acumulado"])
         
         payer_data = {
-        # Es crucial para pasar las validaciones del formulario de pago (422)
+        
         "email": "" 
         }
             
@@ -248,8 +254,9 @@ def crear_preferencia(request):
     
 
 
-def pago_exitoso(request):
-    return render(request, "pago_exitoso.html")
+def pago_exitoso(request, pedido_id):
+    pedido = get_object_or_404(Pedido, id=pedido_id)
+    return render(request, "pago_exitoso.html", {'pedido': pedido})
 
 def pago_fallido(request):
     return render(request, "pago_fallido.html")

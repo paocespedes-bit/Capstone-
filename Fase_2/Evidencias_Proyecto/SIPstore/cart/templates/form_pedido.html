@@ -81,6 +81,22 @@
                         </div>
                     </div>
                 </fieldset>
+                <fieldset class="p-3 border rounded mt-4">
+    <legend class="float-none w-auto px-2 fs-6 text-primary">Información de Retiro</legend>
+
+    <div class="row g-3">
+        <div class="col-md-6">
+            <label class="form-label">Fecha de Compra</label>
+            <input type="text" class="form-control" value="{{ fecha_pedido }}" readonly>
+        </div>
+
+        <div class="col-md-6">
+            <label class="form-label">Fecha Estimada de Retiro</label>
+            <input type="text" class="form-control text-success fw-bold" value="{{ fecha_retiro }}" readonly>
+            <div class="form-text">Tu pedido estará disponible para retiro en 5 días.</div>
+        </div>
+    </div>
+</fieldset>
             </form>
         </div>
     </div>
