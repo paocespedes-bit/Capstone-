@@ -118,129 +118,125 @@ def modificar_carrito(request, accion):
         return JsonResponse({"error": str(e)}, status=500)
     
 
+@require_POST
 def crear_pedido(request):
-    if request.method == 'POST':
-        carrito = Carrito(request)
+    carrito = Carrito(request)
 
-        if not carrito.carrito:
-            messages.error(request, "Tu carrito está vacío.")
-            return redirect('carrito')
+    if not carrito.carrito:
+        messages.error(request, "Tu carrito está vacío.")
+        return redirect('carrito')
 
-        try:
-            local_id = request.POST.get('localSelect')
-            metodo_pago = request.POST.get('paymentMethod')
-            comprador = request.POST.get('clientName')
-            rut_cli = request.POST.get('clientRut')
-            correo_cli = request.POST.get('clientEmail')
-            celular_cli = request.POST.get('clientPhone')
-            ubicacion_cli = request.POST.get('clientAddress')
+    try:
+        local_id = request.POST.get('localSelect')
+        metodo_pago = request.POST.get('paymentMethod')
+        comprador = request.POST.get('clientName')
+        rut_cli = request.POST.get('clientRut')
+        correo_cli = request.POST.get('clientEmail')
+        celular_cli = request.POST.get('clientPhone')
+        ubicacion_cli = request.POST.get('clientAddress')
 
-            local = Local.objects.get(id=local_id) if local_id else None
+        local = Local.objects.get(id=local_id) if local_id else None
 
-            pedido = Pedido.objects.create(
-                local=local,
-                nombre_local=local.nombre if local else None,
-                comprador=comprador,
-                rut_cli=rut_cli,
-                correo_cli=correo_cli,
-                celular_cli=celular_cli,
-                ubicacion_cli=ubicacion_cli,
-                fecha_pedido=timezone.now(),
-                estado='pendiente',
-                metodo_pago='pago_web' if metodo_pago == 'online' else 'pago_tienda',
-                monto_total=0
+        # ✅ Crear pedido base
+        pedido = Pedido.objects.create(
+            local=local,
+            nombre_local=local.nombre if local else None,
+            comprador=comprador,
+            rut_cli=rut_cli,
+            correo_cli=correo_cli,
+            celular_cli=celular_cli,
+            ubicacion_cli=ubicacion_cli,
+            fecha_pedido=timezone.now(),
+            estado='pendiente',
+            metodo_pago='pago_web' if metodo_pago == 'online' else 'pago_tienda',
+            monto_total=0
+        )
+
+        monto_total = 0
+
+        # ✅ Crear los detalles del pedido
+        for item in carrito.carrito.values():
+            content_type = ContentType.objects.get_for_id(item['content_type_id'])
+            producto_obj = content_type.get_object_for_this_type(id=item['producto_id'])
+            cantidad = item['cantidad']
+
+            detalle = DetallePedido.objects.create(
+                pedido=pedido,
+                content_type=content_type,
+                object_id=producto_obj.id,
+                cantidad=cantidad
             )
+            monto_total += detalle.subtotal
 
-            monto_total = 0
+        pedido.monto_total = monto_total
+        pedido.save()
 
-            for item in carrito.carrito.values():
-                content_type = ContentType.objects.get_for_id(item['content_type_id'])
-                producto_obj = content_type.get_object_for_this_type(id=item['producto_id'])
-                cantidad = item['cantidad']
-
-                detalle = DetallePedido.objects.create(
-                    pedido=pedido,
-                    content_type=content_type,
-                    object_id=producto_obj.id,
-                    cantidad=cantidad
-                )
-                monto_total += detalle.subtotal
-
-            pedido.monto_total = monto_total
-            pedido.save()
+        # Si el pago es en tienda, redirigir directamente
+        if metodo_pago == 'store':
             carrito.limpiar()
+            messages.success(request, f"Pedido #{pedido.id} creado exitosamente. Paga en tienda.")
+            return redirect('pago_exitoso', pedido_id=pedido.id)
 
-            if request.headers.get('x-requested-with') == 'XMLHttpRequest':
-                return JsonResponse({"ok": True, "pedido_id": pedido.id})
+        # Si el pago es online, devolver el ID del pedido para crear la preferencia
+        return JsonResponse({"ok": True, "pedido_id": pedido.id})
 
-            messages.success(request, f"Pedido #{pedido.id} creado exitosamente.")
-            return redirect('pago_exitoso')
-            
-        except Exception as e:
-            messages.error(request, f"Ocurrió un error al crear el pedido: {str(e)}")
-            return redirect('carrito')
-
-    return redirect('carrito')
+    except Exception as e:
+        messages.error(request, f"Ocurrió un error al crear el pedido: {str(e)}")
+        return redirect('carrito')
 
 
 
 # !Mercado PAGO:
 @csrf_exempt
 def crear_preferencia(request):
-    carrito = Carrito(request)
-    if not carrito.carrito:
-            messages.error(request, "Tu carrito esta vacio")
-            return redirect('carrito')
+    """
+    Crea la preferencia de Mercado Pago en base a un pedido ya creado.
+    """
     try:
-        MERCADOPAGO_ACCESS_TOKEN = settings.MERCADOPAGO_ACCESS_TOKEN 
-        sdk = mercadopago.SDK(MERCADOPAGO_ACCESS_TOKEN)
-        items = []
-        total = 0
-        
-        host = request.get_host()
-        scheme = 'https'
-        
-        success_path = reverse('pago_exitoso')
-        failure_path = reverse('pago_fallido')
-        pending_path = reverse('pago_pendiente')
-        
-        success_url = f"{scheme}://{host}{success_path}"
-        failure_url = f"{scheme}://{host}{failure_path}"
-        pending_url = f"{scheme}://{host}{pending_path}"
+        data = json.loads(request.body)
+        pedido_id = data.get("pedido_id")
 
-        print(f"DEBUG MP Success URL: {success_url}")
-        
-        for item in carrito.carrito.values():
+        pedido = get_object_or_404(Pedido, id=pedido_id)
+        carrito = Carrito(request)
+
+        MERCADOPAGO_ACCESS_TOKEN = settings.MERCADOPAGO_ACCESS_TOKEN
+        sdk = mercadopago.SDK(MERCADOPAGO_ACCESS_TOKEN)
+
+        items = []
+        for detalle in pedido.detallepedido_set.all():
+            producto = detalle.get_producto()
             items.append({
-                "title": item["nombre"],
-                "quantity": int(item["cantidad"]),
+                "title": producto.nombre,
+                "quantity": int(detalle.cantidad),
                 "currency_id": "CLP",
-                "unit_price": float(item["precio_unitario"]),
-                
+                "unit_price": float(producto.precio_actual),
             })
-            total += float(item["acumulado"])
-        
-        payer_data = {
-        # Es crucial para pasar las validaciones del formulario de pago (422)
-        "email": "" 
-        }
-            
+
+        # URLs de retorno
+        host = request.get_host()
+        scheme = 'https' if request.is_secure() else 'http'
+
+        success_url = f"{scheme}://{host}{reverse('pago_exitoso', args=[pedido.id])}"
+        failure_url = f"{scheme}://{host}{reverse('pago_fallido')}"
+        pending_url = f"{scheme}://{host}{reverse('pago_pendiente', args=[pedido.id])}"
+
         preference_data = {
             "items": items,
             "back_urls": {
-            "success": success_url,
-            "failure": failure_url,
-            "pending": pending_url
+                "success": success_url,
+                "failure": failure_url,
+                "pending": pending_url
             },
             "auto_return": "approved",
-            "payer_data":payer_data,
+            "payer": {"email": pedido.correo_cli or "cliente@example.com"},
+            "external_reference": str(pedido.id)
         }
-        
+
         preference_response = sdk.preference().create(preference_data)
         preference = preference_response["response"]
-        
+
         return JsonResponse(preference)
-    
+
     except Exception as e:
         return JsonResponse({"error": str(e)}, status=500)
     

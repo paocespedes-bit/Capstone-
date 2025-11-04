@@ -20,6 +20,7 @@ DEBUG = os.getenv('DEBUG', 'False') == 'True'
 
 CSRF_TRUSTED_ORIGINS = [
     'https://*.ngrok-free.app', 
+    'https://*.ngrok-free.dev', 
 ]
 
 ALLOWED_HOSTS = ['127.0.0.1', 'localhost','.ngrok-free.app','*']
@@ -156,5 +157,3 @@ EMAIL_USE_TLS = True
 EMAIL_HOST_USER = "apikey"   
 EMAIL_HOST_PASSWORD = SENDGRID_API_KEY
 DEFAULT_FROM_EMAIL = "sipstore247@gmail.com"
-
-

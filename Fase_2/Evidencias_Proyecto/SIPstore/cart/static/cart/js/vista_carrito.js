@@ -277,41 +277,57 @@ btnValidateData.addEventListener("click", async function () {
         return;
     }
 
-    const rutInput = document.getElementById("clientRut");
-    if (rutInput && !/^(\d{1,3}(?:\.\d{3})*)\-\d|k|K$/.test(rutInput.value.trim())) {
-        mostrarMensaje("El RUT ingresado no es válido.", true);
-        return;
-    }
-
-    mostrarMensaje("Datos validados correctamente.", false);
-
+    mostrarMensaje("Validando datos del pedido...", false);
     btnValidateData.classList.add("d-none");
 
-    const paymentOnline = document.getElementById("paymentOnline");
-    const paymentStore = document.getElementById("paymentStore");
+    const formData = new FormData(pedidoForm);
 
-    if (paymentOnline.checked) {
-        try {
-            const response = await fetch("/crear_preferencia/");
-            const preference = await response.json();
+    try {
+        // ✅ 1. Crear el pedido en el backend
+        const responsePedido = await fetch("/crear-pedido/", {
+            method: "POST",
+            body: formData,
+        });
 
-            if (!preference.id) {
-                mostrarMensaje("No se pudo crear la preferencia de pago.", true);
-                return;
-            }
+        const dataPedido = await responsePedido.json();
 
-            await renderWalletBrick(preference.id);
-            document.getElementById("walletBrick_container").classList.remove("d-none");
-            btnBackOnline.classList.remove("d-none");
-        } catch (err) {
-            mostrarMensaje("Error al iniciar Mercado Pago.", true);
-            console.error(err);
+        if (!dataPedido.ok || !dataPedido.pedido_id) {
+            mostrarMensaje("Error al crear el pedido.", true);
+            console.error("Respuesta del pedido:", dataPedido);
+            return;
         }
-    } else if (paymentStore.checked) {
-        btnFinishOrder.classList.remove("d-none");
-        btnBackStore.classList.remove("d-none");
+
+        const pedidoId = dataPedido.pedido_id;
+        mostrarMensaje(`Pedido #${pedidoId} creado correctamente. Generando preferencia...`, false);
+
+        // ✅ 2. Crear la preferencia de Mercado Pago
+        const responsePref = await fetch("/crear_preferencia/", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ pedido_id: pedidoId }),
+        });
+
+        const preference = await responsePref.json();
+
+        if (!preference.id) {
+            mostrarMensaje("Error al generar preferencia de Mercado Pago.", true);
+            console.error("Respuesta de preferencia:", preference);
+            return;
+        }
+
+        // ✅ 3. Renderizar el botón de Mercado Pago
+        await renderWalletBrick(preference.id);
+        document.getElementById("walletBrick_container").classList.remove("d-none");
+        btnBackOnline.classList.remove("d-none");
+
+        mostrarMensaje("Botón de Mercado Pago listo para pagar.", false);
+
+    } catch (err) {
+        mostrarMensaje("Error al crear pedido o preferencia de pago.", true);
+        console.error(err);
     }
 });
+
 
 function updatePaymentButton() {
   const isStorePayment = paymentStore.checked;
