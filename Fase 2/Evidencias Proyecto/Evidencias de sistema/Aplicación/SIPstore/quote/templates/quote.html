@@ -14,7 +14,7 @@
 </div>
 <div class="quote">
     <div class="row">
-        <div class="col-sm-8">
+        <div class="col-sm-7">
             <ul class="nav nav-tabs" id="moduloTabs" role="tablist">
                 <li class="nav-item" role="presentation">
                     <button class="nav-link active" id="piso-tab" data-bs-toggle="tab" data-bs-target="#piso-content"
@@ -22,11 +22,13 @@
                 </li>
                 <li class="nav-item" role="presentation">
                     <button class="nav-link" id="muros-ext-tab" data-bs-toggle="tab" data-bs-target="#muros-ext-content"
-                        type="button" role="tab" aria-controls="muros-ext-content" aria-selected="false">Muros Exteriores</button>
+                        type="button" role="tab" aria-controls="muros-ext-content" aria-selected="false">Muros
+                        Exteriores</button>
                 </li>
                 <li class="nav-item" role="presentation">
                     <button class="nav-link" id="muros-int-tab" data-bs-toggle="tab" data-bs-target="#muros-int-content"
-                        type="button" role="tab" aria-controls="muros-int-content" aria-selected="false">Muros Interiores</button>
+                        type="button" role="tab" aria-controls="muros-int-content" aria-selected="false">Muros
+                        Interiores</button>
                 </li>
                 <li class="nav-item" role="presentation">
                     <button class="nav-link" id="cielo-tab" data-bs-toggle="tab" data-bs-target="#cielo-content"
@@ -39,10 +41,23 @@
                 </li>
             </ul>
 
-            <div class="tab-content border border-top-0 p-3 bg-white" id="moduloTabContent">{% include 'form_quote.html' %}</div>
+            <div class="tab-content border border-top-0 p-3 bg-white" id="moduloTabContent">{% include 'form_quote.html'%}</div>
+            <div class="footer-bar py-3 bg-dark-blue">
+                <div class="d-flex justify-content-center">
+
+                    <button class="btn btn-success btn-lg me-3" type="button">
+                        <i class="bi bi-calculator-fill"></i> Calcular
+                    </button>
+
+                    <button class="btn btn-danger btn-lg" type="button">
+                        <i class="bi bi-x-circle"></i> Limpiar cálculo
+                    </button>
+
+                </div>
+            </div>
         </div>
         <div class="col">
-
+            {% include 'calculo.html'%}
         </div>
     </div>
 </div>
