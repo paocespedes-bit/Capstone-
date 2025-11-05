@@ -1,0 +1,250 @@
+{% load static %}
+
+<div class="imagen-container mb-4">
+    <div class="modulo-indicador">Módulo: <span id="currentModuloName">Piso</span></div>
+    <img id="currentModuloImage" src="{% static 'quote/img/piso.png' %}" alt="Imagen del módulo">
+</div>
+
+<!-- !PISO  -->
+
+<div class="tab-pane fade show active" id="piso-content" role="tabpanel" aria-labelledby="piso-tab">
+    <div class="card p-3 mb-4 border-0 shadow-sm">
+        <h3 class="text-primary mb-3">Piso - 1</h3>
+
+        <form class="row align-items-end g-3 needs-validation" novalidate>
+
+            <div class="col-md-3 col-sm-6">
+                <label for="pisoLargo" class="form-label text-muted small mb-0">Largo (mts)</label>
+                <input type="number" step="0.1" class="form-control form-control-lg" id="pisoLargo" placeholder="0.00"
+                    required>
+            </div>
+
+            <div class="col-md-3 col-sm-6">
+                <label for="pisoAncho" class="form-label text-muted small mb-0">Ancho (mts)</label>
+                <input type="number" step="0.1" class="form-control form-control-lg" id="pisoAncho" placeholder="0.00"
+                    required>
+            </div>
+
+            <div class="col-md-4 col-sm-12">
+                <label for="pisoTipoPanel" class="form-label text-muted small mb-0">Tipo de panel (recomendado)</label>
+                <select class="form-select form-select-lg" id="pisoTipoPanel" required>
+                    <option selected disabled>Elige el tipo de panel</option>
+                    <option>Panel Sip 9cm - $119.574 IVA</option>
+                    <option>Panel Sip 12cm</option>
+                    <option>Panel Sip 15cm</option>
+                </select>
+            </div>
+
+            <div class="col-md-2 col-sm-12 d-flex justify-content-end">
+                <button class="btn btn-primary me-2" type="submit" title="Guardar">
+                    <i class="bi bi-check-lg"></i>
+                </button>
+                <button class="btn btn-danger" type="reset" title="Eliminar">
+                    <i class="bi bi-trash"></i>
+                </button>
+            </div>
+        </form>
+    </div>
+    <div class="d-grid gap-2 col-6 mx-auto mt-4">
+        <button class="btn btn-primary btn-lg" type="button">
+            <i class="bi bi-plus-circle"></i> Agregar Piso
+        </button>
+    </div>
+</div>
+
+<!-- !Muros externos  -->
+
+<div class="tab-pane fade" id="muros-ext-content" role="tabpanel" aria-labelledby="muros-ext-tab">
+    <div class="card p-3 mb-4 border-0 shadow-sm">
+        <h3 class="text-primary mb-3">Muro Exterior - 1</h3>
+
+        <form class="row align-items-end g-3 needs-validation" novalidate>
+
+            <div class="col-md-3 col-sm-6">
+                <label for="muroExtLargo" class="form-label text-muted small mb-0">Largo (mts)</label>
+                <input type="number" step="0.1" class="form-control form-control-lg" id="muroExtLargo" placeholder="0.00"
+                    required>
+            </div>
+
+            <div class="col-md-3 col-sm-6">
+                <label for="muroExtAncho" class="form-label text-muted small mb-0">Ancho (mts)</label>
+                <input type="number" step="0.1" class="form-control form-control-lg" id="muroExtAncho" placeholder="0.00"
+                    required>
+            </div>
+
+            <div class="col-md-4 col-sm-12">
+                <label for="muroExtTipoPanel" class="form-label text-muted small mb-0">Tipo de panel (recomendado)</label>
+                <select class="form-select form-select-lg" id="muroExtTipoPanel" required>
+                    <option selected disabled>Elige el tipo de panel</option>
+                    <option>Panel Sip 9cm - $119.574 IVA</option>
+                    <option>Panel Sip 12cm</option>
+                    <option>Panel Sip 15cm</option>
+                </select>
+            </div>
+
+            <div class="col-md-2 col-sm-12 d-flex justify-content-end">
+                <button class="btn btn-primary me-2" type="submit" title="Guardar">
+                    <i class="bi bi-check-lg"></i>
+                </button>
+                <button class="btn btn-danger" type="reset" title="Eliminar">
+                    <i class="bi bi-trash"></i>
+                </button>
+            </div>
+        </form>
+    </div>
+    <div class="d-grid gap-2 col-6 mx-auto mt-4">
+        <button class="btn btn-primary btn-lg" type="button">
+            <i class="bi bi-plus-circle"></i> Agregar Muero Exterior
+        </button>
+    </div>
+</div>
+
+<!-- !Muros Internos -->
+
+<div class="tab-pane fade" id="muros-int-content" role="tabpanel" aria-labelledby="muros-int-tab">
+    <div class="card p-3 mb-4 border-0 shadow-sm">
+        <h3 class="text-primary mb-3">Muro Interior - 1</h3>
+
+        <form class="row align-items-end g-3 needs-validation" novalidate>
+
+            <div class="col-md-3 col-sm-6">
+                <label for="muroIntLargo" class="form-label text-muted small mb-0">Largo (mts)</label>
+                <input type="number" step="0.1" class="form-control form-control-lg" id="muroIntLargo" placeholder="0.00"
+                    required>
+            </div>
+
+            <div class="col-md-3 col-sm-6">
+                <label for="muroIntAncho" class="form-label text-muted small mb-0">Ancho (mts)</label>
+                <input type="number" step="0.1" class="form-control form-control-lg" id="muroIntAncho" placeholder="0.00"
+                    required>
+            </div>
+
+            <div class="col-md-4 col-sm-12">
+                <label for="muroIntTipoPanel" class="form-label text-muted small mb-0">Tipo de panel (recomendado)</label>
+                <select class="form-select form-select-lg" id="muroIntTipoPanel" required>
+                    <option selected disabled>Elige el tipo de panel</option>
+                    <option>Panel Sip 9cm - $119.574 IVA</option>
+                    <option>Panel Sip 12cm</option>
+                    <option>Panel Sip 15cm</option>
+                </select>
+            </div>
+
+            <div class="col-md-2 col-sm-12 d-flex justify-content-end">
+                <button class="btn btn-primary me-2" type="submit" title="Guardar">
+                    <i class="bi bi-check-lg"></i>
+                </button>
+                <button class="btn btn-danger" type="reset" title="Eliminar">
+                    <i class="bi bi-trash"></i>
+                </button>
+            </div>
+        </form>
+    </div>
+    <div class="d-grid gap-2 col-6 mx-auto mt-4">
+        <button class="btn btn-primary btn-lg" type="button">
+            <i class="bi bi-plus-circle"></i> Agregar Muro Interior
+        </button>
+    </div>
+</div>
+
+<!-- !Cielo  -->
+
+<div class="tab-pane fade" id="cielo-content" role="tabpanel" aria-labelledby="cielo-tab">
+    <div class="card p-3 mb-4 border-0 shadow-sm">
+        <h3 class="text-primary mb-3">Cielo - 1</h3>
+
+        <form class="row align-items-end g-3 needs-validation" novalidate>
+
+            <div class="col-md-3 col-sm-6">
+                <label for="cieloLargo" class="form-label text-muted small mb-0">Largo (mts)</label>
+                <input type="number" step="0.1" class="form-control form-control-lg" id="cieloLargo" placeholder="0.00"
+                    required>
+            </div>
+
+            <div class="col-md-3 col-sm-6">
+                <label for="cieloAncho" class="form-label text-muted small mb-0">Ancho (mts)</label>
+                <input type="number" step="0.1" class="form-control form-control-lg" id="cieloAncho" placeholder="0.00"
+                    required>
+            </div>
+
+            <div class="col-md-4 col-sm-12">
+                <label for="cieloTipoPanel" class="form-label text-muted small mb-0">Tipo de panel (recomendado)</label>
+                <select class="form-select form-select-lg" id="cieloTipoPanel" required>
+                    <option selected disabled>Elige el tipo de panel</option>
+                    <option>Panel Sip 9cm - $119.574 IVA</option>
+                    <option>Panel Sip 12cm</option>
+                    <option>Panel Sip 15cm</option>
+                </select>
+            </div>
+
+            <div class="col-md-2 col-sm-12 d-flex justify-content-end">
+                <button class="btn btn-primary me-2" type="submit" title="Guardar">
+                    <i class="bi bi-check-lg"></i>
+                </button>
+                <button class="btn btn-danger" type="reset" title="Eliminar">
+                    <i class="bi bi-trash"></i>
+                </button>
+            </div>
+        </form>
+    </div>
+    <div class="d-grid gap-2 col-6 mx-auto mt-4">
+        <button class="btn btn-primary btn-lg" type="button">
+            <i class="bi bi-plus-circle"></i> Agregar Cielo
+        </button>
+    </div>
+</div>
+
+<!-- !Aberturas -->
+
+<div class="tab-pane fade" id="abertura-content" role="tabpanel" aria-labelledby="abertura-tab">
+    <p>Se recomienda descontar las aberturas de superficies mayores a 2 m²</p>
+    <div class="card p-3 mb-4 border-0 shadow-sm">
+        <h3 class="text-primary mb-3">Abertura - 1</h3>
+
+        <form class="row align-items-end g-3 needs-validation" novalidate>
+
+            <div class="col-md-2 col-sm-6">
+                <label for="aberturaLargo" class="form-label text-muted small mb-0">Largo (mts)</label>
+                <input type="number" step="0.1" class="form-control form-control-lg" id="aberturaLargo" placeholder="0.00"
+                    required>
+            </div>
+
+            <div class="col-md-2 col-sm-6">
+                <label for="aberturaAncho" class="form-label text-muted small mb-0">Ancho (mts)</label>
+                <input type="number" step="0.1" class="form-control form-control-lg" id="aberturaAncho" placeholder="0.00"
+                    required>
+            </div>
+
+            <div class="col-md-3 col-sm-6">
+                <label for="aberturaTipoMuro" class="form-label text-muted small mb-0">Tipo de Muro</label>
+                <select class="form-select form-select-lg" id="aberturaTipoMuro" required>
+                    <option selected disabled>Elige el tipo muro</option>
+                    <option>Muro Interior</option>
+                    <option>Muro Exterior</option>
+                </select>
+            </div>
+
+            <div class="col-md-3 col-sm-6">
+                <label for="aberturaMuro" class="form-label text-muted small mb-0">Muro</label>
+                <select class="form-select form-select-lg" id="aberturaMuro" required>
+                    <option selected disabled>Elige el Muro</option>
+                    <option>Muro #1</option>
+                    <option>Muro #2</option>
+                </select>
+            </div>
+
+            <div class="col-md-2 col-sm-12 d-flex justify-content-end">
+                <button class="btn btn-primary me-2" type="submit" title="Guardar">
+                    <i class="bi bi-check-lg"></i>
+                </button>
+                <button class="btn btn-danger" type="reset" title="Eliminar">
+                    <i class="bi bi-trash"></i>
+                </button>
+            </div>
+        </form>
+    </div>
+    <div class="d-grid gap-2 col-6 mx-auto mt-4">
+        <button class="btn btn-primary btn-lg" type="button">
+            <i class="bi bi-plus-circle"></i> Agregar Abertura
+        </button>
+    </div>
+</div>
