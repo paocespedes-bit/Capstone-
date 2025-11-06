@@ -1,0 +1,67 @@
+{% extends "base.html"%}
+{% load static %}
+
+{% block link %}
+<!-- !CSS  -->
+<link rel="stylesheet" href="{% static 'quote/css/quote.css' %}" />
+
+{% endblock %}
+
+
+{% block content %}
+<div class="titulo d-flex justify-content-between">
+    <h1> Cotizador de Estructura</h1>
+</div>
+<div class="quote">
+    <div class="row">
+        <div class="col-sm-7">
+            <ul class="nav nav-tabs" id="moduloTabs" role="tablist">
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link active" id="piso-tab" data-bs-toggle="tab" data-bs-target="#piso-content"
+                        type="button" role="tab" aria-controls="piso-content" aria-selected="true">Piso</button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="muros-ext-tab" data-bs-toggle="tab" data-bs-target="#muros-ext-content"
+                        type="button" role="tab" aria-controls="muros-ext-content" aria-selected="false">Muros Exteriores</button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="muros-int-tab" data-bs-toggle="tab" data-bs-target="#muros-int-content"
+                        type="button" role="tab" aria-controls="muros-int-content" aria-selected="false">Muros Interiores</button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="cielo-tab" data-bs-toggle="tab" data-bs-target="#cielo-content"
+                        type="button" role="tab" aria-controls="cielo-content" aria-selected="false">Cielo</button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="abertura-tab" data-bs-toggle="tab" data-bs-target="#abertura-content"
+                        type="button" role="tab" aria-controls="abertura-content"
+                        aria-selected="false">Aberturas</button>
+                </li>
+            </ul>
+
+            <div class="tab-content border border-top-0 p-3 bg-white" id="moduloTabContent">{% include 'form_quote.html'%}</div>
+            <div class="footer-bar py-3 bg-dark-blue">
+                <div class="d-flex justify-content-center">
+
+                    <button id="btn-calcular" class="btn btn-success btn-lg me-3" type="button">
+                        <i class="bi bi-calculator-fill"></i> Calcular
+                    </button>
+
+                    <button id="btn-limpiar" class="btn btn-danger btn-lg" type="button">
+                        <i class="bi bi-x-circle"></i> Limpiar cálculo
+                    </button>
+
+                </div>
+            </div>
+        </div>
+        <div class="col">
+            {% include 'calculo.html'%}
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block script %}
+<script src="{% static 'quote/js/vista_quote.js' %}"></script>
+<script src="{% static 'quote/js/calculo_quote.js' %}"></script>
+{% endblock %}
