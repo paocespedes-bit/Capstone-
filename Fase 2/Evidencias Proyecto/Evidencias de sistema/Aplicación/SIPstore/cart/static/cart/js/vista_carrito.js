@@ -15,6 +15,7 @@ const btnValidateData = document.getElementById("btn-validate-data");
 const bsCartListCollapse = new bootstrap.Collapse(cartListCollapse, { toggle: false });
 const bsCheckoutFormCollapse = new bootstrap.Collapse(checkoutFormCollapse, { toggle: false });
 
+
 function isCartEmpty() {
   const totalSummaryElement = document.getElementById("total_sumary");
   if (!totalSummaryElement) return true;
@@ -228,7 +229,6 @@ btnContinueCart.addEventListener("click", function () {
   }
 });
 
-
 function validarRut(rut) {
   rut = rut.replace(/\./g, "").replace(/-/g, "").trim().toUpperCase();
   if (!/^(\d{7,8}[0-9K])$/.test(rut)) return false;
@@ -253,22 +253,13 @@ function validarTelefono(telefono) {
   return regex.test(telefono.trim());
 }
 
-// --- VALIDACIÓN Y AUTOCOMPLETADO DE RUT ---
 document.addEventListener("DOMContentLoaded", function () {
   const rutInput = document.getElementById("clientRut");
   const phoneInput = document.getElementById("clientPhone");
   const emailInput = document.getElementById("clientEmail");
   const pedidoForm = document.getElementById("pedidoForm");
 
-  // FORMATEO AUTOMÁTICO DEL RUT
   rutInput.addEventListener("input", () => {
-    let rut = rutInput.value.replace(/\D/g, "");
-    if (rut.length > 1) {
-      rut = rut.slice(0, -1) + "-" + rut.slice(-1);
-    }
-    rut = rut.replace(/\B(?=(\d{3})+(?!\d))/g, ".");
-    rutInput.value = rut.toUpperCase();
-
     rutInput.setCustomValidity("");
     const rutVal = rutInput.value.trim();
     if (rutVal && !validarRut(rutVal)) {
