@@ -11,7 +11,7 @@ urlpatterns = [
     path('', include('store.urls')),
     path('', include('control.urls')),
     path('', include('cart.urls')),
-    path('',include('quote.urls'))
+    path('quote/',include('quote.urls'))
 ]
 
 if settings.DEBUG:
