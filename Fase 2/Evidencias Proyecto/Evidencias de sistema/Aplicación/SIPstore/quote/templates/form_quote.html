@@ -5,6 +5,8 @@
     <img id="currentModuloImage" src="{% static 'quote/img/piso.png' %}" alt="Imagen del módulo">
 </div>
 
+<!-- !Piso -->
+
 <div class="tab-pane fade show active" id="piso-content" role="tabpanel" aria-labelledby="piso-tab">
     <div id="piso-forms-container">
         <div id="piso-empty-state" class="alert alert-info text-center mt-3" role="alert">
@@ -24,28 +26,38 @@
         <form class="row align-items-end g-3 needs-validation" novalidate>
             <div class="col-md-3 col-sm-6">
                 <label for="pisoLargo-" class="form-label text-muted small mb-0">Largo (mts)</label>
-                <input type="number" step="0.1" class="form-control form-control-lg" name="largo" placeholder="0.00" required>
+                <input type="number" step="0.1" class="form-control form-control-lg" name="largo" placeholder="0.00"
+                    required>
             </div>
             <div class="col-md-3 col-sm-6">
                 <label for="pisoAncho-" class="form-label text-muted small mb-0">Ancho (mts)</label>
-                <input type="number" step="0.1" class="form-control form-control-lg" name="ancho" placeholder="0.00" required>
+                <input type="number" step="0.1" class="form-control form-control-lg" name="ancho" placeholder="0.00"
+                    required>
             </div>
             <div class="col-md-4 col-sm-12">
                 <label for="pisoTipoPanel-" class="form-label text-muted small mb-0">Tipo de panel (recomendado)</label>
                 <select class="form-select form-select-lg" name="tipoPanel" required>
                     <option selected disabled>Elige el tipo de panel</option>
-                    <option>Panel Sip 9cm - $119.574 IVA</option>
-                    <option>Panel Sip 12cm</option>
-                    <option>Panel Sip 15cm</option>
+                    {% for panel in piso %}
+                    <option value="{{ panel.id }}">
+                        {{ panel.nombre }} - ${{ panel.precio_actual|floatformat:0 }} IVA
+                    </option>
+                    {% empty %}
+                    <option disabled>No hay paneles disponibles</option>
+                    {% endfor %}
                 </select>
             </div>
             <div class="col-md-2 col-sm-12 d-flex justify-content-end">
-                <button class="btn btn-primary me-2 save-btn" type="submit" title="Guardar"><i class="bi bi-check-lg"></i></button>
-                <button class="btn btn-danger delete-btn" type="button" title="Eliminar"><i class="bi bi-trash"></i></button>
+                <button class="btn btn-primary me-2 save-btn" type="submit" title="Guardar"><i
+                        class="bi bi-check-lg"></i></button>
+                <button class="btn btn-danger delete-btn" type="button" title="Eliminar"><i
+                        class="bi bi-trash"></i></button>
             </div>
         </form>
     </div>
 </template>
+
+<!-- !Muro ext  -->
 
 <div class="tab-pane fade" id="muros-ext-content" role="tabpanel" aria-labelledby="muros-ext-tab">
     <div id="muros-ext-forms-container">
@@ -66,28 +78,40 @@
         <form class="row align-items-end g-3 needs-validation" novalidate>
             <div class="col-md-3 col-sm-6">
                 <label for="muroExtLargo-" class="form-label text-muted small mb-0">Largo (mts)</label>
-                <input type="number" step="0.1" class="form-control form-control-lg" name="largo" placeholder="0.00" required>
+                <input type="number" step="0.1" class="form-control form-control-lg" name="largo" placeholder="0.00"
+                    required>
             </div>
             <div class="col-md-3 col-sm-6">
                 <label for="muroExtAncho-" class="form-label text-muted small mb-0">Ancho (mts)</label>
-                <input type="number" step="0.1" class="form-control form-control-lg" name="ancho" placeholder="0.00" required>
+                <input type="number" step="0.1" class="form-control form-control-lg" name="ancho" placeholder="0.00"
+                    required>
             </div>
             <div class="col-md-4 col-sm-12">
-                <label for="muroExtTipoPanel-" class="form-label text-muted small mb-0">Tipo de panel (recomendado)</label>
+                <label for="muroExtTipoPanel-" class="form-label text-muted small mb-0">Tipo de panel
+                    (recomendado)</label>
                 <select class="form-select form-select-lg" name="tipoPanel" required>
                     <option selected disabled>Elige el tipo de panel</option>
-                    <option>Panel Sip 9cm - $119.574 IVA</option>
-                    <option>Panel Sip 12cm</option>
-                    <option>Panel Sip 15cm</option>
+                    {% for panel in muros_ext %}
+                    <option value="{{ panel.id }}">
+                        {{ panel.nombre }} - ${{ panel.precio_actual|floatformat:0 }} IVA
+                    </option>
+                    {% empty %}
+                    <option disabled>No hay paneles disponibles</option>
+                    {% endfor %}
                 </select>
+
             </div>
             <div class="col-md-2 col-sm-12 d-flex justify-content-end">
-                <button class="btn btn-primary me-2 save-btn" type="submit" title="Guardar"><i class="bi bi-check-lg"></i></button>
-                <button class="btn btn-danger delete-btn" type="button" title="Eliminar"><i class="bi bi-trash"></i></button>
+                <button class="btn btn-primary me-2 save-btn" type="submit" title="Guardar"><i
+                        class="bi bi-check-lg"></i></button>
+                <button class="btn btn-danger delete-btn" type="button" title="Eliminar"><i
+                        class="bi bi-trash"></i></button>
             </div>
         </form>
     </div>
 </template>
+
+<!-- !Muro INT -->
 
 <div class="tab-pane fade" id="muros-int-content" role="tabpanel" aria-labelledby="muros-int-tab">
     <div id="muros-int-forms-container">
@@ -108,28 +132,40 @@
         <form class="row align-items-end g-3 needs-validation" novalidate>
             <div class="col-md-3 col-sm-6">
                 <label for="muroIntLargo-" class="form-label text-muted small mb-0">Largo (mts)</label>
-                <input type="number" step="0.1" class="form-control form-control-lg" name="largo" placeholder="0.00" required>
+                <input type="number" step="0.1" class="form-control form-control-lg" name="largo" placeholder="0.00"
+                    required>
             </div>
             <div class="col-md-3 col-sm-6">
                 <label for="muroIntAncho-" class="form-label text-muted small mb-0">Ancho (mts)</label>
-                <input type="number" step="0.1" class="form-control form-control-lg" name="ancho" placeholder="0.00" required>
+                <input type="number" step="0.1" class="form-control form-control-lg" name="ancho" placeholder="0.00"
+                    required>
             </div>
             <div class="col-md-4 col-sm-12">
-                <label for="muroIntTipoPanel-" class="form-label text-muted small mb-0">Tipo de panel (recomendado)</label>
+                <label for="muroIntTipoPanel-" class="form-label text-muted small mb-0">Tipo de panel
+                    (recomendado)</label>
                 <select class="form-select form-select-lg" name="tipoPanel" required>
                     <option selected disabled>Elige el tipo de panel</option>
-                    <option>Panel Sip 9cm - $119.574 IVA</option>
-                    <option>Panel Sip 12cm</option>
-                    <option>Panel Sip 15cm</option>
+                    {% for panel in muros_int %}
+                    <option value="{{ panel.id }}">
+                        {{ panel.nombre }} - ${{ panel.precio_actual|floatformat:0 }} IVA
+                    </option>
+                    {% empty %}
+                    <option disabled>No hay paneles disponibles</option>
+                    {% endfor %}
                 </select>
+
             </div>
             <div class="col-md-2 col-sm-12 d-flex justify-content-end">
-                <button class="btn btn-primary me-2 save-btn" type="submit" title="Guardar"><i class="bi bi-check-lg"></i></button>
-                <button class="btn btn-danger delete-btn" type="button" title="Eliminar"><i class="bi bi-trash"></i></button>
+                <button class="btn btn-primary me-2 save-btn" type="submit" title="Guardar"><i
+                        class="bi bi-check-lg"></i></button>
+                <button class="btn btn-danger delete-btn" type="button" title="Eliminar"><i
+                        class="bi bi-trash"></i></button>
             </div>
         </form>
     </div>
 </template>
+
+<!-- !Cielo  -->
 
 <div class="tab-pane fade" id="cielo-content" role="tabpanel" aria-labelledby="cielo-tab">
     <div id="cielo-forms-container">
@@ -150,28 +186,40 @@
         <form class="row align-items-end g-3 needs-validation" novalidate>
             <div class="col-md-3 col-sm-6">
                 <label for="cieloLargo-" class="form-label text-muted small mb-0">Largo (mts)</label>
-                <input type="number" step="0.1" class="form-control form-control-lg" name="largo" placeholder="0.00" required>
+                <input type="number" step="0.1" class="form-control form-control-lg" name="largo" placeholder="0.00"
+                    required>
             </div>
             <div class="col-md-3 col-sm-6">
                 <label for="cieloAncho-" class="form-label text-muted small mb-0">Ancho (mts)</label>
-                <input type="number" step="0.1" class="form-control form-control-lg" name="ancho" placeholder="0.00" required>
+                <input type="number" step="0.1" class="form-control form-control-lg" name="ancho" placeholder="0.00"
+                    required>
             </div>
             <div class="col-md-4 col-sm-12">
-                <label for="cieloTipoPanel-" class="form-label text-muted small mb-0">Tipo de panel (recomendado)</label>
+                <label for="cieloTipoPanel-" class="form-label text-muted small mb-0">Tipo de panel
+                    (recomendado)</label>
                 <select class="form-select form-select-lg" name="tipoPanel" required>
                     <option selected disabled>Elige el tipo de panel</option>
-                    <option>Panel Sip 9cm - $119.574 IVA</option>
-                    <option>Panel Sip 12cm</option>
-                    <option>Panel Sip 15cm</option>
+                    {% for panel in cielo %}
+                    <option value="{{ panel.id }}">
+                        {{ panel.nombre }} - ${{ panel.precio_actual|floatformat:0 }} IVA
+                    </option>
+                    {% empty %}
+                    <option disabled>No hay paneles disponibles</option>
+                    {% endfor %}
                 </select>
+
             </div>
             <div class="col-md-2 col-sm-12 d-flex justify-content-end">
-                <button class="btn btn-primary me-2 save-btn" type="submit" title="Guardar"><i class="bi bi-check-lg"></i></button>
-                <button class="btn btn-danger delete-btn" type="button" title="Eliminar"><i class="bi bi-trash"></i></button>
+                <button class="btn btn-primary me-2 save-btn" type="submit" title="Guardar"><i
+                        class="bi bi-check-lg"></i></button>
+                <button class="btn btn-danger delete-btn" type="button" title="Eliminar"><i
+                        class="bi bi-trash"></i></button>
             </div>
         </form>
     </div>
 </template>
+
+<!-- !Abertura -->
 
 <div class="tab-pane fade" id="abertura-content" role="tabpanel" aria-labelledby="abertura-tab">
     <p class="text-muted small">Se recomienda descontar las aberturas de superficies mayores a 2 m²</p>
@@ -193,11 +241,13 @@
         <form class="row align-items-end g-3 needs-validation" novalidate>
             <div class="col-md-2 col-sm-6">
                 <label for="aberturaLargo-" class="form-label text-muted small mb-0">Largo (mts)</label>
-                <input type="number" step="0.1" class="form-control form-control-lg" name="largo" placeholder="0.00" required>
+                <input type="number" step="0.1" class="form-control form-control-lg" name="largo" placeholder="0.00"
+                    required>
             </div>
             <div class="col-md-2 col-sm-6">
                 <label for="aberturaAncho-" class="form-label text-muted small mb-0">Ancho (mts)</label>
-                <input type="number" step="0.1" class="form-control form-control-lg" name="ancho" placeholder="0.00" required>
+                <input type="number" step="0.1" class="form-control form-control-lg" name="ancho" placeholder="0.00"
+                    required>
             </div>
             <div class="col-md-3 col-sm-6">
                 <label for="aberturaTipoMuro-" class="form-label text-muted small mb-0">Tipo de Muro</label>
@@ -216,8 +266,10 @@
                 </select>
             </div>
             <div class="col-md-2 col-sm-12 d-flex justify-content-end">
-                <button class="btn btn-primary me-2 save-btn" type="submit" title="Guardar"><i class="bi bi-check-lg"></i></button>
-                <button class="btn btn-danger delete-btn" type="button" title="Eliminar"><i class="bi bi-trash"></i></button>
+                <button class="btn btn-primary me-2 save-btn" type="submit" title="Guardar"><i
+                        class="bi bi-check-lg"></i></button>
+                <button class="btn btn-danger delete-btn" type="button" title="Eliminar"><i
+                        class="bi bi-trash"></i></button>
             </div>
         </form>
     </div>
