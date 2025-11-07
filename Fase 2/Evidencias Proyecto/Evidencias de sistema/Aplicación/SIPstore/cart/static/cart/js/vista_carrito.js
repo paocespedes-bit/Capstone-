@@ -1,23 +1,52 @@
-const cartListCollapse = document.getElementById("cartListCollapse");
-const checkoutFormCollapse = document.getElementById("checkoutFormCollapse");
-const cartControls = document.getElementById("cart-controls");
+// --------------------------
+// vista_carrito.js (corregido)
+// --------------------------
 
-const paymentOnline = document.getElementById("paymentOnline");
-const paymentStore = document.getElementById("paymentStore");
+/* Helpers */
+function $id(id) {
+  return document.getElementById(id);
+}
 
-const btnContinueCart = document.getElementById("btn-continue-cart");
-const btnFinishOrder = document.getElementById("btn-finish-order");
-const btnBackStore = document.getElementById("btn-back-store");
-const btnCheckout = document.getElementById("walletBrick_container");
-const btnBackOnline = document.getElementById("btn-back-online");
-const btnValidateData = document.getElementById("btn-validate-data");
+function safeClassListAdd(el, className) {
+  if (el && el.classList) el.classList.add(className);
+}
+function safeClassListRemove(el, className) {
+  if (el && el.classList) el.classList.remove(className);
+}
+function safeToggleClass(el, className, condition) {
+  if (!el || !el.classList) return;
+  if (condition) el.classList.add(className);
+  else el.classList.remove(className);
+}
 
-const bsCartListCollapse = new bootstrap.Collapse(cartListCollapse, { toggle: false });
-const bsCheckoutFormCollapse = new bootstrap.Collapse(checkoutFormCollapse, { toggle: false });
+/* Elementos del DOM (puede que algunos no existan en todas las vistas) */
+const cartListCollapse = $id("cartListCollapse");
+const checkoutFormCollapse = $id("checkoutFormCollapse");
+const cartControls = $id("cart-controls");
 
+const paymentOnline = $id("paymentOnline");
+const paymentStore = $id("paymentStore");
 
+const btnContinueCart = $id("btn-continue-cart");
+const btnFinishOrder = $id("btn-finish-order");
+const btnBackStore = $id("btn-back-store");
+const walletContainer = $id("walletBrick_container"); // contenedor del brick
+const btnBackOnline = $id("btn-back-online");
+const btnValidateData = $id("btn-validate-data");
+
+/* Bootstrap Collapses (si existen los elementos) */
+let bsCartListCollapse = null;
+let bsCheckoutFormCollapse = null;
+try {
+  if (cartListCollapse) bsCartListCollapse = new bootstrap.Collapse(cartListCollapse, { toggle: false });
+  if (checkoutFormCollapse) bsCheckoutFormCollapse = new bootstrap.Collapse(checkoutFormCollapse, { toggle: false });
+} catch (e) {
+  console.warn("Bootstrap no disponible o elementos collapse no encontrados.", e);
+}
+
+/* Utilidades del carrito (UI) */
 function isCartEmpty() {
-  const totalSummaryElement = document.getElementById("total_sumary");
+  const totalSummaryElement = $id("total_sumary");
   if (!totalSummaryElement) return true;
 
   const totalText = totalSummaryElement.textContent
@@ -31,125 +60,103 @@ function isCartEmpty() {
 }
 
 function hideAllCheckoutButtons() {
-  btnFinishOrder.classList.add("d-none");
-  btnBackStore.classList.add("d-none");
-  btnCheckout.classList.add("d-none");
-  btnBackOnline.classList.add("d-none");
-  btnContinueCart.classList.add("d-none");
-  btnValidateData.classList.add("d-none");
+  [btnFinishOrder, btnBackStore, walletContainer, btnBackOnline, btnContinueCart, btnValidateData]
+    .forEach(el => { if (el && el.classList) el.classList.add("d-none"); });
 }
 
 function initCartButtonState() {
-  const cartIsEmpty = isCartEmpty();
+  const cartIsEmptyFlag = isCartEmpty();
 
   if (btnContinueCart) {
-    btnContinueCart.disabled = cartIsEmpty;
-    btnContinueCart.textContent = cartIsEmpty ? "Carrito Vacío" : "Continuar Compra";
-    btnContinueCart.classList.toggle("btn-success", !cartIsEmpty);
-    btnContinueCart.classList.toggle("btn-secondary", cartIsEmpty);
+    btnContinueCart.disabled = cartIsEmptyFlag;
+    btnContinueCart.textContent = cartIsEmptyFlag ? "Carrito Vacío" : "Continuar Compra";
+    btnContinueCart.classList.toggle("btn-success", !cartIsEmptyFlag);
+    btnContinueCart.classList.toggle("btn-secondary", cartIsEmptyFlag);
   }
 }
 
 function showLocalCard(localId) {
-  const localCard = document.getElementById("localCard");
-  const localCardName = document.getElementById("localCardName");
-  const localCardAddress = document.getElementById("localCardAddress");
+  const localCard = $id("localCard");
+  const localCardName = $id("localCardName");
+  const localCardAddress = $id("localCardAddress");
 
-  const select = document.getElementById("localSelect");
+  const select = $id("localSelect");
+  if (!select) return;
+
   const selectedOption = select.options[select.selectedIndex];
 
-  if (localId) {
-    const nombre = selectedOption.getAttribute("data-nombre");
-    const ubicacion = selectedOption.getAttribute("data-ubicacion");
-
-    localCardName.textContent = nombre;
-    localCardAddress.textContent = ubicacion;
-    localCard.classList.remove("d-none");
+  if (localId && selectedOption) {
+    const nombre = selectedOption.getAttribute("data-nombre") || selectedOption.text;
+    const ubicacion = selectedOption.getAttribute("data-ubicacion") || "";
+    if (localCardName) localCardName.textContent = nombre;
+    if (localCardAddress) localCardAddress.textContent = ubicacion;
+    safeClassListRemove(localCard, "d-none");
   } else {
-    localCard.classList.add("d-none");
+    safeClassListAdd(localCard, "d-none");
   }
 }
 
+/* Toggle collapse (si están presentes) */
 function toggleCartCollapse() {
-  const isCheckoutVisible = checkoutFormCollapse.classList.contains("show");
+  const isCheckoutVisible = checkoutFormCollapse && checkoutFormCollapse.classList.contains("show");
   hideAllCheckoutButtons();
 
   if (isCheckoutVisible) {
-    bsCheckoutFormCollapse.hide();
-    bsCartListCollapse.show();
-    btnContinueCart.classList.remove("d-none");
+    if (bsCheckoutFormCollapse) bsCheckoutFormCollapse.hide();
+    if (bsCartListCollapse) bsCartListCollapse.show();
+    safeClassListRemove(btnContinueCart, "d-none");
   } else {
-    bsCartListCollapse.hide();
-    bsCheckoutFormCollapse.show();
+    if (bsCartListCollapse) bsCartListCollapse.hide();
+    if (bsCheckoutFormCollapse) bsCheckoutFormCollapse.show();
 
-    if (paymentOnline.checked) {
-      btnValidateData.classList.remove("d-none");
-      btnBackOnline.classList.remove("d-none");
-    } else if (paymentStore.checked) {
-      btnFinishOrder.classList.remove("d-none");
-      btnBackStore.classList.remove("d-none");
+    if (paymentOnline && paymentOnline.checked) {
+      safeClassListRemove(btnValidateData, "d-none");
+      safeClassListRemove(btnBackOnline, "d-none");
+    } else if (paymentStore && paymentStore.checked) {
+      safeClassListRemove(btnFinishOrder, "d-none");
+      safeClassListRemove(btnBackStore, "d-none");
     }
   }
 }
 
+/* Mostrar/ocultar botones según método de pago */
 function updatePaymentButton() {
-  const isStorePayment = paymentStore.checked;
-  const isOnlinePayment = paymentOnline.checked;
+  const isStorePayment = paymentStore && paymentStore.checked;
+  const isOnlinePayment = paymentOnline && paymentOnline.checked;
 
   hideAllCheckoutButtons();
 
   if (isStorePayment) {
-    btnFinishOrder.classList.remove("d-none");
-    btnBackStore.classList.remove("d-none");
-    btnValidateData.classList.add("d-none");
+    safeClassListRemove(btnFinishOrder, "d-none");
+    safeClassListRemove(btnBackStore, "d-none");
+    safeClassListAdd(btnValidateData, "d-none");
   } else if (isOnlinePayment) {
-    btnValidateData.classList.remove("d-none");
-    btnBackOnline.classList.remove("d-none");
+    safeClassListRemove(btnValidateData, "d-none");
+    safeClassListRemove(btnBackOnline, "d-none");
   }
 }
 
-checkoutFormCollapse.addEventListener("shown.bs.collapse", function () {
-  updatePaymentButton();
-  paymentOnline.addEventListener("change", updatePaymentButton);
-  paymentStore.addEventListener("change", updatePaymentButton);
-});
-
-cartListCollapse.addEventListener("shown.bs.collapse", function () {
-  const cartIsEmpty = isCartEmpty();
-
-  hideAllCheckoutButtons();
-  btnContinueCart.classList.remove("d-none");
-
-  initCartButtonState();
-
-  paymentOnline.removeEventListener("change", updatePaymentButton);
-  paymentStore.removeEventListener("change", updatePaymentButton);
-});
-
-document.addEventListener("DOMContentLoaded", initCartButtonState);
-
-document.addEventListener("DOMContentLoaded", function () {
-  hideAllCheckoutButtons();
-  if (cartListCollapse.classList.contains("show")) {
-    btnContinueCart.classList.remove("d-none");
-    initCartButtonState();
-  }
-});
-
+/* Mercado Pago SDK init */
 const PUBLIC_KEY = window.MERCADOPAGO_PUBLIC_KEY;
-let mp;
+let mp = null;
 
-if (window.MercadoPago) {
-  mp = new window.MercadoPago(PUBLIC_KEY, { locale: "es-CL" });
+if (window.MercadoPago && PUBLIC_KEY) {
+  try {
+    mp = new window.MercadoPago(PUBLIC_KEY, { locale: "es-CL" });
+  } catch (e) {
+    console.error("Error inicializando MercadoPago SDK:", e);
+  }
 } else {
-  console.error("SDK de Mercado Pago no cargado. Revisa la etiqueta script.");
+  console.warn("SDK de Mercado Pago no cargado o PUBLIC_KEY no definida.");
 }
 
+/* Mensajería */
 function mostrarMensaje(mensaje, esError = true) {
   console.log(`${esError ? "ERROR" : "INFO"}: ${mensaje}`);
   if (esError) console.error(mensaje);
 }
 
+/* Render Wallet Brick */
 async function renderWalletBrick(preferenceId) {
   if (!mp) {
     mostrarMensaje("Mercado Pago SDK no inicializado.", true);
@@ -168,68 +175,9 @@ async function renderWalletBrick(preferenceId) {
   }
 }
 
-document.addEventListener("DOMContentLoaded", () => {
-  const pedidoForm = document.getElementById("pedidoForm");
-  const btnCheckout = document.getElementById("walletBrick_container");
-  const btnContinueCart = document.getElementById("btn-continue-cart");
-
-  const validarFormulario = () => {
-    if (!pedidoForm || !btnCheckout) return;
-    const esValido = pedidoForm.checkValidity() && !isCartEmpty();
-    btnCheckout.classList.toggle("d-none", !esValido);
-  };
-
-  if (btnContinueCart) {
-    btnContinueCart.addEventListener("click", () => {
-      bsCartListCollapse.hide();
-      bsCheckoutFormCollapse.show();
-      validarFormulario();
-
-      pedidoForm.querySelectorAll("input, select, textarea").forEach((input) => {
-        input.addEventListener("input", validarFormulario);
-        input.addEventListener("change", validarFormulario);
-      });
-    });
-  }
-
-  if (btnCheckout) {
-    btnCheckout.addEventListener("click", async () => {
-      if (!pedidoForm.checkValidity()) {
-        pedidoForm.reportValidity();
-        mostrarMensaje("Completa todos los campos requeridos antes de pagar.", true);
-        return;
-      }
-
-      try {
-        const response = await fetch("/crear_preferencia/");
-        if (!response.ok) {
-          mostrarMensaje("Error al generar preferencia de pago.", true);
-          return;
-        }
-        const preference = await response.json();
-        await renderWalletBrick(preference.id);
-      } catch (err) {
-        mostrarMensaje("Error al iniciar pago.", true);
-      }
-    });
-  }
-});
-
-btnContinueCart.addEventListener("click", function () {
-  bsCartListCollapse.hide();
-  bsCheckoutFormCollapse.show();
-  btnContinueCart.classList.add("d-none");
-
-  if (paymentOnline.checked) {
-    btnValidateData.classList.remove("d-none");
-  } else {
-    btnValidateData.classList.add("d-none");
-    btnFinishOrder.classList.remove("d-none");
-    btnBackStore.classList.remove("d-none");
-  }
-});
-
+/* Validaciones RUT / Teléfono */
 function validarRut(rut) {
+  if (!rut) return false;
   rut = rut.replace(/\./g, "").replace(/-/g, "").trim().toUpperCase();
   if (!/^(\d{7,8}[0-9K])$/.test(rut)) return false;
 
@@ -239,7 +187,7 @@ function validarRut(rut) {
   let multiplo = 2;
 
   for (let i = cuerpo.length - 1; i >= 0; i--) {
-    suma += parseInt(cuerpo.charAt(i)) * multiplo;
+    suma += parseInt(cuerpo.charAt(i), 10) * multiplo;
     multiplo = multiplo < 7 ? multiplo + 1 : 2;
   }
 
@@ -249,93 +197,207 @@ function validarRut(rut) {
 }
 
 function validarTelefono(telefono) {
+  if (!telefono) return false;
   const regex = /^(?:\+?56)?(?:9\d{8}|[2-9]\d{7})$/;
   return regex.test(telefono.trim());
 }
 
+/* --- Consolidamos DOMContentLoaded en un único bloque --- */
 document.addEventListener("DOMContentLoaded", function () {
-  const rutInput = document.getElementById("clientRut");
-  const phoneInput = document.getElementById("clientPhone");
-  const emailInput = document.getElementById("clientEmail");
-  const pedidoForm = document.getElementById("pedidoForm");
+  // Inicializaciones UI
+  hideAllCheckoutButtons();
+  initCartButtonState();
 
-  rutInput.addEventListener("input", () => {
-    rutInput.setCustomValidity("");
-    const rutVal = rutInput.value.trim();
-    if (rutVal && !validarRut(rutVal)) {
-      rutInput.setCustomValidity("El RUT ingresado no es válido. Ejemplo correcto: 12.345.678-5");
-    }
-  });
-
-  phoneInput.addEventListener("input", () => {
-    phoneInput.setCustomValidity("");
-    const phoneVal = phoneInput.value.trim();
-    if (phoneVal && !validarTelefono(phoneVal)) {
-      phoneInput.setCustomValidity("Ingresa un número de celular válido. Ejemplo: +56912345678 o 912345678");
-    }
-  });
-
-  pedidoForm.addEventListener("submit", (e) => {
-    if (!pedidoForm.checkValidity()) {
-      e.preventDefault();
-      pedidoForm.reportValidity();
-      alert("Por favor corrige los campos inválidos antes de continuar.");
-    }
-  });
-});
-
-btnValidateData.addEventListener("click", async function () {
-  const pedidoForm = document.getElementById("pedidoForm");
-
-  if (!pedidoForm.checkValidity()) {
-    pedidoForm.reportValidity();
-    mostrarMensaje("Por favor completa todos los campos requeridos antes de continuar.", true);
-    return;
+  // Si el collapse del listado está visible al inicio, mostrar botón continuar
+  if (cartListCollapse && cartListCollapse.classList.contains("show")) {
+    safeClassListRemove(btnContinueCart, "d-none");
+    initCartButtonState();
   }
 
-  mostrarMensaje("Validando datos del pedido...", false);
-  btnValidateData.classList.add("d-none");
+  // Listeners para mostrar datos del local (si existe select)
+  const selectLocal = $id("localSelect");
+  if (selectLocal) {
+    selectLocal.addEventListener("change", () => showLocalCard(selectLocal.value));
+    // Llamada inicial si hay valor
+    if (selectLocal.value) showLocalCard(selectLocal.value);
+  }
 
-  const formData = new FormData(pedidoForm);
-
-  try {
-    const responsePedido = await fetch("/crear-pedido/", {
-      method: "POST",
-      body: formData,
+  // Manejo de colapsables (si existen)
+  if (checkoutFormCollapse) {
+    checkoutFormCollapse.addEventListener("shown.bs.collapse", function () {
+      updatePaymentButton();
+      if (paymentOnline) paymentOnline.addEventListener("change", updatePaymentButton);
+      if (paymentStore) paymentStore.addEventListener("change", updatePaymentButton);
     });
+  }
 
-    const dataPedido = await responsePedido.json();
+  if (cartListCollapse) {
+    cartListCollapse.addEventListener("shown.bs.collapse", function () {
+      hideAllCheckoutButtons();
+      safeClassListRemove(btnContinueCart, "d-none");
+      initCartButtonState();
 
-    if (!dataPedido.ok || !dataPedido.pedido_id) {
-      mostrarMensaje("Error al crear el pedido.", true);
-      console.error("Respuesta del pedido:", dataPedido);
-      return;
+      if (paymentOnline) paymentOnline.removeEventListener("change", updatePaymentButton);
+      if (paymentStore) paymentStore.removeEventListener("change", updatePaymentButton);
+    });
+  }
+
+  // Formulario y validaciones
+  const pedidoForm = $id("pedidoForm");
+  const continueBtn = btnContinueCart; // ya declarado arriba
+  const checkoutBtn = walletContainer;
+
+  if (pedidoForm) {
+    // Validación RUT / Teléfono en inputs (si existen)
+    const rutInput = $id("clientRut");
+    const phoneInput = $id("clientPhone");
+    if (rutInput) {
+      rutInput.addEventListener("input", () => {
+        rutInput.setCustomValidity("");
+        const rutVal = rutInput.value.trim();
+        if (rutVal && !validarRut(rutVal)) {
+          rutInput.setCustomValidity("El RUT ingresado no es válido. Ejemplo correcto: 12.345.678-5");
+        }
+      });
+    }
+    if (phoneInput) {
+      phoneInput.addEventListener("input", () => {
+        phoneInput.setCustomValidity("");
+        const phoneVal = phoneInput.value.trim();
+        if (phoneVal && !validarTelefono(phoneVal)) {
+          phoneInput.setCustomValidity("Ingresa un número de celular válido. Ejemplo: +56912345678 o 912345678");
+        }
+      });
     }
 
-    const pedidoId = dataPedido.pedido_id;
-    mostrarMensaje(`Pedido #${pedidoId} creado correctamente. Generando preferencia...`, false);
-
-    const responsePref = await fetch("/crear_preferencia/", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ pedido_id: pedidoId }),
+    pedidoForm.addEventListener("submit", (e) => {
+      if (!pedidoForm.checkValidity()) {
+        e.preventDefault();
+        pedidoForm.reportValidity();
+        alert("Por favor corrige los campos inválidos antes de continuar.");
+      }
     });
+  }
 
-    const preference = await responsePref.json();
+  // Botón continuar -> abre checkout
+  if (continueBtn) {
+    continueBtn.addEventListener("click", () => {
+      if (bsCartListCollapse) bsCartListCollapse.hide();
+      if (bsCheckoutFormCollapse) bsCheckoutFormCollapse.show();
+      safeClassListAdd(continueBtn, "d-none");
 
-    if (!preference.id) {
-      mostrarMensaje("Error al generar preferencia de Mercado Pago.", true);
-      console.error("Respuesta de preferencia:", preference);
-      return;
-    }
+      // mostrar botones según método seleccionado
+      if (paymentOnline && paymentOnline.checked) {
+        safeClassListRemove(btnValidateData, "d-none");
+      } else {
+        safeClassListAdd(btnValidateData, "d-none");
+        safeClassListRemove(btnFinishOrder, "d-none");
+        safeClassListRemove(btnBackStore, "d-none");
+      }
 
-    await renderWalletBrick(preference.id);
-    document.getElementById("walletBrick_container").classList.remove("d-none");
-    btnBackOnline.classList.remove("d-none");
+      // Agregar validadores
+      if (pedidoForm) {
+        pedidoForm.querySelectorAll("input, select, textarea").forEach((input) => {
+          input.addEventListener("input", () => {
+            if (checkoutBtn) {
+              const esValido = pedidoForm.checkValidity() && !isCartEmpty();
+              safeToggleClass(checkoutBtn, "d-none", !esValido);
+            }
+          });
+          input.addEventListener("change", () => {
+            if (checkoutBtn) {
+              const esValido = pedidoForm.checkValidity() && !isCartEmpty();
+              safeToggleClass(checkoutBtn, "d-none", !esValido);
+            }
+          });
+        });
+      }
+    });
+  }
 
-    mostrarMensaje("Botón de Mercado Pago listo para pagar.", false);
-  } catch (err) {
-    mostrarMensaje("Error al crear pedido o preferencia de pago.", true);
-    console.error(err);
+  // Si existe el contenedor del brick, no le pongas el listener de "click" (el brick lo maneja)
+  // Antes en tu código había un listener que hacía fetch("/crear_preferencia/") sin temp_id -> lo removemos
+
+  // Botón validar datos -> crea pedido temporal y preferencia
+  if (btnValidateData) {
+    btnValidateData.addEventListener("click", async function () {
+      const pedidoFormLocal = $id("pedidoForm");
+      if (!pedidoFormLocal) return;
+
+      if (!pedidoFormLocal.checkValidity()) {
+        pedidoFormLocal.reportValidity();
+        mostrarMensaje("Por favor completa todos los campos requeridos antes de continuar.", true);
+        return;
+      }
+
+      mostrarMensaje("Validando datos del pedido...", false);
+      safeClassListAdd(btnValidateData, "d-none");
+
+      const formData = new FormData(pedidoFormLocal);
+
+      try {
+        // 1️⃣ Crear pedido temporal (solo guarda datos) -> BACKEND devuelve { ok: true, temp_id }
+        const responsePedido = await fetch("/crear-pedido/", {
+          method: "POST",
+          body: formData,
+        });
+
+        if (!responsePedido.ok) {
+          const txt = await responsePedido.text().catch(() => null);
+          mostrarMensaje("Error al procesar el pedido temporal. " + (txt || ""), true);
+          safeClassListRemove(btnValidateData, "d-none");
+          return;
+        }
+
+        const dataPedido = await responsePedido.json().catch(() => null);
+
+        if (!dataPedido || !dataPedido.ok || !dataPedido.temp_id) {
+          mostrarMensaje("No se pudo crear el pedido temporal.", true);
+          console.error("Respuesta del pedido temporal:", dataPedido);
+          safeClassListRemove(btnValidateData, "d-none");
+          return;
+        }
+
+        // ✅ tempId ya definido aquí (evita ReferenceError)
+        const tempId = dataPedido.temp_id;
+        console.log("Enviando a /crear_preferencia/:", { temp_id: tempId });
+
+        mostrarMensaje(`Pedido temporal creado. Generando preferencia de pago...`, false);
+
+        // 2️⃣ Crear preferencia de Mercado Pago con temp_id
+        const responsePref = await fetch("/crear_preferencia/", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ temp_id: tempId }),
+        });
+
+        if (!responsePref.ok) {
+          const txt = await responsePref.text().catch(() => null);
+          mostrarMensaje("Error al generar preferencia de Mercado Pago. " + (txt || ""), true);
+          safeClassListRemove(btnValidateData, "d-none");
+          return;
+        }
+
+        const preference = await responsePref.json().catch(() => null);
+
+        if (!preference || !preference.id) {
+          mostrarMensaje("No se recibió ID de preferencia desde el servidor.", true);
+          console.error("Respuesta de preferencia:", preference);
+          safeClassListRemove(btnValidateData, "d-none");
+          return;
+        }
+
+        // 3️⃣ Renderizar Wallet Brick con el id de preferencia
+        await renderWalletBrick(preference.id);
+        safeClassListRemove(walletContainer, "d-none");
+        safeClassListRemove(btnBackOnline, "d-none");
+
+        mostrarMensaje("Botón de Mercado Pago listo. Puedes proceder al pago.", false);
+      } catch (err) {
+        mostrarMensaje("Error al crear pedido temporal o preferencia de pago.", true);
+        console.error(err);
+        safeClassListRemove(btnValidateData, "d-none");
+      }
+    });
   }
 });
