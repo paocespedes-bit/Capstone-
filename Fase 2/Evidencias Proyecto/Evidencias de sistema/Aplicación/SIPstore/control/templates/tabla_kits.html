@@ -97,7 +97,7 @@
                     <td data-label="Precio" >${{ kit.precio_actual|floatformat:0|punto_miles }}</td>
                     <td data-label="Oferta" >{% if kit.oferta %}{{ kit.oferta }}%{% else %}N/A{% endif %}</td>
                     <td data-label="Descripción" title="{{ kit.descripcion }}">{{ kit.descripcion|truncatechars:20 }}...</td>
-                    <td data-label="m²" >{{ kit.m2 }}</td>
+                    <td data-label="m²" >{{ kit.m2 }} m²</td>
                     <td data-label="Dormitorios" >{{ kit.dormitorios }}</td>
                     <td data-label="Baños" >{{ kit.banos }}</td>
                     <td data-label="Categorías" >

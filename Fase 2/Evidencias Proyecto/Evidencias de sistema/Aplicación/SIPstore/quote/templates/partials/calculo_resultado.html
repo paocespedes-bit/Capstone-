@@ -1,4 +1,5 @@
 {% load static %}
+{% load myfilters %}
 
     <div class="card-body p-0">
         <div class="table-responsive">
@@ -31,9 +32,9 @@
 
                             <td class="text-center fw-semibold">{{ r.cantidad }}</td>
 
-                            <td class="text-end">${{ r.valor|floatformat:0 }}</td>
+                            <td class="text-end">${{ r.valor|floatformat:0|punto_miles }}</td>
 
-                            <td class="text-end pe-4 fw-bold text-success">${{ r.total|floatformat:0 }}</td>
+                            <td class="text-end pe-4 fw-bold text-success">${{ r.total|floatformat:0|punto_miles }}</td>
                         </tr>
                         {% endfor %}
                     {% else %}
@@ -51,7 +52,7 @@
                             <strong class="h5 mb-0">Total</strong>
                         </td>
                         <td class="text-end pe-4 py-3">
-                            <strong class="h5 mb-0 text-success">${{ total_general|floatformat:0 }}</strong> 
+                            <strong class="h5 mb-0 text-success">${{ total_general|floatformat:0|punto_miles }}</strong> 
                         </td>
                     </tr>
                 </tfoot>
