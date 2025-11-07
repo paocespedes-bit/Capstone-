@@ -1,4 +1,5 @@
 {% load static %}
+{% load myfilters %}
 
 <div class="imagen-container mb-4">
     <div class="modulo-indicador">Módulo: <span id="currentModuloName">Piso</span></div>
@@ -28,24 +29,27 @@
                 <label for="pisoLargo-" class="form-label text-muted small mb-0">Largo (mts)</label>
                 <input type="number" step="0.1" class="form-control form-control-lg" name="largo" placeholder="0.00"
                     required>
+                <div class="invalid-feedback">Por favor ingresa el largo.</div>
             </div>
             <div class="col-md-3 col-sm-6">
                 <label for="pisoAncho-" class="form-label text-muted small mb-0">Ancho (mts)</label>
                 <input type="number" step="0.1" class="form-control form-control-lg" name="ancho" placeholder="0.00"
                     required>
+                <div class="invalid-feedback">Por favor ingresa el ancho.</div>
             </div>
             <div class="col-md-4 col-sm-12">
                 <label for="pisoTipoPanel-" class="form-label text-muted small mb-0">Tipo de panel (recomendado)</label>
                 <select class="form-select form-select-lg" name="tipoPanel" required>
-                    <option selected disabled>Elige el tipo de panel</option>
+                    <option value="" selected disabled>Elige el tipo de panel</option>
                     {% for panel in piso %}
                     <option value="{{ panel.id }}">
-                        {{ panel.nombre }} - ${{ panel.precio_actual|floatformat:0 }} IVA
+                        {{ panel.nombre }} - ${{ panel.precio_actual|floatformat:0|punto_miles }} IVA
                     </option>
                     {% empty %}
                     <option disabled>No hay paneles disponibles</option>
                     {% endfor %}
                 </select>
+                <div class="invalid-feedback">Selecciona un tipo de panel.</div>
             </div>
             <div class="col-md-2 col-sm-12 d-flex justify-content-end">
                 <button class="btn btn-primary me-2 save-btn" type="submit" title="Guardar"><i
@@ -80,26 +84,28 @@
                 <label for="muroExtLargo-" class="form-label text-muted small mb-0">Largo (mts)</label>
                 <input type="number" step="0.1" class="form-control form-control-lg" name="largo" placeholder="0.00"
                     required>
+                <div class="invalid-feedback">Por favor ingresa el largo.</div>
             </div>
             <div class="col-md-3 col-sm-6">
                 <label for="muroExtAncho-" class="form-label text-muted small mb-0">Ancho (mts)</label>
                 <input type="number" step="0.1" class="form-control form-control-lg" name="ancho" placeholder="0.00"
                     required>
+                <div class="invalid-feedback">Por favor ingresa el ancho.</div>
             </div>
             <div class="col-md-4 col-sm-12">
                 <label for="muroExtTipoPanel-" class="form-label text-muted small mb-0">Tipo de panel
                     (recomendado)</label>
                 <select class="form-select form-select-lg" name="tipoPanel" required>
-                    <option selected disabled>Elige el tipo de panel</option>
+                    <option value="" selected disabled>Elige el tipo de panel</option>
                     {% for panel in muros_ext %}
                     <option value="{{ panel.id }}">
-                        {{ panel.nombre }} - ${{ panel.precio_actual|floatformat:0 }} IVA
+                        {{ panel.nombre }} - ${{ panel.precio_actual|floatformat:0|punto_miles }} IVA
                     </option>
                     {% empty %}
                     <option disabled>No hay paneles disponibles</option>
                     {% endfor %}
                 </select>
-
+                <div class="invalid-feedback">Selecciona un tipo de panel.</div>
             </div>
             <div class="col-md-2 col-sm-12 d-flex justify-content-end">
                 <button class="btn btn-primary me-2 save-btn" type="submit" title="Guardar"><i
@@ -134,26 +140,28 @@
                 <label for="muroIntLargo-" class="form-label text-muted small mb-0">Largo (mts)</label>
                 <input type="number" step="0.1" class="form-control form-control-lg" name="largo" placeholder="0.00"
                     required>
+                <div class="invalid-feedback">Por favor ingresa el largo.</div>
             </div>
             <div class="col-md-3 col-sm-6">
                 <label for="muroIntAncho-" class="form-label text-muted small mb-0">Ancho (mts)</label>
                 <input type="number" step="0.1" class="form-control form-control-lg" name="ancho" placeholder="0.00"
                     required>
+                <div class="invalid-feedback">Por favor ingresa el ancho.</div>
             </div>
             <div class="col-md-4 col-sm-12">
                 <label for="muroIntTipoPanel-" class="form-label text-muted small mb-0">Tipo de panel
                     (recomendado)</label>
                 <select class="form-select form-select-lg" name="tipoPanel" required>
-                    <option selected disabled>Elige el tipo de panel</option>
+                    <option value="" selected disabled>Elige el tipo de panel</option>
                     {% for panel in muros_int %}
                     <option value="{{ panel.id }}">
-                        {{ panel.nombre }} - ${{ panel.precio_actual|floatformat:0 }} IVA
+                        {{ panel.nombre }} - ${{ panel.precio_actual|floatformat:0|punto_miles }} IVA
                     </option>
                     {% empty %}
                     <option disabled>No hay paneles disponibles</option>
                     {% endfor %}
                 </select>
-
+                <div class="invalid-feedback">Selecciona un tipo de panel.</div>
             </div>
             <div class="col-md-2 col-sm-12 d-flex justify-content-end">
                 <button class="btn btn-primary me-2 save-btn" type="submit" title="Guardar"><i
@@ -188,26 +196,28 @@
                 <label for="cieloLargo-" class="form-label text-muted small mb-0">Largo (mts)</label>
                 <input type="number" step="0.1" class="form-control form-control-lg" name="largo" placeholder="0.00"
                     required>
+                <div class="invalid-feedback">Por favor ingresa el largo.</div>
             </div>
             <div class="col-md-3 col-sm-6">
                 <label for="cieloAncho-" class="form-label text-muted small mb-0">Ancho (mts)</label>
                 <input type="number" step="0.1" class="form-control form-control-lg" name="ancho" placeholder="0.00"
                     required>
+                <div class="invalid-feedback">Por favor ingresa el ancho.</div>
             </div>
             <div class="col-md-4 col-sm-12">
                 <label for="cieloTipoPanel-" class="form-label text-muted small mb-0">Tipo de panel
                     (recomendado)</label>
                 <select class="form-select form-select-lg" name="tipoPanel" required>
-                    <option selected disabled>Elige el tipo de panel</option>
+                    <option value="" selected disabled>Elige el tipo de panel</option>
                     {% for panel in cielo %}
                     <option value="{{ panel.id }}">
-                        {{ panel.nombre }} - ${{ panel.precio_actual|floatformat:0 }} IVA
+                        {{ panel.nombre }} - ${{ panel.precio_actual|floatformat:0|punto_miles }} IVA
                     </option>
                     {% empty %}
                     <option disabled>No hay paneles disponibles</option>
                     {% endfor %}
                 </select>
-
+                <div class="invalid-feedback">Selecciona un tipo de panel.</div>
             </div>
             <div class="col-md-2 col-sm-12 d-flex justify-content-end">
                 <button class="btn btn-primary me-2 save-btn" type="submit" title="Guardar"><i
@@ -240,31 +250,37 @@
         <h5 class="text-primary mb-1">Abertura - <span class="item-number">1</span></h5>
         <form class="row align-items-end g-3 needs-validation" novalidate>
             <div class="col-md-2 col-sm-6">
-                <label for="aberturaLargo-" class="form-label text-muted small mb-0">Largo (mts)</label>
+                <label class="form-label text-muted small mb-0">Largo (mts)</label>
                 <input type="number" step="0.1" class="form-control form-control-lg" name="largo" placeholder="0.00"
                     required>
+                <div class="invalid-feedback">Ingresa el largo.</div>
             </div>
+
             <div class="col-md-2 col-sm-6">
-                <label for="aberturaAncho-" class="form-label text-muted small mb-0">Ancho (mts)</label>
+                <label class="form-label text-muted small mb-0">Ancho (mts)</label>
                 <input type="number" step="0.1" class="form-control form-control-lg" name="ancho" placeholder="0.00"
                     required>
+                <div class="invalid-feedback">Ingresa el ancho.</div>
             </div>
+
             <div class="col-md-3 col-sm-6">
-                <label for="aberturaTipoMuro-" class="form-label text-muted small mb-0">Tipo de Muro</label>
+                <label class="form-label text-muted small mb-0">Tipo de Muro</label>
                 <select class="form-select form-select-lg" name="tipoMuro" required>
-                    <option selected disabled>Elige el tipo muro</option>
-                    <option>Muro Interior</option>
-                    <option>Muro Exterior</option>
+                    <option value="" selected disabled>Elige el tipo de muro</option>
+                    <option value="interior">Muro Interior</option>
+                    <option value="exterior">Muro Exterior</option>
                 </select>
+                <div class="invalid-feedback">Selecciona el tipo de muro.</div>
             </div>
+
             <div class="col-md-3 col-sm-6">
-                <label for="aberturaMuro-" class="form-label text-muted small mb-0">Muro</label>
+                <label class="form-label text-muted small mb-0">Muro</label>
                 <select class="form-select form-select-lg" name="muroId" required>
-                    <option selected disabled>Elige el Muro</option>
-                    <option>Muro #1</option>
-                    <option>Muro #2</option>
+                    <option value="" selected disabled>Elige el Muro</option>
                 </select>
+                <div class="invalid-feedback">Selecciona un muro.</div>
             </div>
+
             <div class="col-md-2 col-sm-12 d-flex justify-content-end">
                 <button class="btn btn-primary me-2 save-btn" type="submit" title="Guardar"><i
                         class="bi bi-check-lg"></i></button>
