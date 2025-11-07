@@ -2,8 +2,13 @@ from django.shortcuts import render
 from store.models import PanelSIP, Categoria
 from django.db.models import Q
 from django.views.decorators.csrf import csrf_exempt
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponse
 import json
+from django.core.mail import EmailMessage
+from django.template.loader import render_to_string
+from io import BytesIO
+import pandas as pd
+from docx import Document
 
 def quote(request):
     modulos = {
@@ -135,3 +140,156 @@ def limpiar_calculo(request):
     request.session["quote_forms"] = {}
     request.session.modified = True
     return JsonResponse({"message": "Cálculo limpiado"})
+
+@csrf_exempt
+def enviar_cotizacion(request):
+    """
+    Envía la cotización actual del cliente al correo especificado.
+    """
+    if request.method == "POST":
+        data = json.loads(request.body.decode("utf-8"))
+        correo = data.get("correo")
+
+        if not correo:
+            return JsonResponse({"error": "Debe ingresar un correo electrónico"}, status=400)
+
+        quote_data = request.session.get("quote_forms", {})
+        if not quote_data:
+            return JsonResponse({"error": "No hay cotización para enviar"}, status=400)
+
+        # --- Reconstruir los resultados (igual que calcular_materiales) ---
+        resultados = []
+        total_general = 0
+
+        for modulo, forms in quote_data.items():
+            for form in forms:
+                try:
+                    largo = float(form.get("largo") or 0)
+                    ancho = float(form.get("ancho") or 0)
+                    panel_id = int(form.get("tipoPanel") or 0)
+
+                    if not (largo > 0 and ancho > 0 and panel_id):
+                        continue
+
+                    panel = PanelSIP.objects.get(id=panel_id)
+                    area_total = largo * ancho
+                    area_panel = (float(panel.largo) * float(panel.ancho)) / 10000 or 2.88
+                    cantidad = max(1, round(area_total / area_panel))
+                    total = cantidad * float(panel.precio_actual)
+                    total_general += total
+
+                    resultados.append({
+                        "nombre": panel.nombre,
+                        "solicitado_por": modulo,
+                        "area": round(area_total, 2),
+                        "cantidad": cantidad,
+                        "valor": round(panel.precio_actual, 2),
+                        "total": round(total, 2),
+                    })
+
+                except Exception:
+                    continue
+
+        # --- Renderizar mensaje de correo ---
+        mensaje_html = render_to_string("email_cotizacion.html", {
+            "resultados": resultados,
+            "total_general": total_general
+        })
+
+        email = EmailMessage(
+            subject="Tu cotización de Paneles SIP",
+            body=mensaje_html,
+            from_email="cotizaciones@tuempresa.cl",
+            to=[correo],
+        )
+        email.content_subtype = "html"
+        email.send(fail_silently=False)
+
+        return JsonResponse({"message": "Cotización enviada correctamente al correo."})
+
+
+@csrf_exempt
+def descargar_cotizacion(request, formato):
+    """
+    Permite descargar la cotización actual en .txt, .docx o .xlsx
+    """
+    quote_data = request.session.get("quote_forms", {})
+    if not quote_data:
+        return JsonResponse({"error": "No hay datos para descargar"}, status=400)
+
+    resultados = []
+    total_general = 0
+
+    for modulo, forms in quote_data.items():
+        for form in forms:
+            try:
+                largo = float(form.get("largo") or 0)
+                ancho = float(form.get("ancho") or 0)
+                panel_id = int(form.get("tipoPanel") or 0)
+
+                if not (largo > 0 and ancho > 0 and panel_id):
+                    continue
+
+                panel = PanelSIP.objects.get(id=panel_id)
+                area_total = largo * ancho
+                area_panel = (float(panel.largo) * float(panel.ancho)) / 10000 or 2.88
+                cantidad = max(1, round(area_total / area_panel))
+                total = cantidad * float(panel.precio_actual)
+                total_general += total
+
+                resultados.append({
+                    "Panel": panel.nombre,
+                    "Módulo": modulo,
+                    "Área (m²)": round(area_total, 2),
+                    "Cantidad": cantidad,
+                    "Valor Unitario": round(panel.precio_actual, 2),
+                    "Total": round(total, 2),
+                })
+
+            except Exception:
+                continue
+
+    # --- Exportación según formato ---
+    if formato == "txt":
+        buffer = BytesIO()
+        contenido = "COTIZACIÓN PANEL SIP\n\n"
+        for r in resultados:
+            contenido += f"{r['Panel']} ({r['Módulo']}): {r['Cantidad']} panel(es) - Total: ${r['Total']}\n"
+        contenido += f"\nTOTAL GENERAL: ${round(total_general, 2)}"
+        buffer.write(contenido.encode("utf-8"))
+        buffer.seek(0)
+
+        response = HttpResponse(buffer, content_type="text/plain")
+        response["Content-Disposition"] = 'attachment; filename="cotizacion.txt"'
+        return response
+
+    elif formato == "doc":
+        doc = Document()
+        doc.add_heading("Cotización Panel SIP", 0)
+        for r in resultados:
+            doc.add_paragraph(f"{r['Panel']} ({r['Módulo']}): {r['Cantidad']} panel(es) - Total: ${r['Total']}")
+        doc.add_paragraph(f"\nTOTAL GENERAL: ${round(total_general, 2)}")
+
+        buffer = BytesIO()
+        doc.save(buffer)
+        buffer.seek(0)
+
+        response = HttpResponse(buffer, content_type="application/vnd.openxmlformats-officedocument.wordprocessingml.document")
+        response["Content-Disposition"] = 'attachment; filename="cotizacion.docx"'
+        return response
+
+    elif formato == "xlsx":
+        df = pd.DataFrame(resultados)
+        df.loc[len(df.index)] = ["", "", "", "", "TOTAL GENERAL", total_general]
+
+        buffer = BytesIO()
+        with pd.ExcelWriter(buffer, engine="xlsxwriter") as writer:
+            df.to_excel(writer, index=False, sheet_name="Cotizacion")
+        buffer.seek(0)
+
+        response = HttpResponse(buffer, content_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
+        response["Content-Disposition"] = 'attachment; filename="cotizacion.xlsx"'
+        return response
+
+    else:
+        return JsonResponse({"error": "Formato no soportado"}, status=400)
