@@ -8,9 +8,9 @@ urlpatterns = [
     path('crear-pedido/', views.crear_pedido, name='crear_pedido'),
     
     path('crear_preferencia/', views.crear_preferencia, name='crear_preferencia'),
-    path('pago_exitoso/<int:pedido_id>/', views.pago_exitoso, name='pago_exitoso'),
+    path('procesando_pago/', views.procesando_pago, name='procesando_pago'),
+    path('pago_exitoso/', views.pago_exitoso, name='pago_exitoso'),
+    path('pago_pendiente/', views.pago_pendiente, name='pago_pendiente'),
     path('pago_fallido/', views.pago_fallido, name='pago_fallido'),
-    path('pago_pendiente/<int:pedido_id>/', views.pago_pendiente, name='pago_pendiente'),
-    
 
     ]

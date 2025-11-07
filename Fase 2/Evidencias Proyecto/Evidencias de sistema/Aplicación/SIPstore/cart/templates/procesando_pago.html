@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Pago en Línea Exitoso{% endblock %}
+
+<style>
+    body {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        height: 100vh;
+        font-family: sans-serif;
+        text-align: center;
+    }
+
+    .spinner {
+        border: 8px solid #f3f3f3;
+        border-top: 8px solid #4CAF50;
+        border-radius: 50%;
+        width: 80px;
+        height: 80px;
+        animation: spin 1s linear infinite;
+        margin-bottom: 20px;
+    }
+
+    @keyframes spin {
+        0% {
+            transform: rotate(0deg);
+        }
+
+        100% {
+            transform: rotate(360deg);
+        }
+    }
+</style>
+
+
+{% block content %}
+
+<div class="spinner"></div>
+<h2 id="mensaje">Procesando pago...</h2>
+{% endblock %}
+
+{% block script %}
+<script>
+    const mensaje = document.getElementById("mensaje");
+    const pedidoId = "{{ pedido_id }}";  // pasado desde la vista Django
+
+    // 2 segundos para procesar
+    setTimeout(() => {
+        mensaje.textContent = "Pedido realizado 🎉";
+        // 1 segundo más y redirigir a pago_exitoso
+        setTimeout(() => {
+            window.location.href = `/pago_exitoso/?pedido_id=${pedidoId}`;
+        }, 2000);
+    }, 3000);
+</script>
+
+{% endblock %}

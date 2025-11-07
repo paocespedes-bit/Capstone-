@@ -194,9 +194,9 @@
             <td data-label="Oferta" >{% if panel.oferta %}{{ panel.oferta }}%{% else %}N/A{% endif %}</td>
             <td data-label="Descripción" title="{{ panel.descripcion }}">{{ panel.descripcion|truncatechars:20 }}...</td>
             <td data-label="Tipo OBS" >{{ panel.tipo_obs }}</td>
-            <td data-label="Espesor" >{{ panel.espesor }}</td>
-            <td data-label="Largo" >{{ panel.largo }}</td>
-            <td data-label="Ancho" >{{ panel.ancho }}</td>
+            <td data-label="Espesor" >{{ panel.espesor }} mm</td>
+            <td data-label="Largo" >{{ panel.largo }} m</td>
+            <td data-label="Ancho" >{{ panel.ancho }} m</td>
             <td data-label="Categorías" >
               {% for cat in panel.categorias.all %}
                 <span class="badge bg-secondary">{{ cat.nombre }}</span>

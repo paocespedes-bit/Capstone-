@@ -56,20 +56,39 @@ def save_form(request):
         data = json.loads(request.body.decode("utf-8"))
         module = data.get("module")
         form_data = data.get("data")
-        
+
         if not module or not form_data:
             return JsonResponse({"error": "Datos incompletos"}, status=400)
-        
+
         session_forms = request.session.get("quote_forms", {})
+
         if module not in session_forms:
             session_forms[module] = []
-        session_forms[module].append(form_data)
+
+        # --- Evitar duplicados y sobrescribir si ya existe ---
+        updated = False
+        for i, existing_form in enumerate(session_forms[module]):
+            if existing_form == form_data:
+                # Mismo formulario, no hacer nada
+                return JsonResponse({"message": "Formulario ya guardado sin cambios"})
+            # Si se parece (mismo tipoPanel y dimensiones similares), sobrescribir
+            if (
+                existing_form.get("tipoPanel") == form_data.get("tipoPanel")
+                and existing_form.get("largo") == form_data.get("largo")
+                and existing_form.get("ancho") == form_data.get("ancho")
+            ):
+                session_forms[module][i] = form_data
+                updated = True
+                break
+
+        if not updated:
+            session_forms[module].append(form_data)
 
         request.session["quote_forms"] = session_forms
-        request.session.modified = True   
-        
-        return JsonResponse({"message": "Formulario guardado temporalmente"})
-    
+        request.session.modified = True
+
+        msg = "Formulario actualizado" if updated else "Formulario guardado temporalmente"
+        return JsonResponse({"message": msg})
 
 @csrf_exempt
 def calcular_materiales(request):
@@ -77,38 +96,88 @@ def calcular_materiales(request):
         quote_data = request.session.get("quote_forms", {})
         if not quote_data:
             return JsonResponse({"html": "<p class='text-center text-muted'>No hay datos para calcular</p>"})
-        
+
         resultados = []
         total_general = 0
-        
+
+        muros = {}
+        aberturas = []
+
         for modulo, forms in quote_data.items():
             for form in forms:
                 try:
-                    # --- Validación de datos del formulario ---
+                    if modulo in ["muros-int", "muros-ext"]:
+                        largo = float(form.get("largo") or 0)
+                        alto = float(form.get("alto") or 0)
+                        muro_id = form.get("id") or f"{modulo}-{len(muros.get(modulo, {})) + 1}"
+                        area = largo * alto
+                        muros.setdefault(modulo, {})[muro_id] = {
+                            "largo": largo,
+                            "alto": alto,
+                            "area": area,
+                        }
+
+                    elif modulo == "abertura":
+                        largo = float(form.get("largo") or 0)
+                        ancho = float(form.get("ancho") or 0)
+                        tipo_muro = form.get("tipoMuro", "").strip().lower()
+                        muro_id = form.get("muroId")
+                        area_abertura = largo * ancho
+
+                        if tipo_muro in ["muro interior", "interior"]:
+                            tipo_modulo = "muros-int"
+                        else:
+                            tipo_modulo = "muros-ext"
+
+                        aberturas.append({
+                            "tipo_modulo": tipo_modulo,
+                            "muro_id": muro_id,
+                            "area": area_abertura,
+                        })
+
+                except Exception as e:
+                    print(f"Error registrando formulario {modulo}: {e}")
+
+        for abertura in aberturas:
+            tipo_modulo = abertura["tipo_modulo"]
+            muro_id = abertura["muro_id"]
+            area = abertura["area"]
+
+            if tipo_modulo in muros and muro_id in muros[tipo_modulo]:
+                muros[tipo_modulo][muro_id]["area"] = max(
+                    0, muros[tipo_modulo][muro_id]["area"] - area
+                )
+
+        for modulo, forms in quote_data.items():
+            for form in forms:
+                try:
                     largo = float(form.get("largo") or 0)
                     ancho = float(form.get("ancho") or 0)
                     panel_id = int(form.get("tipoPanel") or 0)
 
                     if not (largo > 0 and ancho > 0 and panel_id):
-                        print(f"⚠️ Formulario incompleto para {modulo}: {form}")
                         continue
 
-                    # --- Obtener panel y su información ---
                     panel = PanelSIP.objects.get(id=panel_id)
-
-                    # Buscar imagen asociada (si existe)
                     imagen_rel = panel.imagenes.first()
                     imagen_url = imagen_rel.imagen.url if imagen_rel else "/static/img/SinImagen.png"
 
-                    # --- Calcular áreas ---
-                    area_total = largo * ancho  # en m² (viene del formulario)
-                    area_panel = (float(panel.largo) * float(panel.ancho)) / 10000  # cm² → m²
+                    # --- Cálculo actualizado (medidas en metros) ---
+                    area_total = largo * ancho
+
+                    if modulo in ["muros-int", "muros-ext"]:
+                        for muro_id, muro_data in muros[modulo].items():
+                            if muro_data["largo"] == largo and muro_data["alto"] == ancho:
+                                area_total = muro_data["area"]
+                                break
+
+                    # Ahora el área del panel está directamente en m²
+                    area_panel = float(panel.largo) * float(panel.ancho)
 
                     if area_panel <= 0:
-                        area_panel = 2.88  # valor por defecto si los datos del panel no son válidos
+                        area_panel = 2.88  # valor por defecto si el panel no tiene datos válidos
 
-                    # --- Cálculos de cantidad y precios ---
-                    cantidad = max(1, round(area_total / area_panel))  # paneles enteros
+                    cantidad = max(1, round(area_total / area_panel))
                     total = cantidad * float(panel.precio_actual)
                     total_general += total
 
@@ -123,11 +192,10 @@ def calcular_materiales(request):
                     })
 
                 except PanelSIP.DoesNotExist:
-                    print(f"⚠️ Panel con ID {form.get('tipoPanel')} no existe.")
+                    print(f"Panel con ID {form.get('tipoPanel')} no existe.")
                 except Exception as e:
-                    print(f"⚠️ Error calculando {modulo}: {e}")
+                    print(f"Error calculando {modulo}: {e}")
 
-        # --- Renderizar tabla parcial ---
         html = render(request, "partials/calculo_resultado.html", {
             "resultados": resultados,
             "total_general": total_general
