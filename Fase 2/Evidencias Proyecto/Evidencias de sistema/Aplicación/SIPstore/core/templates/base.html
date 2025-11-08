@@ -95,7 +95,7 @@
           <p class="fw-bold mb-2">Servicios</p>
           <a class="a-foot d-block mb-1" href="{% url 'kits' %}">Kit de Construccion</a>
           <a class="a-foot d-block mb-1" href="{% url 'paneles' %}">Paneles SIP</a>
-          <a class="a-foot d-block mb-1" href="#">Cotizar Estructura</a>
+          <a class="a-foot d-block mb-1" href="{% url 'quote' %}">Cotizar Estructura</a>
         </div>
         <div class="col-md-4 mb-3">
           <p class="fw-bold mb-2">Contacto</p>
@@ -118,10 +118,10 @@
       </div>
       <div class="row mt-3 border-top pt-3 text-center">
         <div class="col-12 col-md-6 mb-2 mb-md-0 ultimo">
-          Derechos reservados
+          <h1 class="fw-bold mb-2" style="font-size: 1rem;">Derechos Reservados</h1>
         </div>
         <div class="col-12 col-md-6 ultimo">
-          <img class="medio_pago" src="{% static 'core/img/mercado_pago.svg' %}" alt="mercado_pago">
+          <img class="medio_pago" src="{% static 'core/img/mercado_pago.svg' %}" alt="mercado_pago" style="width: 87px; height: 50px;">
           <img class="medio_pago" src="{% static 'core/img/visa.svg' %}" alt="visa">
           <img class="medio_pago" src="{% static 'core/img/mastercard.svg' %}" alt="master_card">
         </div>
@@ -141,7 +141,6 @@
   <script src="{% static 'js/bootstrap.min.js' %}"></script>
   <script src="{% static 'js/whatsapp.js' %}"></script>
   <script>
-    // 💡 IMPORTANTE: Usa un placeholder (marcador) que no sea un número para evitar confusiones.
     const urlModificar = '{% url "modificar_ajax" "ACCION_PLACEHOLDER" %}';
     const CSRF_TOKEN = "{{ csrf_token }}";
 </script>
