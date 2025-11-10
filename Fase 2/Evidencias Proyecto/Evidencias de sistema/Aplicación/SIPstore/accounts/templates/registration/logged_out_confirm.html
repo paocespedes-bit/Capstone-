@@ -1,55 +1,40 @@
-{% extends "base_accounts.html" %} 
+{% extends "base_accounts.html" %}
 {% load static %}
 
 {% block title %}Sesión Cerrada{% endblock %}
 
+{% block link %}
+    <link rel="stylesheet" href="{% static 'accounts/css/logout.css' %}">
+{% endblock %}
+
 {% block content %}
-<div class="container my-5">
-    <div class="row justify-content-center">
-        <div class="col-md-8 text-center">
-            
-            <i class="bi bi-shield-lock display-1 text-success mb-4"></i>
-            <h2 class="mb-3">¡Sesión Cerrada Correctamente!</h2>
-            <p class="lead">
-                Has cerrado sesión de manera segura.
-                Serás redirigido automáticamente a la página de inicio de sesión.
+<div class="logout-container">
+    <div class="logout-card">
+        
+        <i class="bi bi-shield-check logout-icon"></i>
+        
+        <h2 class="logout-title">¡Sesión Cerrada Correctamente!</h2>
+        
+        <p class="lead">
+            Has cerrado sesión de manera segura.
+            Serás redirigido automáticamente.
+        </p>
+        
+        <div class="spinner-wrapper">
+            <div class="spinner"></div>
+            <p class="redirect-text">
+                Redirigiendo en <span id="countdown" data-login-url="{% url 'login' %}">5</span> segundos...
             </p>
-            
-            <p class="text-muted mt-4">
-                Redirigiendo en <span id="countdown">5</span> segundos...
-            </p>
-            
-            <a href="{% url 'login' %}" class="btn btn-primary mt-3">
-                <i class="bi bi-box-arrow-in-right"></i> Ir a Iniciar Sesión Ahora
-            </a>
         </div>
+        
+        <a href="{% url 'login' %}" class="btn-redirect-now">
+            <i class="bi bi-box-arrow-in-right"></i> Ir a Iniciar Sesión Ahora
+        </a>
+
     </div>
 </div>
-
 {% endblock content %}
 
 {% block script %}
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const countdownElement = document.getElementById('countdown');
-            let countdown = 5; // Empieza en 5 segundos
-            
-            // Función para actualizar la cuenta regresiva
-            function updateCountdown() {
-                countdownElement.textContent = countdown;
-                countdown--;
-                
-                if (countdown < 0) {
-                    // Redirigir al login
-                    window.location.href = "{% url 'login' %}";
-                } else {
-                    // Esperar 1 segundo y llamar de nuevo a la función
-                    setTimeout(updateCountdown, 1000);
-                }
-            }
-            
-            // Iniciar la cuenta regresiva
-            updateCountdown(); 
-        });
-    </script>
+    <script src="{% static 'accounts/js/logout.js' %}"></script>
 {% endblock %}
