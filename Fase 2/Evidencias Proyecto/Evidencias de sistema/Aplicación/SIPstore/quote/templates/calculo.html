@@ -40,14 +40,20 @@
     </div>
 </div>
 
-<div class=" p-3 rounded-bottom d-flex justify-content-start">
+<div class="p-3 rounded-bottom d-flex justify-content-start">
     
     <button class="btn btn-primary me-3" type="button" disabled>
         <i class="bi bi-download"></i> Descargar
     </button>
     
-    <button class="btn btn-success" type="button" disabled>
-        <i class="bi bi-cart-plus"></i> Agregar a Carrito
-    </button>
-    
+   
+    <form method="post">
+        {% csrf_token %}
+        <button id="btnAgregarCarrito" class="btn btn-success" type="button">
+            <i class="bi bi-cart-plus"></i> Agregar a Carrito
+        </button>
+    </form>
 </div>
+
+
+<script src="{% static 'quote/js/agregar_carrito.js' %}"></script>
