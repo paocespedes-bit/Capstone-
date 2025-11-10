@@ -1,0 +1,106 @@
+{% extends "base_accounts.html" %}
+{% load static %}
+
+{% block link %}
+
+{% endblock %}
+
+Iniciar Sesión
+
+{% block content %}
+<div class="container my-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6 col-lg-4">
+            <h2 class="text-center mb-4">Iniciar Sesión 🔒</h2>
+
+            {% if form.errors and not form.non_field_errors %}
+            <div class="alert alert-danger" role="alert">
+                Por favor, corrige los errores de validación.
+            </div>
+            {% endif %}
+
+            {% for error in form.non_field_errors %}
+            <div class="alert alert-danger" role="alert">
+                {{ error }}
+            </div>
+            {% endfor %}
+
+            <form method="post" action="{% url 'login' %}">
+                {% csrf_token %}
+
+                <div class="mb-3">
+                    <label for="{{ form.username.id_for_label }}" class="form-label">
+                        {{ form.username.label }}
+                    </label>
+                    <input type="{{ form.username.field.widget.input_type }}" name="{{ form.username.name }}"
+                        id="{{ form.username.id_for_label }}" class="form-control" {% if form.username.value%}value="{{ form.username.value }}" {% endif %} {% if form.username.field.required %}required{%endif %}>
+                    {% if form.username.help_text %}
+                    <div class="form-text">{{ form.username.help_text }}</div>
+                    {% endif %}
+                    {% for error in form.username.errors %}
+                    <div class="invalid-feedback d-block">{{ error }}</div>
+                    {% endfor %}
+                </div>
+
+                <div class="mb-3">
+                    <label for="{{ form.password.id_for_label }}" class="form-label">
+                        {{ form.password.label }}
+                    </label>
+                    <div class="input-group">
+                        <input type="password" name="{{ form.password.name }}" id="id_password" class="form-control"
+                            required>
+
+                        <button class="btn btn-outline-secondary" type="button" id="togglePassword">
+                            <i class="bi bi-eye" id="eyeIcon"></i> </button>
+                    </div>
+                    {% for error in form.password.errors %}
+                    <div class="invalid-feedback d-block">{{ error }}</div>
+                    {% endfor %}
+                </div>
+
+                <button type="submit" class="btn btn-primary w-100 mb-3">
+                    Iniciar Sesión y Redirigir
+                </button>
+
+                {% if next %}
+                <input type="hidden" name="next" value="{{ next }}">
+                {% else %}
+                <input type="hidden" name="next" value="{% url 'control' %}">
+                {% endif %}
+
+            </form>
+
+            <p class="text-center mt-3">
+                <a href="{% url 'password_reset' %}">¿Olvidaste tu contraseña?</a>
+            </p>
+        </div>
+    </div>
+</div>
+
+{% endblock content %}
+
+{% block script %}
+<script>
+    // Asegúrate de que este script se ejecute después de cargar el DOM
+    document.addEventListener('DOMContentLoaded', function () {
+        const togglePassword = document.getElementById('togglePassword');
+        const passwordInput = document.getElementById('id_password');
+        const eyeIcon = document.getElementById('eyeIcon');
+
+        togglePassword.addEventListener('click', function (e) {
+            // Alternar el tipo de input entre 'password' y 'text'
+            const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+            passwordInput.setAttribute('type', type);
+
+            // Cambiar el icono del ojo
+            if (type === 'text') {
+                eyeIcon.classList.remove('bi-eye');
+                eyeIcon.classList.add('bi-eye-slash');
+            } else {
+                eyeIcon.classList.remove('bi-eye-slash');
+                eyeIcon.classList.add('bi-eye');
+            }
+        });
+    });
+</script>
+{% endblock %}

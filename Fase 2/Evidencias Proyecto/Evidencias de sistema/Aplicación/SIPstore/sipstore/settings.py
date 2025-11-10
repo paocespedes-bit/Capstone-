@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'control',
     'cart',
     'quote',
+    'accounts',
     
 ]
 
@@ -157,3 +158,14 @@ EMAIL_USE_TLS = True
 EMAIL_HOST_USER = "apikey"   
 EMAIL_HOST_PASSWORD = SENDGRID_API_KEY
 DEFAULT_FROM_EMAIL = "sipstore247@gmail.com"
+
+
+# ! LOGIN Y LOGOUT
+
+LOGIN_URL = 'login' 
+
+LOGIN_REDIRECT_URL = 'control'
+
+LOGOUT_REDIRECT_URL = 'logged_out_confirm'
+
+AUTH_USER_MODEL = 'accounts.CustomUser'

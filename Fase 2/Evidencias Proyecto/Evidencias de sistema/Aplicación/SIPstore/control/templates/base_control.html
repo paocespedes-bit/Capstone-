@@ -56,7 +56,8 @@
               <a href="{% url 'stock' %}" class="btn custom-btn"><i class="bi bi-box-seam me-2"></i>Inventario</a>
             </li>
             <li>
-              <a href="{% url 'pedidos' %}" class="btn custom-btn"><i class="bi bi-receipt me-2"></i>Lista de pedidos</a>
+              <a href="{% url 'pedidos' %}" class="btn custom-btn"><i class="bi bi-receipt me-2"></i>Lista de
+                pedidos</a>
             </li>
             <li>
               <a href="#" class="btn custom-btn"><i class="bi bi-chat-dots me-2"></i>Lista de comentarios</a>
@@ -69,7 +70,12 @@
               <a href="#" class="btn custom-btn"><i class="bi bi-key me-2"></i>Cambiar clave</a>
             </li>
             <li>
-              <a href="#" class="btn custom-btn btn-logout"><i class="bi bi-box-arrow-right me-2"></i>Cerrar Sesión</a>
+              <form action="{% url 'logout' %}" method="post" style="display:inline;">
+                {% csrf_token %}
+                <button type="submit" class="btn custom-btn btn-logout w-100 text-start">
+                  <i class="bi bi-box-arrow-right me-2"></i>Cerrar Sesión
+                </button>
+              </form>
             </li>
           </ul>
         </div>
