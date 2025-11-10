@@ -9,6 +9,9 @@ from django.template.loader import render_to_string
 from io import BytesIO
 import pandas as pd
 from docx import Document
+from cart.carrito import Carrito
+from store.models import PanelSIP
+from django.contrib.contenttypes.models import ContentType
 
 def quote(request):
     modulos = {
@@ -201,6 +204,9 @@ def calcular_materiales(request):
             "total_general": total_general
         }).content.decode("utf-8")
 
+        request.session["productos_calculo"] = resultados
+        request.session.modified = True
+
         return JsonResponse({"html": html})
 
 @csrf_exempt
@@ -296,3 +302,38 @@ def descargar_cotizacion(request, formato):
 
     else:
         return JsonResponse({"error": "Formato no soportado"}, status=400)
+    
+    
+@csrf_exempt
+def agregar_al_carrito(request):
+    if request.method == 'POST':
+        productos = request.session.get("productos_calculo", [])
+
+        if not productos:
+            return JsonResponse({"success": False, "message": "No hay productos para agregar al carrito."})
+
+        carrito = Carrito(request)
+
+        
+        content_type = ContentType.objects.get_for_model(PanelSIP)
+
+        for item in productos:
+            try:
+                producto = PanelSIP.objects.filter(nombre=item["nombre"]).first()
+                if producto:
+                    carrito.agregar({
+                        "id": producto.id,
+                        "nombre": producto.nombre,
+                        "precio_actual": producto.precio_actual,
+                        "content_type_id": content_type.id,
+                    }, item["cantidad"])
+            except Exception as e:
+                print(f"⚠️ Error al agregar {item['nombre']} al carrito: {e}")
+                continue
+
+        
+        del request.session["productos_calculo"]
+
+        return JsonResponse({"success": True, "message": "Productos agregados al carrito correctamente."})
+
+    return JsonResponse({"success": False, "message": "Método no permitido."})

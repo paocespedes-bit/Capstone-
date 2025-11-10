@@ -57,7 +57,7 @@ class CategoriaAdmin(admin.ModelAdmin):
 class OfertaAdmin(admin.ModelAdmin):
     list_display = ('producto', 'precio_oferta', 'porcentaje_dcto', 'fecha_inicio', 'fecha_fin')
     list_filter = ('fecha_inicio', 'fecha_fin')
-    search_fields = ('producto__nombre',) # Permite buscar por el nombre del producto relacionado
+    search_fields = ('producto__nombre',) 
 
 @admin.register(Comentario)
 class ComentarioAdmin(admin.ModelAdmin):
