@@ -16,9 +16,11 @@ from .utils.boleta import generar_boleta_pdf
 from decimal import Decimal, InvalidOperation
 from control.utils.email_utils import enviar_correo_estado
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+from django.contrib.auth.decorators import login_required
 
 
 # !Views principales
+@login_required
 def control(request):
     ahora = timezone.localtime(timezone.now())
     inicio_dia = ahora.replace(hour=0, minute=0, second=0, microsecond=0)
@@ -122,7 +124,7 @@ def control(request):
     }
 
     return render(request, 'home_control.html', context)
-
+@login_required
 def safe_decimal(value):
     """Convierte string con coma o punto a Decimal, o None si no es válido."""
     if not value or value.strip() == "":
@@ -131,7 +133,7 @@ def safe_decimal(value):
         return Decimal(value.replace(",", "."))
     except (InvalidOperation, AttributeError):
         return None
-
+@login_required
 def stock(request):
     paneles = PanelSIP.objects.all().order_by('-id')
     kits = KitConstruccion.objects.all().order_by('-id')
@@ -213,7 +215,7 @@ def stock(request):
     }
 
     return render(request, "stock.html", context)
-
+@login_required
 def pedidos(request):
     pedidos = Pedido.objects.all().order_by('-fecha_pedido')
     ordenar = request.GET.get("ordenar")
@@ -235,7 +237,7 @@ def pedidos(request):
         'pedidos' : page_obj   
     }
     return render(request,'pedidos.html',context)
-
+@login_required
 def pedido_detail(request, pk):
     pedidos = get_object_or_404(Pedido, pk=pk)
     detalles = DetallePedido.objects.filter(pedido=pedidos)  
@@ -248,6 +250,7 @@ def pedido_detail(request, pk):
 # !======================
 # !CREAR 
 # !======================
+@login_required
 def crear_categoria(request):
     if request.method == 'POST':
         form = CategoriaForm(request.POST)
@@ -259,7 +262,7 @@ def crear_categoria(request):
 
     # Siempre redirigimos a la pestaña de categorías
     return redirect(f"{reverse('stock')}?tab=cat")
-
+@login_required
 def crear_panel(request):
     if request.method == 'POST':
         panel_form = PanelSIPForm(request.POST)
@@ -298,7 +301,7 @@ def crear_panel(request):
         return redirect(f"{reverse('stock')}?tab=paneles")
     
     return redirect(f"{reverse('stock')}?tab=paneles")
-
+@login_required
 def crear_kit(request):
     if request.method == 'POST':
         kit_form = KitConstruccionForm(request.POST)
@@ -343,6 +346,7 @@ def crear_kit(request):
 # !======================
 # !SUBIR IMAGENES 
 # !======================
+@login_required
 def subir_imagenes_panel(request, panel_id):
     panel = get_object_or_404(PanelSIP, id=panel_id)
 
@@ -356,7 +360,7 @@ def subir_imagenes_panel(request, panel_id):
         return redirect('stock')  
 
     return render(request, 'stock.html', {'panel': panel})
-
+@login_required
 def subir_imagenes_kit(request, kit_id):
     kit = get_object_or_404(KitConstruccion, id=kit_id)
 
@@ -373,6 +377,7 @@ def subir_imagenes_kit(request, kit_id):
 # !======================
 # !ELIMINAR IMAGENES
 # !======================
+@login_required
 def eliminar_imagen_kit(request, imagen_id):
     imagen = get_object_or_404(imagenProducto, id=imagen_id)
     kit = imagen.producto  # Instancia real: PanelSIP o KitConstruccion
@@ -380,7 +385,7 @@ def eliminar_imagen_kit(request, imagen_id):
     if request.method == 'POST':
         imagen.delete()
         return redirect('/stock/?tab=kits')
-
+@login_required
 def eliminar_imagen(request, imagen_id):
     imagen = get_object_or_404(imagenProducto, id=imagen_id)
     panel = imagen.producto  # Instancia real: PanelSIP o KitConstruccion
@@ -392,6 +397,7 @@ def eliminar_imagen(request, imagen_id):
 # !======================
 # !EDITAR
 # !======================
+@login_required
 def editar_panel(request, pk):
     panel = get_object_or_404(PanelSIP, pk=pk)
 
@@ -430,7 +436,7 @@ def editar_panel(request, pk):
         return redirect(f"{reverse('stock')}?tab=paneles")
 
     return redirect(f"{reverse('stock')}?tab=paneles") 
-
+@login_required
 def editar_kit(request, pk):
     kit = get_object_or_404(KitConstruccion, pk=pk)
     
@@ -461,7 +467,7 @@ def editar_kit(request, pk):
         return redirect(f"{reverse('stock')}?tab=kits")
         
     return redirect(f"{reverse('stock')}?tab=kits")
-
+@login_required
 def editar_categoria(request, pk):
     categoria = get_object_or_404(Categoria, pk=pk)
     if request.method == "POST":
@@ -477,6 +483,7 @@ def editar_categoria(request, pk):
 # !ELIMINAR
 # !======================
 # Eliminar categoría
+@login_required
 def eliminar_categoria(request, pk):
     categoria = get_object_or_404(Categoria, pk=pk)
 
@@ -489,6 +496,7 @@ def eliminar_categoria(request, pk):
     return redirect(f"{reverse('stock')}?tab=cat")
 
 # Eliminar panel
+@login_required
 def eliminar_panel(request, pk):
     panel = get_object_or_404(PanelSIP, pk=pk)
     if request.method == "POST":
@@ -498,6 +506,7 @@ def eliminar_panel(request, pk):
     return redirect('stock')
 
 # Eliminar kit
+@login_required
 def eliminar_kit(request, pk):
     kit = get_object_or_404(KitConstruccion, pk=pk)
     if request.method == "POST":
@@ -510,7 +519,7 @@ def eliminar_kit(request, pk):
 # !======================
 # !BOLETAS
 # !======================
-
+@login_required
 def descargar_boleta(request, pedido_id):
     try:
         pedido = Pedido.objects.get(id=pedido_id)
@@ -522,7 +531,7 @@ def descargar_boleta(request, pedido_id):
     filename = f"boleta_pedido_{pedido.id}.pdf"
 
     return FileResponse(pdf_buffer, as_attachment=True, filename=filename)
-
+@login_required
 def save(self,*args, **kwargs):
     if not self.nombre_producto and self.producto:
         self.nombre_producto = getattr(self.producto, 'nombre', 'Producto Desconocido')
@@ -534,7 +543,7 @@ def save(self,*args, **kwargs):
 # !======================
 # !ESTADO DE PEDIDO----DISEÑO
 # !======================
-
+@login_required
 def cambiar_estado_pedido(request, pedido_id):
     pedido = get_object_or_404(Pedido, id=pedido_id)
     

@@ -11,7 +11,9 @@ urlpatterns = [
     path('', include('store.urls')),
     path('', include('control.urls')),
     path('', include('cart.urls')),
-    path('quote/',include('quote.urls'))
+    path('quote/',include('quote.urls')),
+    path('accounts/', include('django.contrib.auth.urls')),
+    path('', include('accounts.urls'))
 ]
 
 if settings.DEBUG:
