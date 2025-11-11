@@ -169,3 +169,5 @@ LOGIN_REDIRECT_URL = 'control'
 LOGOUT_REDIRECT_URL = 'logged_out_confirm'
 
 AUTH_USER_MODEL = 'accounts.CustomUser'
+
+PASSWORD_RESET_TTL = 120
