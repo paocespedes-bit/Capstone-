@@ -95,7 +95,7 @@
     </div>
 </div>
 
-  <!-- Modal KitConstruccion -->
+<!-- Modal KitConstruccion -->
 <div class="modal " id="modalKit" tabindex="-1" >
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
@@ -183,25 +183,49 @@
     </div>
 </div>
 
-  <!-- Modal Categoría -->
-  <div class="modal " id="modalCategoria" tabindex="-1" >
-    <div class="modal-dialog">
-      <div class="modal-content">
-        <form method="POST" action="{% url 'crear_categoria' %}">
-          {% csrf_token %}
-          <div class="modal-header">
-            <h5 class="modal-title">Nueva Categoría</h5>
-            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-          </div>
-          <div class="modal-body">
-            {{ CategoriaForm.as_p }}
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
-            <button type="submit" class="btn btn-warning">Guardar Categoría</button>
-          </div>
-        </form>
-      </div>
+    <!-- Modal Categoría -->
+    <div class="modal " id="modalCategoria" tabindex="-1" >
+        <div class="modal-dialog">
+        <div class="modal-content">
+            <form method="POST" action="{% url 'crear_categoria' %}">
+            {% csrf_token %}
+            <div class="modal-header">
+                <h5 class="modal-title">Nueva Categoría</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                {{ CategoriaForm.as_p }}
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                <button type="submit" class="btn btn-warning">Guardar Categoría</button>
+            </div>
+            </form>
+        </div>
+        </div>
     </div>
-  </div>
+
+
+
+    <!-- Modal Local -->
+    <div class="modal " id="modallocal" tabindex="-1" >
+        <div class="modal-dialog">
+        <div class="modal-content">
+            <form method="POST" action="{% url 'crear_local' %}">
+            {% csrf_token %}
+            <div class="modal-header">
+                <h5 class="modal-title">Nuevo Local</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                {{ LocalForm.as_p }}
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                <button type="submit" class="btn btn-warning">Guardar Local</button>
+            </div>
+            </form>
+        </div>
+        </div>
+    </div>
 </div>

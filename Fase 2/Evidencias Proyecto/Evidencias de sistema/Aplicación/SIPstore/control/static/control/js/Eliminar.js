@@ -62,4 +62,39 @@ document.addEventListener("DOMContentLoaded", function () {
             });
         });
     }
+    
+
+
+    document.querySelectorAll('.input-imagenes').forEach(input => {
+        input.addEventListener('change', function (event) {
+        const panelId = this.dataset.panelId;
+        const previewContainer = document.getElementById(`preview_${panelId}`);
+        const files = Array.from(this.files);
+
+        previewContainer.innerHTML = ''; // Limpiar previas
+
+        if (files.length > 5) {
+            alert('Solo puedes seleccionar hasta 5 imágenes.');
+            this.value = ''; // Limpiar selección
+            return;
+        }
+
+        files.forEach(file => {
+            if (!file.type.startsWith('image/')) return;
+
+            const reader = new FileReader();
+            reader.onload = function (e) {
+            const img = document.createElement('img');
+            img.src = e.target.result;
+            img.classList.add('img-thumbnail');
+            img.style.width = '100px';
+            img.style.height = '100px';
+            img.style.objectFit = 'cover';
+            previewContainer.appendChild(img);
+            };
+            reader.readAsDataURL(file);
+        });
+        });
+    });
+    
 });

@@ -15,10 +15,21 @@
             Subir imágenes para Panel: {{ panel.nombre }}
           </h5>
         </div>
+
         <div class="modal-body">
-          {{ form.as_p }}
-          <input type="file" name="imagenes" multiple class="form-control mb-3">
+          <input type="file" 
+                  name="imagenes" 
+                  multiple 
+                  accept="image/*"
+                  class="form-control mb-3 input-imagenes" 
+                  data-panel-id="{{ panel.id }}">
+          
+          <!-- Zona de vista previa -->
+          <div id="preview_{{ panel.id }}" class="d-flex flex-wrap gap-2"></div>
+
+          <small class="text-muted">Puedes subir hasta 5 imágenes a la vez.</small>
         </div>
+
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
           <button type="submit" class="btn btn-primary">Subir imágenes</button>
@@ -58,37 +69,41 @@
 {% endfor %}
 
 <!-- !==================================
-!Eliminar imagenes 
+!Eliminar imágenes 
 !================================== -->
 {% for panel in paneles %}
 <div class="modal fade" id="modalEliminarImagenes_{{ panel.id }}" tabindex="-1"
   aria-labelledby="modalEliminarImagenes_{{ panel.id }}">
   <div class="modal-dialog modal-lg">
     <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="modalEliminarImagenes_{{ panel.id }}">
-          Eliminar imágenes del Panel: {{ panel.nombre }}
-        </h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-      </div>
-      <div class="modal-body">
-        <div class="row">
-          {% for img in panel.imagenes.all %}
-          <div class="col-md-3 text-center mb-2">
-            <img src="{{ img.imagen.url }}" class="img-thumbnail" style="width: 100%; height: auto;">
-            <form method="post" action="{% url 'eliminar_imagen' img.id %}">
-              {% csrf_token %}
-              <button type="submit" class="btn btn-sm btn-danger mt-1">Eliminar</button>
-            </form>
-          </div>
-          {% empty %}
-          <p>No hay imágenes para este panel.</p>
-          {% endfor %}
+      <form method="post" action="{% url 'eliminar_imagenes_panel' panel.id %}">
+        {% csrf_token %}
+        <div class="modal-header">
+          <h5 class="modal-title">Eliminar imágenes del Panel: {{ panel.nombre }}</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
         </div>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
-      </div>
+        <div class="modal-body">
+          <div class="row">
+            {% for img in panel.imagenes.all %}
+            <div class="col-md-3 text-center mb-3">
+              <div class="border rounded p-2">
+                <img src="{{ img.imagen.url }}" class="img-thumbnail mb-2" style="width: 100%; height: auto;">
+                <div class="form-check">
+                  <input class="form-check-input" type="checkbox" name="imagenes" value="{{ img.id }}" id="img_panel_{{ img.id }}">
+                  <label class="form-check-label small" for="img_panel_{{ img.id }}">Seleccionar</label>
+                </div>
+              </div>
+            </div>
+            {% empty %}
+            <p class="text-center">No hay imágenes para este panel.</p>
+            {% endfor %}
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+          <button type="submit" class="btn btn-danger">Eliminar seleccionadas</button>
+        </div>
+      </form>
     </div>
   </div>
 </div>
@@ -101,30 +116,34 @@
   aria-labelledby="modalEliminarImagenesKit_{{ kit.id }}">
   <div class="modal-dialog modal-lg">
     <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="modalEliminarImagenesKit_{{ kit.id }}">
-          Eliminar imágenes del Kit: {{ kit.nombre }}
-        </h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-      </div>
-      <div class="modal-body">
-        <div class="row">
-          {% for img in kit.imagenes.all %}
-          <div class="col-md-3 text-center mb-2">
-            <img src="{{ img.imagen.url }}" class="img-thumbnail" style="width: 100%; height: auto;">
-            <form method="post" action="{% url 'eliminar_imagen_kit' img.id %}">
-              {% csrf_token %}
-              <button type="submit" class="btn btn-sm btn-danger mt-1">Eliminar</button>
-            </form>
-          </div>
-          {% empty %}
-          <p>No hay imágenes para este Kit.</p>
-          {% endfor %}
+      <form method="post" action="{% url 'eliminar_imagenes_kit' kit.id %}">
+        {% csrf_token %}
+        <div class="modal-header">
+          <h5 class="modal-title">Eliminar imágenes del Kit: {{ kit.nombre }}</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
         </div>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
-      </div>
+        <div class="modal-body">
+          <div class="row">
+            {% for img in kit.imagenes.all %}
+            <div class="col-md-3 text-center mb-3">
+              <div class="border rounded p-2">
+                <img src="{{ img.imagen.url }}" class="img-thumbnail mb-2" style="width: 100%; height: auto;">
+                <div class="form-check">
+                  <input class="form-check-input" type="checkbox" name="imagenes" value="{{ img.id }}" id="img_{{ img.id }}">
+                  <label class="form-check-label small" for="img_{{ img.id }}">Seleccionar</label>
+                </div>
+              </div>
+            </div>
+            {% empty %}
+            <p class="text-center">No hay imágenes para este kit.</p>
+            {% endfor %}
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+          <button type="submit" class="btn btn-danger">Eliminar seleccionadas</button>
+        </div>
+      </form>
     </div>
   </div>
 </div>
@@ -148,6 +167,45 @@
           <div class="mb-3">
             <label for="nombre{{ cat.id }}" class="form-label">Nombre</label>
             <input type="text" name="nombre" id="nombre{{ cat.id }}" class="form-control" value="{{ cat.nombre }}"
+              required>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+          <button type="submit" class="btn btn-primary">Guardar cambios</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+{% endfor %}
+
+
+{% for loc in locales %}
+<div class="modal fade" id="modalEditarLocal{{ loc.id }}" tabindex="-1"
+  aria-labelledby="modalEditarLocalLabel{{ loc.id }}">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <form method="post" action="{% url 'editar_local' loc.id %}"> 
+        {% csrf_token %}
+        <div class="modal-header">
+          <h5 class="modal-title" id="modalEditarLocalLabel{{ loc.id }}">Editar Local </h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+        </div>
+        <div class="modal-body">
+          <div class="mb-3">
+            <label for="nombre{{ loc.id }}" class="form-label">Nombre</label>
+            <input type="text" name="nombre" id="nombre{{ loc.id }}" class="form-control" value="{{ loc.nombre }}"
+              required>
+          </div>
+          <div class="mb-3">
+            <label for="ubicacion{{ loc.id }}" class="form-label">ubicacion</label>
+            <input type="text" name="ubicacion" id="ubicacion{{ loc.id }}" class="form-control" value="{{ loc.ubicacion }}"
+              required>
+          </div>
+          <div class="mb-3"> 
+            <label for="telefono{{ loc.id }}" class="form-label">telefono</label>
+            <input type="text" name="telefono" id="telefono{{ loc.id }}" class="form-control" value="{{ loc.telefono }}"
               required>
           </div>
         </div>
@@ -450,6 +508,35 @@
         </div>
         <div class="modal-body">
           <p>¿Deseas eliminar la categoría "<strong>{{ cat.nombre }}</strong>"?</p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+          <button type="submit" class="btn btn-danger">Eliminar</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+{% endfor %}
+{% endif %}
+
+<!-- *ELIMINAR CATEGORÍAS -->
+{% if locales %}
+{% for loc in locales %}
+<div class="modal fade" id="modalEliminarLocal{{ loc.id }}" tabindex="-1"
+  aria-labelledby="modalEliminarLocalLabel{{ loc.id }}">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <form method="post" action="{% url 'eliminar_local' loc.id %}">
+        {% csrf_token %}
+        <div class="modal-header">
+          <h5 class="modal-title" id="modalEliminarLocalLabel{{ loc.id }}">
+            Eliminar Local
+          </h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+        </div>
+        <div class="modal-body">
+          <p>¿Deseas eliminar la locales "<strong>{{ loc.nombre }}</strong>"?</p>
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>

@@ -240,8 +240,12 @@ def descargar_cotizacion(request, formato):
                     continue
 
                 panel = PanelSIP.objects.get(id=panel_id)
+
                 area_total = largo * ancho
-                area_panel = (float(panel.largo) * float(panel.ancho)) / 10000 or 2.88
+                area_panel = float(panel.largo) * float(panel.ancho)
+                if area_panel <= 0:
+                    area_panel = 2.88
+
                 cantidad = max(1, round(area_total / area_panel))
                 total = cantidad * float(panel.precio_actual)
                 total_general += total
@@ -255,10 +259,13 @@ def descargar_cotizacion(request, formato):
                     "Total": round(total, 2),
                 })
 
-            except Exception:
+            except PanelSIP.DoesNotExist:
+                print(f"⚠️ Panel con ID {form.get('tipoPanel')} no existe.")
+                continue
+            except Exception as e:
+                print(f"⚠️ Error en módulo {modulo}: {e}")
                 continue
 
-    # --- Exportación según formato ---
     if formato == "txt":
         buffer = BytesIO()
         contenido = "COTIZACIÓN PANEL SIP\n\n"
@@ -276,32 +283,41 @@ def descargar_cotizacion(request, formato):
         doc = Document()
         doc.add_heading("Cotización Panel SIP", 0)
         for r in resultados:
-            doc.add_paragraph(f"{r['Panel']} ({r['Módulo']}): {r['Cantidad']} panel(es) - Total: ${r['Total']}")
+            doc.add_paragraph(
+                f"{r['Panel']} ({r['Módulo']}): {r['Cantidad']} panel(es) - Total: ${r['Total']}"
+            )
         doc.add_paragraph(f"\nTOTAL GENERAL: ${round(total_general, 2)}")
 
         buffer = BytesIO()
         doc.save(buffer)
         buffer.seek(0)
 
-        response = HttpResponse(buffer, content_type="application/vnd.openxmlformats-officedocument.wordprocessingml.document")
+        response = HttpResponse(
+            buffer,
+            content_type="application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+        )
         response["Content-Disposition"] = 'attachment; filename="cotizacion.docx"'
         return response
 
     elif formato == "xlsx":
         df = pd.DataFrame(resultados)
-        df.loc[len(df.index)] = ["", "", "", "", "TOTAL GENERAL", total_general]
+        df.loc[len(df.index)] = ["", "", "", "", "TOTAL GENERAL", round(total_general, 2)]
 
         buffer = BytesIO()
         with pd.ExcelWriter(buffer, engine="xlsxwriter") as writer:
             df.to_excel(writer, index=False, sheet_name="Cotizacion")
         buffer.seek(0)
 
-        response = HttpResponse(buffer, content_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
+        response = HttpResponse(
+            buffer,
+            content_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+        )
         response["Content-Disposition"] = 'attachment; filename="cotizacion.xlsx"'
         return response
 
     else:
         return JsonResponse({"error": "Formato no soportado"}, status=400)
+
     
     
 @csrf_exempt
