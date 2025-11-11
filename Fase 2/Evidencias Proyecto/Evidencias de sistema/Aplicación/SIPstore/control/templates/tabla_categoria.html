@@ -1,0 +1,34 @@
+{% load static %}
+<div class="table-responsive">
+  <table class="table table-hover table-striped align-middle">
+    <thead class="table">
+      <tr>
+        <th>
+          Nombre
+          {% include 'filtro_columna.html' with columna_nombre="nombre" tab_activo="cat"%}
+        </th>
+        <th class="text-center">Acciones</th>
+      </tr>
+    </thead>
+    <h2>Categorias</h2>
+    <tbody>
+      {% for cat in categorias %}
+      <tr>
+        <td data-label="Nombre">{{ cat.nombre }}</td>
+        <td data-label="Acciones" class="text-center">
+          <button class="btn btn-sm btn-primary" data-bs-toggle="modal"
+            data-bs-target="#modalEditarPanel{{ cat.id }}">Editar</button>
+          <button type="button" class="btn btn-danger" data-bs-toggle="modal"
+            data-bs-target="#modalEliminarCategoria_{{ cat.id }}">
+            Eliminar
+          </button>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+{% block script %}
+<script src="{% static 'control/js/eliminar.js' %}"></script>
+{% endblock %}

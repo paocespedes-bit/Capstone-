@@ -1,0 +1,120 @@
+{% extends "base_control.html" %}
+{% load static %}
+{% load humanize %}
+
+{% block link %}
+<link rel="stylesheet" href="{% static 'control/style/home.css' %}" />
+<link rel="stylesheet" href="{% static 'control/style/modal.css' %}" />
+{% endblock %}
+
+{% block content %} 
+
+{{ labels_ventas_anio|json_script:"labels_ventas_anio_json" }}
+{{ data_ventas_anio|json_script:"data_ventas_anio_json" }}
+
+{{ labels_ventas_mes|json_script:"labels_ventas_mes_json" }}
+{{ data_ventas_mes|json_script:"data_ventas_mes_json" }}
+
+{{ labels_ventas_dia|json_script:"labels_ventas_dia_json" }}
+{{ data_ventas_dia|json_script:"data_ventas_dia_json" }}
+
+{{ labels_ingresos|json_script:"labels_ingresos_json" }}
+{{ data_ingresos|json_script:"data_ingresos_json" }}
+
+{{ labels_productos_mes|json_script:"labels_productos_mes_json" }}
+{{ datasets_productos_mes|json_script:"datasets_productos_mes_json" }}
+
+<!-- Gráficos -->
+<div class="row g-4 mb-4 graficos">
+  <!-- Total ventas del año -->
+  <div class="col-12 col-md-6 col-lg-4 gr">
+    <div class="card p-3 shadow-sm">
+      <h5><i class="bi bi-graph-up-arrow me-2"></i>Total ventas del año</h5>
+      <canvas id="ventasPorAnio" class="chart-box" width="300" height="300"></canvas>
+    </div>
+  </div>
+
+  <!-- Ingresos por tipo de producto -->
+  <div class="col-12 col-md-6 col-lg-4 gr">
+    <div class="card p-3 shadow-sm">
+      <h5><i class="bi bi-pie-chart me-2"></i>Ingresos por tipo de producto</h5>
+      <canvas id="ingresosPorTipo" class="chart-box"></canvas>
+    </div>
+  </div>
+
+  <!-- Ventas tipo producto/mes -->
+  <div class="col-12 col-md-6 col-lg-4 gr">
+  <div class="card p-3 shadow-sm">
+    <h5><i class="bi bi-bar-chart me-2"></i>Ventas por tipo de producto / mes</h5>
+    <canvas id="productosPorMesLineas" class="chart-box" width="300" height="300"></canvas>
+  </div>
+</div>
+</div>
+
+<!-- Tabla de pedidos de hoy -->
+<div class="card shadow-sm p-3">
+  <h4 class="mb-3 text-primary">Pedidos de hoy ({{ pedidos_hoy.count }})</h4>
+  <a href="{% url 'pedidos' %}">Ver todos los pedidos...</a>
+  <div class="table-responsive">
+    <table class="table table-hover table-striped align-middle">
+      <thead>
+        <tr>
+          <th>ID boleta</th>
+          <th>Fecha del pedido</th>
+          <th>Estado</th>
+          <th>Centro de retiro</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for pedido in pedido_hoy %}
+        <tr>
+          <td>#{{ pedido.id }}</td>
+          <td>{{ pedido.fecha_pedido|date:"d/m/Y H:i" }}</td>
+          <td>
+            {% if pedido.estado == 'pendiente' %}
+              <span class="badge bg-warning text-dark">Pendiente</span>
+            {% elif pedido.estado == 'en_proceso' %}
+              <span class="badge bg-secondary">En proceso</span>
+            {% elif pedido.estado == 'completado' %}
+              <span class="badge bg-success">Completado</span>
+            {% elif pedido.estado == 'cancelado' %}
+              <span class="badge bg-danger">Cancelado</span>
+            {% else %}
+              <span class="badge bg-secondary">Desconocido</span>
+            {% endif %}
+          </td>
+          <td>{{ pedido.local }}</td>
+          <td>
+            <a href="{% url 'pedido_detail' pedido.id %}" class="btn btn-ver btn-sm">
+              Ver más
+            </a>
+          </td>
+        </tr>
+        {% empty %}
+        <tr>
+          <td colspan="5" class="text-center text-muted">
+            No hay pedidos registrados hoy.
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- Modal -->
+<div id="modalVentas" class="modal">
+  <div class="modal-content">
+    <span class="close">&times;</span>
+    <h3>Detalles de Ventas</h3>
+    <canvas id="chartVentasAnio" width="400" height="200"></canvas>
+    <canvas id="chartVentasMes" width="400" height="200"></canvas>
+    <canvas id="chartVentasDia" width="400" height="200"></canvas>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="{% static 'control/js/dashboard.js' %}"></script>
+<script src="{% static 'control/js/modal.js' %}"></script>
+{% endblock %}

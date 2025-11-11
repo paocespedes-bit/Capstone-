@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% load static %}
+{% load myfilters %}
+
+{% block title %}Carrito de Compras{% endblock %}
+
+{% block link %} 
+<link rel="stylesheet" href="{% static 'cart/css/carrito.css' %}" />
+{% endblock %}
+
+{% block content %}
+<div class="cart">
+        <h1 class="texto">Carrito </h1>
+
+        <div class="row">
+            
+            <div class="col-md-8">
+                
+                {% include 'productos.html' %}
+
+                {% include 'form_pedido.html' %}
+
+            </div>
+            
+            <div class="col">
+                {% include 'summary.html' %}
+            </div>
+
+        </div>
+    </div>
+    {% include 'toast.html' %}
+{% endblock %}
+{% block script %}
+<script>window.MERCADOPAGO_PUBLIC_KEY = "{{ public_key }}";</script>
+<script src="{% static 'cart/js/vista_carrito.js' %}"></script>
+{% endblock %}

@@ -1,0 +1,45 @@
+# -----------------------------
+# Entornos Virtuales
+# -----------------------------
+venv/
+env/
+virtualenv/
+.env
+
+# -----------------------------
+# Archivos de Cache y Python Compilado
+# Ignora __pycache__ en todo el proyecto (incluyendo dentro de migrations)
+# -----------------------------
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.pyc 
+
+# -----------------------------
+# Archivos Generados por Django
+# -----------------------------
+# Base de datos (SQLite en desarrollo)
+*.sqlite3
+*.sqlite3-journal
+
+# Archivos Estáticos y de Media (Resultados de collectstatic y archivos subidos)
+media/
+staticfiles/
+
+# -----------------------------
+# Logs y Herramientas de Desarrollo
+# -----------------------------
+*.log
+logs/
+.pytest_cache/
+coverage/
+*.cache
+
+# Archivos de IDE (VS Code, PyCharm, Sublime) y Sistema (macOS)
+.vscode/
+.idea/
+*.swp
+.DS_Store
+*.sublime-project
+*.sublime-workspace
