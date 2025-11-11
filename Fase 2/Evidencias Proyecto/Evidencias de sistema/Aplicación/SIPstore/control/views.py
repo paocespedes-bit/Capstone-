@@ -124,7 +124,7 @@ def control(request):
     }
 
     return render(request, 'home_control.html', context)
-@login_required
+
 def safe_decimal(value):
     """Convierte string con coma o punto a Decimal, o None si no es válido."""
     if not value or value.strip() == "":
