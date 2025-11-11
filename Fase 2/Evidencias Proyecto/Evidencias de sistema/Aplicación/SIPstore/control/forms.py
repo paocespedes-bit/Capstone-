@@ -1,5 +1,6 @@
 from django import forms
 from store.models import Categoria, PanelSIP, KitConstruccion, imagenProducto
+from .models import Local
 
 
 # Formulario Categoría
@@ -92,3 +93,15 @@ class ImagenProductoForm(forms.ModelForm):
                 raise forms.ValidationError(f"La imagen no puede superar los {max_size_mb} MB.")
 
         return imagen
+    
+
+# Formulario Categoría   
+class LocalForm(forms.ModelForm):
+    class Meta:
+        model = Local
+        fields = ['nombre', 'ubicacion', 'telefono']
+        widgets = {
+            'nombre': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Nombre de la categoría'}),
+            'ubicacion': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Nombre de la categoría'}),
+            'telefono': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Nombre de la categoría'})
+        }

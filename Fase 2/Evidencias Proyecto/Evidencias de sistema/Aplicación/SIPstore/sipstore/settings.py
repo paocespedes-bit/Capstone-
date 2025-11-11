@@ -18,6 +18,7 @@ SECRET_KEY = os.getenv('SECRET_KEY')
 
 DEBUG = os.getenv('DEBUG', 'False') == 'True'
 
+
 CSRF_TRUSTED_ORIGINS = [
     'https://*.ngrok-free.app', 
     'https://*.ngrok-free.dev', 

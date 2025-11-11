@@ -3,9 +3,9 @@ from django.urls import reverse
 from django.contrib.contenttypes.models import ContentType
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
-from .forms import CategoriaForm, PanelSIPForm, KitConstruccionForm, ImagenProductoForm
+from .forms import CategoriaForm, PanelSIPForm, KitConstruccionForm, ImagenProductoForm, LocalForm
 from store.models import PanelSIP, KitConstruccion, Categoria, imagenProducto,Inventario
-from .models import Pedido,DetallePedido
+from .models import Pedido,DetallePedido,Local
 from datetime import date
 from django.utils import timezone
 from django.db.models import Sum, F
@@ -17,6 +17,7 @@ from decimal import Decimal, InvalidOperation
 from control.utils.email_utils import enviar_correo_estado
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.contrib.auth.decorators import login_required
+from django.views.decorators.http import require_POST
 
 
 # !Views principales
@@ -138,6 +139,7 @@ def stock(request):
     paneles = PanelSIP.objects.all().order_by('-id')
     kits = KitConstruccion.objects.all().order_by('-id')
     categorias = Categoria.objects.all().order_by('-id')
+    locales = Local.objects.all().order_by('-id')
 
     # Parámetros de orden y pestaña
     ordenar = request.GET.get("ordenar")
@@ -176,6 +178,8 @@ def stock(request):
             kits = kits.order_by(orden)
         elif tab == "cat":
             categorias = categorias.order_by(orden)
+        elif tab == "loc":
+            locales = locales.order_by(orden)
 
     # --- VALORES ÚNICOS PARA SELECTS ---
     tipo_obs_opciones = PanelSIP.objects.values_list("tipo_obs", flat=True).distinct()
@@ -188,21 +192,25 @@ def stock(request):
     paginator_panel = Paginator(paneles, items_por_pagina)
     paginator_kit = Paginator(kits,items_por_pagina)
     paginator_cat = Paginator(categorias, items_por_pagina) 
+    paginator_loc = Paginator(locales, items_por_pagina) 
     
     page = request.GET.get('page')
     
     page_panel = paginator_panel.get_page(page)
     page_kit = paginator_kit.get_page(page)
     page_cat = paginator_cat.get_page(page)
+    page_loc = paginator_loc.get_page(page)
     
     
     context = {
         "paneles": page_panel,
         "kits": page_kit,
         "categorias": page_cat,
+        "locales": page_loc,
         "panel_form": PanelSIPForm(),
         "CategoriaForm": CategoriaForm(),
         "KitConstruccionForm": KitConstruccionForm(),
+        "LocalForm": LocalForm(),
         "tipo_obs_opciones": tipo_obs_opciones,
         "espesor_opciones": espesor_opciones,
         "largo_opciones": largo_opciones,
@@ -262,6 +270,21 @@ def crear_categoria(request):
 
     # Siempre redirigimos a la pestaña de categorías
     return redirect(f"{reverse('stock')}?tab=cat")
+
+@login_required
+def crear_local(request):
+    if request.method == 'POST':
+        form = LocalForm(request.POST)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Local creado correctamente.')
+        else:
+            messages.error(request, 'Por favor corrige los errores del formulario.')
+
+    # Siempre redirigimos a la pestaña de categorías
+    return redirect(f"{reverse('stock')}?tab=loc")
+
+
 @login_required
 def crear_panel(request):
     if request.method == 'POST':
@@ -346,54 +369,129 @@ def crear_kit(request):
 # !======================
 # !SUBIR IMAGENES 
 # !======================
+
+# !======================
+# ! SUBIR IMÁGENES PANEL
+# !======================
 @login_required
 def subir_imagenes_panel(request, panel_id):
     panel = get_object_or_404(PanelSIP, id=panel_id)
 
     if request.method == "POST":
-        for imagen in request.FILES.getlist('imagenes'):
+        imagenes = request.FILES.getlist('imagenes')
+        content_type = ContentType.objects.get_for_model(panel)
+
+        # Cuántas imágenes tiene actualmente este panel
+        imagenes_actuales = imagenProducto.objects.filter(
+            content_type=content_type, object_id=panel.id
+        ).count()
+
+        # Límite máximo de 5 por panel
+        if imagenes_actuales >= 5:
+            messages.error(request, "Este panel ya tiene el máximo de 5 imágenes.")
+            return redirect('stock')
+
+        # Si al subir se pasa del límite, bloquea
+        if imagenes_actuales + len(imagenes) > 5:
+            restantes = 5 - imagenes_actuales
+            messages.error(
+                request,
+                f"Este panel ya tiene {imagenes_actuales} imágenes. Solo puedes subir {restantes} más."
+            )
+            return redirect('stock')
+
+        for imagen in imagenes:
             imagenProducto.objects.create(
                 imagen=imagen,
-                content_type=ContentType.objects.get_for_model(panel),
+                content_type=content_type,
                 object_id=panel.id
             )
-        return redirect('stock')  
 
-    return render(request, 'stock.html', {'panel': panel})
+        messages.success(
+            request,
+            f"Se subieron {len(imagenes)} imágenes correctamente. Total: {imagenes_actuales + len(imagenes)} / 5."
+        )
+        return redirect('stock')
+
+    return redirect('stock')
+
+
+# !======================
+# ! SUBIR IMÁGENES KIT
+# !======================
 @login_required
 def subir_imagenes_kit(request, kit_id):
     kit = get_object_or_404(KitConstruccion, id=kit_id)
 
     if request.method == "POST":
-        for imagen in request.FILES.getlist('imagenes'):
+        imagenes = request.FILES.getlist('imagenes')
+        content_type = ContentType.objects.get_for_model(kit)
+
+        imagenes_actuales = imagenProducto.objects.filter(
+            content_type=content_type, object_id=kit.id
+        ).count()
+
+        if imagenes_actuales >= 5:
+            messages.error(request, "Este kit ya tiene el máximo de 5 imágenes.")
+            return redirect('/stock/?tab=kits')
+
+        if imagenes_actuales + len(imagenes) > 5:
+            restantes = 5 - imagenes_actuales
+            messages.error(
+                request,
+                f"Este kit ya tiene {imagenes_actuales} imágenes. Solo puedes subir {restantes} más."
+            )
+            return redirect('/stock/?tab=kits')
+
+        for imagen in imagenes:
             imagenProducto.objects.create(
                 imagen=imagen,
-                content_type=ContentType.objects.get_for_model(kit),
+                content_type=content_type,
                 object_id=kit.id
             )
-        return redirect('/stock/?tab=kits') 
 
-    return render(request, 'tabla_kits.html', {"kit": kit})
+        messages.success(
+            request,
+            f"Se subieron {len(imagenes)} imágenes correctamente. Total: {imagenes_actuales + len(imagenes)} / 5."
+        )
+        return redirect('/stock/?tab=kits')
+
+    return redirect('/stock/?tab=kits')
 # !======================
 # !ELIMINAR IMAGENES
 # !======================
 @login_required
-def eliminar_imagen_kit(request, imagen_id):
-    imagen = get_object_or_404(imagenProducto, id=imagen_id)
-    kit = imagen.producto  # Instancia real: PanelSIP o KitConstruccion
+def eliminar_imagenes_kit(request, kit_id):
+    kit = get_object_or_404(KitConstruccion, id=kit_id)
 
-    if request.method == 'POST':
-        imagen.delete()
+    if request.method == "POST":
+        # Obtener lista de IDs seleccionados desde el formulario
+        imagenes_ids = request.POST.getlist("imagenes")
+
+        if imagenes_ids:
+            imagenProducto.objects.filter(id__in=imagenes_ids).delete()
+            messages.success(request, f"Se eliminaron {len(imagenes_ids)} imágenes correctamente.")
+        else:
+            messages.warning(request, "No seleccionaste ninguna imagen para eliminar.")
+
         return redirect('/stock/?tab=kits')
-@login_required
-def eliminar_imagen(request, imagen_id):
-    imagen = get_object_or_404(imagenProducto, id=imagen_id)
-    panel = imagen.producto  # Instancia real: PanelSIP o KitConstruccion
 
-    if request.method == 'POST':
-        imagen.delete()
+    return render(request, "tabla_kits.html", {"kit": kit})
+@login_required
+def eliminar_imagenes_panel(request, panel_id):
+    panel = get_object_or_404(PanelSIP, id=panel_id)
+
+    if request.method == "POST":
+        imagenes_ids = request.POST.getlist("imagenes")
+        if imagenes_ids:
+            imagenProducto.objects.filter(id__in=imagenes_ids).delete()
+            messages.success(request, f"Se eliminaron {len(imagenes_ids)} imágenes correctamente.")
+        else:
+            messages.warning(request, "No seleccionaste ninguna imagen para eliminar.")
+
         return redirect('stock')
 
+    return render(request, 'stock.html', {'panel': panel})
 # !======================
 # !EDITAR
 # !======================
@@ -479,6 +577,18 @@ def editar_categoria(request, pk):
         form = CategoriaForm(instance=categoria)
     return render(request, 'editar_categoria.html', {'form': form, 'categoria': categoria})
 
+@login_required
+def editar_local(request, pk):
+    local = get_object_or_404(Local, pk=pk)
+    if request.method == "POST":
+        form = LocalForm(request.POST, instance=local)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Local actualizado correctamente.")
+            return redirect('/stock/?tab=loc')  # usa la vista que carga stock.html
+    else:
+        form = LocalForm(instance=local)
+    return render(request, 'editar_local.html', {'form': form, 'local': local})
 # !======================
 # !ELIMINAR
 # !======================
@@ -494,6 +604,19 @@ def eliminar_categoria(request, pk):
 
     # Redirigimos siempre a la pestaña de categorías
     return redirect(f"{reverse('stock')}?tab=cat")
+
+# Eliminar local
+@login_required
+def eliminar_local(request, pk):
+    local = get_object_or_404(Local, pk=pk)
+
+    if request.method == "POST":
+        nombre = local.nombre
+        local.delete()
+        messages.success(request, f'Local "{nombre}" eliminada correctamente.')
+
+    # Redirigimos siempre a la pestaña de locales
+    return redirect(f"{reverse('stock')}?tab=loc")
 
 # Eliminar panel
 @login_required
