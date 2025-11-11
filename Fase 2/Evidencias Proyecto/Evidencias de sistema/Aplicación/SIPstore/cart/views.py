@@ -339,12 +339,34 @@ def procesando_pago(request):
 def pago_exitoso(request):
     pedido_id = request.GET.get("pedido_id")
     pedido = None
+    productos = []
+
     if pedido_id and pedido_id.isdigit():
         try:
             pedido = Pedido.objects.get(id=pedido_id)
+            detalles = DetallePedido.objects.filter(pedido=pedido)
+
+            for d in detalles:
+                content_type = d.content_type
+                producto_obj = content_type.get_object_for_this_type(id=d.object_id)
+
+                productos.append({
+                    "nombre": getattr(producto_obj, "nombre", str(producto_obj)),
+                    "cantidad": d.cantidad,
+                    "subtotal": d.subtotal,
+                })
+
         except Pedido.DoesNotExist:
             pedido = None
-    return render(request, "pago_exitoso.html", {"pedido": pedido})
+
+    context = {
+        "pedido": pedido,
+        "productos": productos,
+    }
+
+    return render(request, "pago_exitoso.html", context)
+
+
 
 def pago_pendiente(request):
     pedido_id = request.GET.get("pedido_id")
