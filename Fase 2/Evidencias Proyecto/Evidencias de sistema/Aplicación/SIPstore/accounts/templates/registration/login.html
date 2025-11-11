@@ -5,6 +5,8 @@
 <link rel="stylesheet" href="{% static 'accounts/css/login.css' %}">
 {% endblock %}
 
+{% block title %}Inicio de Sesion{% endblock %}
+
 {% block content %}
 <div class="login-container">
     <div class="login-card">
@@ -63,7 +65,7 @@
         </form>
 
         <div class="login-card-footer">
-            <a href="{% url 'password_reset' %}">¿Olvidaste tu contraseña?</a>
+            <a href="{% url 'forgot' %}">¿Olvidaste tu contraseña?</a>
         </div>
     </div>
 </div>

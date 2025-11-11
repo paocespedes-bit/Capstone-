@@ -1,5 +1,9 @@
 from django.contrib.auth.models import AbstractUser
 from django.db import models
+import uuid
+from datetime import timedelta
+from django.utils import timezone
+from django.conf import settings
 
 class CustomUser(AbstractUser):
     celular = models.CharField(
@@ -32,5 +36,5 @@ class CustomUser(AbstractUser):
         verbose_name_plural = 'Usuarios Personalizados'
         
     def get_full_name(self):
-        """Retorna el nombre y apellido, que usarás como 'Nombre'"""
         return f"{self.first_name} {self.last_name}"
+
