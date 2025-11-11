@@ -1,0 +1,82 @@
+{% load static %} {% load myfilters %}
+<div class="card bg-light shadow summary-sticky">
+  <div class="card-header bg-secondary text-white">
+    <h5 class="mb-0">Sumario de Compra</h5>
+  </div>
+  <div class="card-body">
+    <ul class="list-group list-group-flush mb-3" id="summary-list">
+      {% for item in productos_detalles %}
+      <li
+        class="list-group-item d-flex justify-content-between bg-light summary-item-{{ item.producto.id }}"
+      >
+        <div style="width: 10vw" title="{{item.nombre}}.">
+          {{ item.nombre|truncate_chars:10 }}
+        </div>
+        <div class="px-3 text-center" style="max-width: 15vw">
+          <span class="cantidad-summary-{{ item.producto.id }}">
+            X {{ item.cantidad }}</span
+          >
+        </div>
+        <div class="ms-3 text-end" style="width: 10vw">
+          <span class="acumulado-summary-{{ item.producto.id }}">
+            ${{item.acumulado|floatformat:0|punto_miles}}</span
+          >
+        </div>
+      </li>
+      {% endfor %}
+      <li
+        class="list-group-item d-flex justify-content-between align-items-center bg-light fw-bold border-top border-dark"
+      >
+        TOTAL
+        <span class="fs-5" id="total_sumary"
+          >${{ total_carrito|default:0|floatformat:0|punto_miles }}</span
+        >
+      </li>
+    </ul>
+
+    <div id="cart-controls">
+      <button
+        id="btn-continue-cart"
+        class="btn btn-success w-100 mb-2"
+        onclick="toggleCartCollapse()"
+      >
+        Continuar Compra &rarr;
+      </button>
+
+      <button id="btn-validate-data" class="btn btn-primary w-100 mb-2 d-none">
+        Validar Datos
+      </button>
+
+      <button
+        type="submit"
+        form="pedidoForm"
+        id="btn-finish-order"
+        class="btn btn-success w-100 mb-2 d-none"
+      >
+        Terminar Pedido &check;
+      </button>
+
+      <div id="walletBrick_container" class="w-100 mb-2 d-none"></div>
+
+      <button
+        id="btn-back-store"
+        class="btn btn-outline-secondary w-100 d-none"
+        onclick="toggleCartCollapse()"
+      >
+        &larr; Volver
+      </button>
+      <button
+        id="btn-back-online"
+        class="btn btn-outline-secondary w-100 d-none"
+        onclick="toggleCartCollapse()"
+      >
+        &larr; Volver
+      </button>
+    </div>
+  </div>
+</div>
+
+{% block script %}
+<script src="https://sdk.mercadopago.com/js/v2"></script>
+<script></script>
+{% endblock %}

@@ -1,0 +1,231 @@
+<div class="container mt-4">
+<!-- Modal Panel SIP -->
+<div class="modal fade" id="modalPanel" tabindex="-1" >
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <form method="POST" action="{% url 'crear_panel' %}">
+                {% csrf_token %}
+                <div class="modal-header">
+                    <h5 class="modal-title">Nuevo Panel SIP</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label class="form-label">Nombre</label>
+                            {{ panel_form.nombre }}
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Precio</label>
+                            {{ panel_form.precio }}
+                        </div>
+                        <div class="col-md-12">
+                            <label class="form-label">Descripción</label>
+                            {{ panel_form.descripcion }}
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Tipo OBS</label>
+                            {{ panel_form.tipo_obs }}
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Madera Unión</label>
+                            {{ panel_form.madera_union }}
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">Espesor (mm)</label>
+                            {{ panel_form.espesor }}
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">Largo (mts)</label>
+                            {{ panel_form.largo }}
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">Ancho (mts)</label>
+                            {{ panel_form.ancho }}
+                        </div>
+                        <div class="col-md-12 mt-3">
+                            <label class="form-label">Categorías</label>
+                            {{ panel_form.categorias }}
+                        </div>
+                    </div>
+
+                    <h6 class="mt-4">Gestión de Stock</h6>
+                    <label class="form-label">Modo de Stock</label>
+                    <div class="mb-3">
+                        <div class="form-check">
+                            <input class="form-check-input radio-desbloquea-cantidad" type="radio" name="modo_stock"
+                                id="stock_panel_nuevo" value="stock">
+                            <label class="form-check-label" for="stock_panel_nuevo">Con stock</label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input radio-bloquea-cantidad" type="radio" name="modo_stock"
+                                id="pedido_panel_nuevo" value="pedido" checked>
+                            <label class="form-check-label" for="pedido_panel_nuevo">Por pedido</label>
+                        </div>
+                    </div>
+                    <div class="col-md-12">
+                        <div id="cantidadDiv_panel_nuevo" class="mt-3">
+                            <label for="cantidad_panel_nuevo" class="form-label">Cantidad disponible</label>
+                            <input type="number" class="form-control input-cantidad-inventario" id="cantidad_panel_nuevo"
+                                name="cantidad" min="0" value="0" disabled>
+                            </div>
+                    </div>
+                    {% if panel_form.errors %}
+                        <div class="alert alert-danger mt-3">
+                            Por favor corrige los siguientes errores:
+                            <ul>
+                                {% for field in panel_form %}
+                                    {% for error in field.errors %}
+                                        <li>{{ field.label }}: {{ error }}</li>
+                                    {% endfor %}
+                                {% endfor %}
+                                {% for error in panel_form.non_field_errors %}
+                                    <li>{{ error }}</li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    {% endif %}
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                    <button type="submit" class="btn btn-primary">Guardar Panel SIP</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Modal KitConstruccion -->
+<div class="modal " id="modalKit" tabindex="-1" >
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <form method="POST" action="{% url 'crear_kit' %}" enctype="multipart/form-data" >
+                {% csrf_token %}
+                <div class="modal-header">
+                    <h5 class="modal-title">Nuevo Kit de Construcción</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row g-3">
+                        <div class="col-md-12">
+                            <label class="form-label">Nombre</label>
+                            {{ KitConstruccionForm.nombre }}
+                        </div>
+                        <div class="col-md-12">
+                            <label class="form-label">Precio</label>
+                            {{ KitConstruccionForm.precio }}
+                        </div>
+                        <div class="col-md-12">
+                            <label class="form-label">Descripción</label>
+                            {{ KitConstruccionForm.descripcion }}
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">m²</label>
+                            {{ KitConstruccionForm.m2 }}
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">Dormitorios</label>
+                            {{ KitConstruccionForm.dormitorios }}
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">Baños</label>
+                            {{ KitConstruccionForm.banos }}
+                        </div>
+                        <div class="col-md-12 mt-3">
+                            <label class="form-label">Categorías</label>
+                            {{ KitConstruccionForm.categorias }}
+                        </div>
+                    </div>
+
+                    <h6 class="mt-4">Gestión de Stock</h6>
+                    <label class="form-label">Modo de Stock</label>
+                    <div class="mb-3">
+                        <div class="form-check">
+                            <input class="form-check-input radio-desbloquea-cantidad" type="radio" name="modo_stock"
+                                id="stock_kit_nuevo" value="stock">
+                            <label class="form-check-label" for="stock_kit_nuevo">Con stock</label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input radio-bloquea-cantidad" type="radio" name="modo_stock"
+                                id="pedido_kit_nuevo" value="pedido" checked>
+                            <label class="form-check-label" for="pedido_kit_nuevo">Por pedido</label>
+                        </div>
+                    </div>
+                    <div class="col-md-12">
+                        <div id="cantidadDiv_kit_nuevo" class="mt-3">
+                            <label for="cantidad_kit_nuevo" class="form-label">Cantidad disponible</label>
+                            <input type="number" class="form-control input-cantidad-inventario" id="cantidad_kit_nuevo"
+                                name="cantidad" min="0" value="0" disabled>
+                        </div>
+                    </div>
+                    {% if KitConstruccionForm.errors %}
+                        <div class="alert alert-danger mt-3">
+                            Por favor corrige los siguientes errores:
+                            <ul>
+                                {% for field in KitConstruccionForm %}
+                                    {% for error in field.errors %}
+                                        <li>{{ field.label }}: {{ error }}</li>
+                                    {% endfor %}
+                                {% endfor %}
+                                {% for error in KitConstruccionForm.non_field_errors %}
+                                    <li>{{ error }}</li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    {% endif %}
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                    <button type="submit" class="btn btn-success">Guardar Kit</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+    <!-- Modal Categoría -->
+    <div class="modal " id="modalCategoria" tabindex="-1" >
+        <div class="modal-dialog">
+        <div class="modal-content">
+            <form method="POST" action="{% url 'crear_categoria' %}">
+            {% csrf_token %}
+            <div class="modal-header">
+                <h5 class="modal-title">Nueva Categoría</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                {{ CategoriaForm.as_p }}
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                <button type="submit" class="btn btn-warning">Guardar Categoría</button>
+            </div>
+            </form>
+        </div>
+        </div>
+    </div>
+
+
+
+    <!-- Modal Local -->
+    <div class="modal " id="modallocal" tabindex="-1" >
+        <div class="modal-dialog">
+        <div class="modal-content">
+            <form method="POST" action="{% url 'crear_local' %}">
+            {% csrf_token %}
+            <div class="modal-header">
+                <h5 class="modal-title">Nuevo Local</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                {{ LocalForm.as_p }}
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                <button type="submit" class="btn btn-warning">Guardar Local</button>
+            </div>
+            </form>
+        </div>
+        </div>
+    </div>
+</div>

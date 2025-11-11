@@ -1,0 +1,38 @@
+.tarjetas{
+    padding: 1% 0% ;
+}
+
+.titulo h1{
+    /* font-size: 2.5em; */
+    font-size: xx-large;
+    font-weight: bold;
+    color: #008c9e ;
+    Margin: 50px 0 0 2%;
+}
+
+.titulo a{
+    font-size: medium;
+    Margin: 70px 2% 0 0;
+}
+
+.cards{
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between start;
+    align-items: start;
+}
+
+@media (max-width: 700px) {
+    .titulo h1{
+        font-size: 1.5em;
+        margin: 20px 0 0 1%;
+    }
+
+    .titulo a{
+    font-size: medium;
+    Margin: 40px 2% 0 0;}
+
+    .tarjetas{
+        padding: 1% 3%;
+    }
+}

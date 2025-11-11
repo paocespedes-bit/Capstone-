@@ -1,0 +1,30 @@
+{% load static %}
+<div class="table-responsive">
+    <table class="table table-hover table-striped align-middle">
+        <thead class="table">
+        <tr>
+            <th>
+            Nombre
+            {% include 'filtro_columna.html' with columna_nombre="nombre" tab_activo="loc"%}
+            </th>
+            <th class="text-center">Acciones</th>
+        </tr>
+        </thead>
+        <h2>Locales</h2>
+        <tbody>
+        {% for loc in locales %}
+        <tr>
+            <td data-label="Nombre">{{ loc.nombre }}</td>
+            <td data-label="Acciones" class="text-center">
+            <button class="btn btn-sm btn-primary" data-bs-toggle="modal"
+                data-bs-target="#modalEditarLocal{{ loc.id }}">Editar</button>
+            <button type="button" class="btn btn-danger" data-bs-toggle="modal"
+                data-bs-target="#modalEliminarLocal{{ loc.id }}">
+                Eliminar
+            </button>
+            </td>
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>

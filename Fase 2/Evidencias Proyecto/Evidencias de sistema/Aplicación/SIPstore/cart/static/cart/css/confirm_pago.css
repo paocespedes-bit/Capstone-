@@ -1,0 +1,104 @@
+/* Contenedor principal */
+.container {
+  padding: 0 2vw !important;
+}
+
+/* Card principal */
+.card {
+  padding: 2vw;
+  border-radius: 10px;
+  background-color: #ffffff;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+/* Título de éxito */
+.text-success {
+  color: #008c9e !important;
+  font-weight: bold;
+}
+
+
+.pedido-info h5 {
+  font-size: x-large;
+  font-weight: bold;
+  color: #008c9e;
+  margin-bottom: 1rem;
+}
+
+.pedido-info p {
+  font-size: large;
+  margin-bottom: 0.5rem;
+}
+
+
+.badge {
+  padding: 0.4em 0.8em;
+  font-size: 0.9rem;
+  font-weight: bold;
+  border-radius: 0.5rem;
+}
+
+.bg-warning {
+  background-color: #ffc107 !important;
+  color: #212529 !important;
+}
+
+.bg-success {
+  background-color: #20d500 !important;
+  color: #ffffff !important;
+}
+
+.bg-secondary {
+  background-color: #6c757d !important;
+  color: #ffffff !important;
+}
+
+
+.productos-list h5 {
+  font-weight: bold;
+  color: #008c9e;
+}
+
+.table th, .table td {
+  vertical-align: middle !important;
+}
+
+.table th {
+  font-weight: bold;
+}
+
+
+.text-end h4 {
+  font-weight: bold;
+  color: #008c9e;
+}
+
+.btn-primary {
+  background-color: #008c9e;
+  border-color: #008c9e;
+  font-weight: bold;
+}
+
+.btn-primary:hover {
+  background-color: #20d500;
+  border-color: #20d500;
+  color: #fff;
+}
+
+.btn-outline-secondary {
+  border-color: #008c9e;
+  color: #008c9e;
+  font-weight: bold;
+}
+
+.btn-outline-secondary:hover {
+  background-color: #008c9e;
+  color: #fff;
+  border-color: #008c9e;
+}
+
+
+img[alt="Pago Exitoso"] {
+  display: block;
+  margin: 0 auto 1rem auto;
+}

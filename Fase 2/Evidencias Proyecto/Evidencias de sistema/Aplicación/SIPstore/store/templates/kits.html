@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block link %}
+<link rel="stylesheet" href="{% static 'store/style/catalogo.css' %}" />
+<link rel="stylesheet" href="{% static 'store/style/filtro.css' %}" />
+{% endblock %} {% block title %}Kit de Construccion{% endblock %} {% block content %}
+<div class="cuerpo">
+  {% include "filtro_kit.html" %}
+  <div class="tarjetas">
+    <nav class="nav-breadcrumb" aria-label="breadcrumb">
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="{% url 'home' %}">Inicio</a></li>
+        <li class="breadcrumb-item active" aria-current="page">Kits de Construccion</li>
+      </ol>
+    </nav>
+    <h3 class="titulo-cat">Nuestros Modelos</h3>
+    <div class="cards">{% include "t_kit.html" with kits=kits %}</div>
+    <nav aria-label="Paginación de Kits" class="mt-4">
+      <ul class="pagination justify-content-center">
+        
+        {% if kits.has_previous %}
+        <li class="page-item">
+          <a class="page-link" href="?page={{ kits.previous_page_number }}">Anterior</a>
+        </li>
+        {% else %}
+        <li class="page-item disabled">
+          <a class="page-link" href="#" tabindex="-1" aria-disabled="true">Anterior</a>
+        </li>
+        {% endif %}
+
+        {% for i in kits.paginator.page_range %}
+            {% if kits.number == i %}
+                <li class="page-item active" aria-current="page"><span class="page-link">{{ i }}</span></li>
+            {% elif i > kits.number|add:'-3' and i < kits.number|add:'3' %}
+                <li class="page-item"><a class="page-link" href="?page={{ i }}">{{ i }}</a></li>
+            {% endif %}
+        {% endfor %}
+
+        {% if kits.has_next %}
+        <li class="page-item">
+          <a class="page-link" href="?page={{ kits.next_page_number }}">Siguiente</a>
+        </li>
+        {% else %}
+        <li class="page-item disabled">
+          <a class="page-link" href="#" tabindex="-1" aria-disabled="true">Siguiente</a>
+        </li>
+        {% endif %}
+        
+      </ul>
+    </nav>
+  </div>
+</div>
+{% endblock %}

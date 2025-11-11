@@ -1,0 +1,97 @@
+{% extends "base.html" %}
+{% load static %}
+{% load myfilters %}
+
+{% block link %}
+<link rel="stylesheet" href="{% static 'store/style/detalles.css' %}">
+{% endblock %}
+
+{% block title %}{{ kit.nombre }}{% endblock %}
+
+{% block content %}
+
+<div class="product-container">
+
+  <!-- Imagen principal -->
+  <div class="product-image">
+    {% if kit.imagenes.all %}
+      <img src="{{ kit.imagenes.first.imagen.url }}" alt="{{ kit.nombre }}">
+    {% else %}
+      <div class="placeholder">
+        <span>Imagen no disponible</span>
+      </div>
+    {% endif %}
+  </div>
+
+  <!-- Información del producto -->
+  <div class="product-info">
+    <h1 class="product-title">{{ kit.nombre }}</h1>
+    <p class="product-price">Desde: <span>${{ kit.precio|floatformat:0|punto_miles }}</span> IVA Incl.</p>
+    <strong class="d-block mt-3 mb-4 p-2">
+      {% if kit.inventario.first.modo_stock == 'pedido' %}
+          Disponible Bajo Pedido
+        {% else %}
+          Stock Disponible ({{kit.inventario.first.disponible}})
+        {% endif %}
+    </strong>
+
+    <form action="" method="post">
+      {% csrf_token %}
+      <button class="btn-cart">Añadir al carrito</button>
+    </form>
+
+    <!-- Descripción -->
+    {% if kit.descripcion %}
+      <ul class="product-description">
+        {% for linea in kit.descripcion.splitlines %}
+          <li>{{ linea }}</li>
+        {% endfor %}
+      </ul>
+    {% endif %}
+
+    <!-- Información adicional opcional -->
+<div class="product-extra">
+  <h3>Información adicional</h3>
+  <table>
+    {% if kit.m2 %}
+      <tr>
+        <th>Metros cuadrados</th>
+        <td>{{ kit.m2 }}</td>
+      </tr>
+    {% endif %}
+
+    {% if kit.dormitorios %}
+      <tr>
+        <th>Dormitorios</th>
+        <td>{{ kit.dormitorios }}</td>
+      </tr>
+    {% endif %}
+
+    {% if kit.banos %}
+      <tr>
+        <th>Baños</th>
+        <td>{{ kit.banos }}</td>
+      </tr>
+    {% endif %}
+
+    {% if kit.categorias.all %}
+      <tr>
+        <th>Categoría</th>
+        <td>
+          {% for categoria in kit.categorias.all %}
+            {{ categoria.nombre }}{% if not forloop.last %}, {% endif %}
+          {% endfor %}
+        </td>
+      </tr>
+    {% endif %}
+  </table>
+</div>
+<!-- Botón volver -->
+    <div class="back-link">
+      <a href="{% url 'kits' %}">← Volver al listado de kits</a>
+    </div>
+  </div>
+</div>
+
+    
+{% endblock %}
