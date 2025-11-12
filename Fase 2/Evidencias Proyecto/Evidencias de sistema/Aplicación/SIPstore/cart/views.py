@@ -185,13 +185,11 @@ def crear_pedido(request):
             return JsonResponse({
                 "ok": True,
                 "pedido_id": pedido.id,
-                "redirect": redirect_url  # Redirección con pedido_id por GET
+                "redirect": redirect_url 
             })
 
-        # 🟦 Pago online: guardar pedido temporal (para Mercado Pago) (El resto de la función es correcto)
         temp_id = str(timezone.now().timestamp())
 
-        # 🧩 Agregamos el precio actual en cada ítem
         items_temp = []
         for item in carrito.carrito.values():
             try:
@@ -207,7 +205,6 @@ def crear_pedido(request):
                 "content_type_id": item.get("content_type_id"),
             })
 
-        # 🧠 Guardamos la info temporalmente
         PENDING_ORDERS[temp_id] = {
             "local_id": local_id,
             "comprador": comprador,

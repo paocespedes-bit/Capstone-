@@ -12,12 +12,12 @@ document.addEventListener('DOMContentLoaded', function() {
         })
         .then(response => response.json())
         .then(data => {
-            if(data.success){
-                window.location.href = `/pago_pendiente/${data.pedido_id}/`;
+            if (data.ok) {
+                window.location.href = data.redirect;
             } else {
-                alert("Error al guardar el pedido");
+                alert(data.error || "Error al guardar el pedido");
             }
         })
-        .catch(error => console.error(error));
+        .catch(error => console.error("❌ Error en fetch:", error));
     });
 });
