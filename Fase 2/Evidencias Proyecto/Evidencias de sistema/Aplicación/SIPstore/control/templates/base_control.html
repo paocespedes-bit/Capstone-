@@ -29,7 +29,13 @@
         aria-controls="sidebar">
         <span class="navbar-toggler-icon"></span>
       </button>
-      <span class="navbar-brand mb-0 h1">Usuario nombre <i class="bi bi-person-circle"></i></span>
+      <span class="navbar-brand mb-0 h1">
+        {% if user.is_authenticated %}
+        {{ user.first_name }} {{ user.last_name }}
+        {% else %}
+        <p>Usuario no autenticado</p>
+        {% endif %} <i class="bi bi-person-circle"></i>
+      </span>
     </div>
   </nav>
 
@@ -65,9 +71,17 @@
           </ul>
 
           <ul class="nav flex-column mt-auto p-3 custom-sidebar-bottom">
+            <div class="user-info">
+              {% if user.is_authenticated %}
+              <p class="username"><i class="bi bi-person-fill"></i> {{ user.username }}</p>
+              <p class="fullname">({{ user.first_name }} {{ user.last_name }})</p>
+              {% else %}
+              <p>Usuario no autenticado</p>
+              {% endif %}
+            </div>
             <hr class="w-100" />
             <li>
-              <a href="#" class="btn custom-btn"><i class="bi bi-key me-2"></i>Cambiar clave</a>
+              <a href="{% url 'profile' %}" class="btn custom-btn"><i class="bi bi-gear"></i> Configuracion Perfil</a>
             </li>
             <li>
               <form action="{% url 'logout' %}" method="post" style="display:inline;">
