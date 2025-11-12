@@ -1,0 +1,254 @@
+{% extends "base_control.html"%}
+{% load static %}
+{% load humanize %}
+{% block title %} Perfil {% endblock %}
+
+{% block content %}
+<div class="container ">
+    <div class="row ">
+        <div class="col-md-6 offset-md-2">
+
+            <ul class="list-group shadow-sm mt-5">
+                <li class="list-group-item d-flex justify-content-between align-items-center"
+                    style="background: #008c9e ; color: rgb(255, 255, 255);">
+                    <h2 class="m-2">
+                        <strong> Pefil {{ user.username }} ({{user.tipo_usuario}})</strong>
+                    </h2>
+                </li>
+
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                    <div>
+                        <strong>Nombre de Usuario:</strong>
+                        <span class="text-muted">{{ user.username }}</span>
+                    </div>
+                    <button type="button" class="btn btn-sm btn-outline-primary" data-bs-toggle="modal"
+                        data-bs-target="#editUserModal" data-field="username" data-value="{{ user.username }}">
+                        <i class="bi bi-pencil-square"></i> Actualizar
+                    </button>
+                </li>
+
+                {% if user.first_name and user.last_name %}
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                    <div>
+                        <strong>Nombre Completo:</strong>
+                        <span class="text-muted">{{ user.first_name }} {{ user.last_name }}</span>
+                    </div>
+                </li>
+                {% endif %}
+
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                    <div>
+                        <strong>Correo Electrónico:</strong>
+                        <span class="text-muted">{{ user.email }}</span>
+                    </div>
+                    <button type="button" class="btn btn-sm btn-outline-primary" data-bs-toggle="modal"
+                        data-bs-target="#editUserModal" data-field="email" data-value="{{ user.email }}">
+                        <i class="bi bi-pencil-square"></i> Actualizar
+                    </button>
+                </li>
+
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                    <div>
+                        <strong>Correo De Respaldo:</strong>
+                        <span class="text-muted">{{ user.correo_de_respaldo }}</span>
+                    </div>
+                    <button type="button" class="btn btn-sm btn-outline-primary" data-bs-toggle="modal"
+                        data-bs-target="#editUserModal" data-field="correo_de_respaldo"
+                        data-value="{{ user.correo_de_respaldo }}">
+                        <i class="bi bi-pencil-square"></i> Actualizar
+                    </button>
+                </li>
+
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                    <div>
+                        <strong>N° Celular:</strong>
+                        <span class="text-muted">{{ user.celular }}</span>
+                    </div>
+                    <button type="button" class="btn btn-sm btn-outline-primary" data-bs-toggle="modal"
+                        data-bs-target="#editUserModal" data-field="celular" data-value="{{ user.celular }}">
+                        <i class="bi bi-pencil-square"></i> Actualizar
+                    </button>
+                </li>
+
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                    <div>
+                        <strong>Contraseña</strong>
+                        <span class="text-muted"></span>
+                    </div>
+                    <button type="button" class="btn btn-sm btn-outline-primary" data-bs-toggle="modal"
+                        data-bs-target="#editPassModal" data-field="password">
+                        <i class="bi bi-pencil-square"></i> Actualizar
+                    </button>
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="editUserModal" tabindex="-1" aria-labelledby="editUserModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="editUserModalLabel">Actualizar Dato</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+
+            <form id="userUpdateForm" method="post" action="{% url 'update' %}">
+                {% csrf_token %}
+                <div class="modal-body">
+                    <p>Estás editando el campo: <strong id="fieldName"></strong></p>
+
+                    <input type="hidden" name="field_to_update" id="fieldToUpdate">
+
+                    <div class="mb-3">
+                        <label for="newValue" class="form-label">Nuevo Valor:</label>
+                        <input type="text" class="form-control" name="new_value" id="newValue" required>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                    <button type="submit" class="btn btn-primary">Guardar Cambios</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="editPassModal" tabindex="-1" aria-labelledby="editPassModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="editPassModalLabel">Actualizar Contraseña</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+
+            <form id="passwordUpdateForm" method="post" action="{% url 'update' %}">
+                {% csrf_token %}
+                <div class="modal-body">
+                    <p>Estás editando el campo: <strong id="fieldName"> Contraseña</strong></p>
+
+                    <input type="hidden" name="field_to_update" value="password">
+
+                    <div class="mb-3">
+                        <label for="newPassword" class="form-label">Nueva Contraseña:</label>
+                        <div class="input-group">
+                            <input type="password" class="form-control" name="new_password" id="newPassword" required>
+                            <button class="btn btn-outline-secondary toggle-password" type="button" data-target="newPassword">
+                                <i class="bi bi-eye"></i> </button>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="confirmPassword" class="form-label">Repetir Contraseña:</label>
+                        <div class="input-group">
+                            <input type="password" class="form-control" name="confirm_password" id="confirmPassword" required>
+                            <button class="btn btn-outline-secondary toggle-password" type="button" data-target="confirmPassword">
+                                <i class="bi bi-eye"></i> </button>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                    <button type="submit" class="btn btn-primary">Guardar Cambios</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+</div>
+
+<!-- !TOAST  -->
+{% include 'toast.html' %}
+
+<script>
+    var editUserModal = document.getElementById('editUserModal');
+    editUserModal.addEventListener('show.bs.modal', function (event) {
+        var button = event.relatedTarget;
+
+        var field = button.getAttribute('data-field');
+        var currentValue = button.getAttribute('data-value');
+
+        var modalTitle = editUserModal.querySelector('.modal-title');
+        var fieldNameDisplay = editUserModal.querySelector('#fieldName');
+        var fieldToUpdateInput = editUserModal.querySelector('#fieldToUpdate');
+        var newValueInput = editUserModal.querySelector('#newValue');
+
+        fieldNameDisplay.textContent = field.charAt(0).toUpperCase() + field.slice(1);
+        fieldToUpdateInput.value = field;
+        newValueInput.value = currentValue;
+    });
+</script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const toggleButtons = document.querySelectorAll('.toggle-password');
+
+    toggleButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            const targetId = this.getAttribute('data-target');
+            const passwordInput = document.getElementById(targetId);
+            const icon = this.querySelector('i');
+
+            // Alterna el tipo de input y las clases de Bootstrap Icons
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                // Cambia 'bi-eye' por 'bi-eye-slash'
+                icon.classList.remove('bi-eye');
+                icon.classList.add('bi-eye-slash'); 
+            } else {
+                passwordInput.type = 'password';
+                // Cambia 'bi-eye-slash' por 'bi-eye'
+                icon.classList.remove('bi-eye-slash');
+                icon.classList.add('bi-eye'); 
+            }
+        });
+    });
+});
+</script>
+{% endblock%}
+
+{% block script %}
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const toastElement = document.getElementById('toast');
+        const toastBody = document.getElementById('toast-body');
+        const toast = new bootstrap.Toast(toastElement, {
+            autohide: true,
+            delay: 5000 
+        });
+
+        const djangoMessages = [
+        {% for message in messages %}
+            {
+                level: '{{ message.tags }}',
+                text: '{{ message|escapejs }}'
+            }{% if not forloop.last %},{% endif %}
+        {% endfor %}
+        ];
+
+        const tagMap = {
+            'success': 'bg-success',
+            'error': 'bg-danger',
+            'warning': 'bg-warning',
+            'info': 'bg-info',
+            'debug': 'bg-secondary'
+        };
+
+        if (djangoMessages.length > 0) {
+
+            djangoMessages.forEach(message => {
+                for (const key in tagMap) {
+                    toastElement.classList.remove(tagMap[key]);
+                }
+
+                const colorClass = tagMap[message.level] || 'bg-primary';
+                toastElement.classList.add(colorClass);
+
+                toastBody.textContent = message.text;
+
+                toast.show();
+            });
+            
+        }
+    });
+</script>
+{% endblock %}

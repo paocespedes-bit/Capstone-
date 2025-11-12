@@ -3,7 +3,7 @@ from django.contrib import messages
 from django.urls import reverse
 from django.contrib.auth import get_user_model
 from django.conf import settings
-
+from django.contrib.auth.decorators import login_required
 from .forms import IdentifierForm, MethodForm, CodeForm, ResetForm
 from .utils_verif import (
     create_code_session, get_data, clear_session, mark_used,
@@ -11,6 +11,9 @@ from .utils_verif import (
 )
 from .utils_send import send_email_sendgrid, send_sms_mock
 from .utils_mask import mask_email, mask_phone  
+from django.contrib.auth import update_session_auth_hash
+from django.contrib.auth.forms import PasswordChangeForm
+from django.http import JsonResponse
 
 User = get_user_model()
 
@@ -159,3 +162,70 @@ def reset(request):
 
 def done(request):
     return render(request, "done.html")
+
+
+def profile(request):
+    return render(request, "profile.html")
+
+@login_required
+def update(request):
+    """Maneja la actualización de campos de usuario y la contraseña."""
+    if request.method == 'POST':
+        # 1. ACTUALIZACIÓN DE DATOS NORMALES (Modal: editUserModal)
+        if 'field_to_update' in request.POST and 'new_value' in request.POST:
+            field = request.POST.get('field_to_update')
+            new_value = request.POST.get('new_value')
+            
+            # Lista de campos permitidos para evitar inyecciones maliciosas
+            allowed_fields = ['username', 'email', 'correo_de_respaldo', 'celular']
+            
+            if field in allowed_fields:
+                try:
+                    # Validaciones básicas de no vacíos
+                    if not new_value:
+                        messages.error(request, f"El campo {field.replace('_', ' ').title()} no puede estar vacío.")
+                        return redirect('profile') 
+                    
+                    # Validación específica para Email
+                    if field == 'email' and not '@' in new_value:
+                        messages.error(request, "El correo electrónico no es válido.")
+                        return redirect('profile')
+                    
+                    # Actualizar el valor en el objeto de usuario
+                    setattr(request.user, field, new_value)
+                    request.user.full_clean() # Ejecuta validaciones del modelo (ej: unique=True)
+                    request.user.save()
+                    
+                    messages.success(request, f"{field.replace('_', ' ').title()} actualizado exitosamente.")
+                    return redirect('profile') 
+
+                except Exception as e:
+                    # Captura errores de validación del modelo (ej: username ya existe)
+                    messages.error(request, f"Error al actualizar {field.replace('_', ' ').title()}: {e}")
+                    return redirect('profile')
+
+        # 2. ACTUALIZACIÓN DE CONTRASEÑA (Modal: editPassModal)
+        elif 'new_password' in request.POST and 'confirm_password' in request.POST:
+            new_password = request.POST.get('new_password')
+            confirm_password = request.POST.get('confirm_password')
+
+            if new_password and new_password == confirm_password:
+                # Usar la función set_password de Django
+                request.user.set_password(new_password)
+                request.user.save()
+                
+                # Importante: Mantener la sesión del usuario después de cambiar la contraseña
+                update_session_auth_hash(request, request.user) 
+                
+                messages.success(request, 'Contraseña actualizada exitosamente. Su sesión se ha mantenido.')
+                return redirect('profile') 
+            
+            elif new_password != confirm_password:
+                messages.error(request, 'Las contraseñas no coinciden.')
+                return redirect('profile')
+            
+            else:
+                messages.error(request, 'Ambos campos de contraseña son requeridos.')
+                return redirect('profile')
+                
+    return redirect('profile')

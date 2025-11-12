@@ -14,4 +14,6 @@ urlpatterns = [
     path('verify/', views.verify, name='verify'),
     path('reset/', views.reset, name='reset'),
     path('done/', views.done, name='done'),
+    path('profile/',views.profile, name="profile"),
+    path('profile/actualizar/', views.update, name='update'),
 ]
