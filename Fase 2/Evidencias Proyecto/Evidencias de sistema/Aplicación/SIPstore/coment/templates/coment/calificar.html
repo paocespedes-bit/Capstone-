@@ -22,10 +22,11 @@ producto.nombre }}{% endblock %} {% block link %}
       {% csrf_token %}
       <div class="rating-stars">
         {% for i in "54321" %}
-        <input type="radio" id="star{{ i }}" name="estrellas" value="{{ i }}" />
+        <input type="radio" id="star{{ i }}" name="estrellas" value="{{ i }}">
         <label for="star{{ i }}">★</label>
-        {% endfor %}
-      </div>
+      {% endfor %}
+    </div>
+
 
       <div class="mb-3">
         <textarea
@@ -42,9 +43,10 @@ producto.nombre }}{% endblock %} {% block link %}
     </form>
 
     {% if calificaciones %}
-    <h4 class="text-center mb-4" style="margin-top: 40px;">Opiniones de otros usuarios</h4>
+    <h4 class="text-center mb-4" style="margin-top: 40px">
+      Opiniones de otros usuarios
+    </h4>
     <div class="comentarios-container mt-5">
-
       {% for cal in calificaciones %}
       <div class="comentario-card">
         <div class="comentario-header">

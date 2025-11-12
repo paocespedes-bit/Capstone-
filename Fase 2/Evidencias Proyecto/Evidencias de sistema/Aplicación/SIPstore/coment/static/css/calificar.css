@@ -28,6 +28,7 @@
   justify-content: center;
   gap: 8px;
   margin: 1rem 0;
+  flex-direction: row-reverse; /* 🔥 clave: invierte visualmente */
 }
 
 .rating-stars input {
@@ -41,11 +42,13 @@
   transition: color 0.2s;
 }
 
-.rating-stars input:checked ~ label,
+/* Efecto hover y selección correctamente alineado (izquierda → derecha visual) */
 .rating-stars label:hover,
-.rating-stars label:hover ~ label {
+.rating-stars label:hover ~ label,
+.rating-stars input:checked ~ label {
   color: #ffc107;
 }
+
 
 textarea {
   resize: none;
