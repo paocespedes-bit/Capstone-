@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.http import JsonResponse
 import json
-from store.models import PanelSIP, KitConstruccion
+from store.models import PanelSIP, KitConstruccion, Inventario
 from control.models import Local, Pedido, DetallePedido 
 from django.contrib.contenttypes.models import ContentType
 from django.views.decorators.http import require_POST
@@ -11,6 +11,7 @@ from django.contrib import messages
 from django.urls import reverse
 from django.conf import settings
 from django.views.decorators.csrf import csrf_exempt
+from store.signals import enviar_alerta_stock_multiple
 import mercadopago
 
 
@@ -185,13 +186,11 @@ def crear_pedido(request):
             return JsonResponse({
                 "ok": True,
                 "pedido_id": pedido.id,
-                "redirect": redirect_url  # Redirección con pedido_id por GET
+                "redirect": redirect_url 
             })
 
-        # 🟦 Pago online: guardar pedido temporal (para Mercado Pago) (El resto de la función es correcto)
         temp_id = str(timezone.now().timestamp())
 
-        # 🧩 Agregamos el precio actual en cada ítem
         items_temp = []
         for item in carrito.carrito.values():
             try:
@@ -207,7 +206,6 @@ def crear_pedido(request):
                 "content_type_id": item.get("content_type_id"),
             })
 
-        # 🧠 Guardamos la info temporalmente
         PENDING_ORDERS[temp_id] = {
             "local_id": local_id,
             "comprador": comprador,
@@ -341,20 +339,45 @@ def pago_exitoso(request):
     pedido = None
     productos = []
 
+    productos_alerta = []  # 🔔 Aquí guardamos los que bajan de 10
+
     if pedido_id and pedido_id.isdigit():
         try:
             pedido = Pedido.objects.get(id=pedido_id)
             detalles = DetallePedido.objects.filter(pedido=pedido)
 
             for d in detalles:
-                content_type = d.content_type
-                producto_obj = content_type.get_object_for_this_type(id=d.object_id)
+                producto_obj = d.content_type.get_object_for_this_type(id=d.object_id)
+                cantidad_comprada = d.cantidad
 
+                # Buscar inventario asociado
+                inventario = getattr(producto_obj, "inventario", None)
+                inventario = inventario.first() if inventario else None
+
+                if inventario:
+                    inventario.disponible = max(inventario.disponible - cantidad_comprada, 0)
+                    inventario.save()
+
+                    # Verificar si bajó de 10 unidades
+                    if inventario.disponible < 10:
+                        productos_alerta.append({
+                            "nombre": getattr(producto_obj, "nombre", "Producto sin nombre"),
+                            "disponible": inventario.disponible
+                        })
+
+                # Para mostrar en la plantilla
                 productos.append({
                     "nombre": getattr(producto_obj, "nombre", str(producto_obj)),
-                    "cantidad": d.cantidad,
+                    "cantidad": cantidad_comprada,
                     "subtotal": d.subtotal,
                 })
+
+            # 🚨 Enviar alerta si hay productos bajo stock
+            if productos_alerta:
+                enviar_alerta_stock_multiple(
+                    productos_alerta,
+                    email_admin="tonopanelessip@gmail.com"  # <-- cambia por tu correo
+                )
 
         except Pedido.DoesNotExist:
             pedido = None

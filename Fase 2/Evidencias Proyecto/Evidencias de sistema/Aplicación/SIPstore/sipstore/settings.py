@@ -37,13 +37,12 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django.contrib.humanize',
-    'store',
+    'store.apps.StoreConfig',
     'core',
     'control',
     'cart',
     'quote',
     'accounts',
-    
 ]
 
 MIDDLEWARE = [
@@ -153,12 +152,12 @@ MERCADOPAGO_ACCESS_TOKEN = os.getenv('MERCADOPAGO_ACCESS_TOKEN')
 SENDGRID_API_KEY = os.getenv("SENDGRID_API_KEY")
 
 EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
-EMAIL_HOST = "smtp.sendgrid.net"
+EMAIL_HOST = "smtp.gmail.com"
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
-EMAIL_HOST_USER = "apikey"   
-EMAIL_HOST_PASSWORD = SENDGRID_API_KEY
-DEFAULT_FROM_EMAIL = "sipstore247@gmail.com"
+EMAIL_HOST_USER = "tonopanelessip@gmail.com"
+EMAIL_HOST_PASSWORD = "pfdf qtdy icoi zcdo"  # contraseña de aplicación
+DEFAULT_FROM_EMAIL = "tonopanelessip@gmail.com"
 
 
 # ! LOGIN Y LOGOUT
