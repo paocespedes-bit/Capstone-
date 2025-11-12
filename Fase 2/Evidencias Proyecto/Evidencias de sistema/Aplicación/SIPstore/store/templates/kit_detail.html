@@ -40,6 +40,10 @@
       <button class="btn-cart">Añadir al carrito</button>
     </form>
 
+    <a href="{% url 'calificar_producto' 'store' 'kitconstruccion' kit.id %}" class="btn btn-outline-warning mt-3">
+      Calificar este producto ★
+    </a>
+
     <!-- Descripción -->
     {% if kit.descripcion %}
       <ul class="product-description">

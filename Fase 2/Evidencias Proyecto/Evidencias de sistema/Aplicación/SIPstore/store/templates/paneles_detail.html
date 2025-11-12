@@ -45,6 +45,10 @@
       <button class="btn-cart">Añadir al carrito</button>
     </form>
 
+    <a href="{% url 'calificar_producto' 'store' 'panelsip' panel.id %}" class="btn btn-outline-warning mt-3">
+      Calificar este producto ★
+    </a>
+
     <!-- Descripción -->
     {% if kit.descripcion %}
       <ul class="product-description">
@@ -106,10 +110,6 @@
     {% endif %}
   </table>
 </div>
-
-
-
-    <!-- Botón volver -->
     <div class="back-link">
       <a href="{% url 'paneles' %}">← Volver al listado de Paneles</a>
     </div>

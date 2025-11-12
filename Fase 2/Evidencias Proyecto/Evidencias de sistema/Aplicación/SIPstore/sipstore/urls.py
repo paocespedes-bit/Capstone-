@@ -13,7 +13,8 @@ urlpatterns = [
     path('', include('cart.urls')),
     path('quote/',include('quote.urls')),
     path('accounts/', include('django.contrib.auth.urls')),
-    path('', include('accounts.urls'))
+    path('', include('accounts.urls')),
+    path('coment/', include('coment.urls'))
 ]
 
 if settings.DEBUG:
