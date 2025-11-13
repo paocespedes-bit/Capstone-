@@ -51,6 +51,7 @@ class Pedido(models.Model):
         # Mantener el nombre del local
         if self.local and not self.nombre_local:
             self.nombre_local = self.local.nombre
+        skip_stock_update = kwargs.pop('skip_stock_update', False)
 
         # Guardar el estado anterior antes de guardar
         estado_anterior = getattr(self, "_estado_original", None)
@@ -58,8 +59,8 @@ class Pedido(models.Model):
         # Guardar el pedido normalmente
         super().save(*args, **kwargs)
 
-        # Si el estado cambió, actualizar el stock
-        if estado_anterior != self.estado:
+        # Solo actualiza stock si cambió el estado y no se pidió omitirlo
+        if not skip_stock_update and estado_anterior != self.estado:
             self.actualizar_stock_por_estado()
 
         # Actualizar el estado original para futuras comparaciones

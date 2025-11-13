@@ -15,6 +15,7 @@ from store.signals import enviar_alerta_stock_multiple
 import mercadopago
 
 
+
 def carrito(request):
     carrito = Carrito(request)
     productos_completos = carrito.obtener_productos_completos()
@@ -127,11 +128,20 @@ PENDING_ORDERS = {}
 
 @require_POST
 def crear_pedido(request):
-    """Crea un pedido temporal o completo según el método de pago."""
+
+
+    """Crea un pedido (pago en tienda) o uno temporal (pago web)."""
     carrito = Carrito(request)
 
     if not carrito.carrito:
         return JsonResponse({"error": "Tu carrito está vacío."}, status=400)
+
+    # 🚫 Evitar duplicados si el usuario envía el mismo pedido más de una vez
+    if request.session.get("pedido_creado"):
+        return JsonResponse({
+            "ok": True,
+            "redirect": request.session["pedido_creado"]
+        })
 
     try:
         local_id = request.POST.get('localSelect')
@@ -144,9 +154,8 @@ def crear_pedido(request):
 
         local = Local.objects.get(id=local_id) if local_id else None
 
-        # 🟩 Pago en tienda: crea pedido completo (CORRECCIÓN AQUÍ)
+        # 🟩 Pago en tienda → pedido completo y pendiente
         if metodo_pago == 'store':
-            # --- (El resto de la creación del Pedido y DetallePedido es correcto) ---
             pedido = Pedido.objects.create(
                 local=local,
                 nombre_local=local.nombre if local else None,
@@ -156,7 +165,7 @@ def crear_pedido(request):
                 celular_cli=celular_cli,
                 ubicacion_cli=ubicacion_cli,
                 fecha_pedido=timezone.now(),
-                estado='pendiente',
+                estado='pendiente',  # ← siempre pendiente al crear
                 metodo_pago='pago_tienda',
                 monto_total=0
             )
@@ -177,18 +186,22 @@ def crear_pedido(request):
 
             pedido.monto_total = monto_total
             pedido.save()
+
             carrito.limpiar()
-            # ------------------------------------------------------------------------
-            
-            # 👇 CORRECCIÓN: Usar reverse() para la URL base y construir el parámetro GET
+
+            # Construir la URL para redirigir
             redirect_url = f"{reverse('pago_exitoso')}?pedido_id={pedido.id}"
+
+            # 🧠 Guardar la URL en sesión para evitar duplicar el pedido
+            request.session["pedido_creado"] = redirect_url
 
             return JsonResponse({
                 "ok": True,
                 "pedido_id": pedido.id,
-                "redirect": redirect_url 
+                "redirect": redirect_url
             })
 
+        # 🟦 Pago web → solo guarda temporalmente
         temp_id = str(timezone.now().timestamp())
 
         items_temp = []
@@ -222,7 +235,7 @@ def crear_pedido(request):
 
     except Exception as e:
         print("❌ ERROR crear_pedido:", str(e))
-        return JsonResponse({"error": f"Error al crear pedido temporal: {str(e)}"}, status=500)
+        return JsonResponse({"error": f"Error al crear pedido: {str(e)}"}, status=500)
 
 
 # ==============================================
@@ -335,48 +348,49 @@ def procesando_pago(request):
 
 
 def pago_exitoso(request):
+    """
+    Página que se muestra tras un pago exitoso o creación de pedido en tienda.
+    No descuenta stock aquí: solo muestra información y envía alertas.
+    """
+    # 🧹 Limpiar flag de sesión (para permitir crear un nuevo pedido después)
+    request.session.pop("pedido_creado", None)
+
     pedido_id = request.GET.get("pedido_id")
     pedido = None
     productos = []
-
-    productos_alerta = []  # 🔔 Aquí guardamos los que bajan de 10
+    productos_alerta = []
 
     if pedido_id and pedido_id.isdigit():
         try:
             pedido = Pedido.objects.get(id=pedido_id)
             detalles = DetallePedido.objects.filter(pedido=pedido)
 
-            for d in detalles:
-                producto_obj = d.content_type.get_object_for_this_type(id=d.object_id)
-                cantidad_comprada = d.cantidad
+            for detalle in detalles:
+                producto_obj = detalle.content_type.get_object_for_this_type(id=detalle.object_id)
 
                 # Buscar inventario asociado
                 inventario = getattr(producto_obj, "inventario", None)
                 inventario = inventario.first() if inventario else None
 
-                if inventario:
-                    inventario.disponible = max(inventario.disponible - cantidad_comprada, 0)
-                    inventario.save()
+                # Solo verificar stock bajo (no modificar)
+                if inventario and inventario.disponible < 10:
+                    productos_alerta.append({
+                        "nombre": getattr(producto_obj, "nombre", "Producto sin nombre"),
+                        "disponible": inventario.disponible,
+                    })
 
-                    # Verificar si bajó de 10 unidades
-                    if inventario.disponible < 10:
-                        productos_alerta.append({
-                            "nombre": getattr(producto_obj, "nombre", "Producto sin nombre"),
-                            "disponible": inventario.disponible
-                        })
-
-                # Para mostrar en la plantilla
+                # Para mostrar en plantilla
                 productos.append({
                     "nombre": getattr(producto_obj, "nombre", str(producto_obj)),
-                    "cantidad": cantidad_comprada,
-                    "subtotal": d.subtotal,
+                    "cantidad": detalle.cantidad,
+                    "subtotal": detalle.subtotal,
                 })
 
-            # 🚨 Enviar alerta si hay productos bajo stock
+            # 🚨 Enviar alerta si hay productos con stock bajo
             if productos_alerta:
                 enviar_alerta_stock_multiple(
                     productos_alerta,
-                    email_admin="tonopanelessip@gmail.com"  # <-- cambia por tu correo
+                    email_admin="tonopanelessip@gmail.com"
                 )
 
         except Pedido.DoesNotExist:
