@@ -1,7 +1,8 @@
-from django.db.models import Min, Max
+from django.db.models import Min, Max, Avg
 from django.shortcuts import render, get_object_or_404
 from .models import PanelSIP, KitConstruccion
 from django.core.paginator import Paginator
+from coment.models import Calificacion
 
 #! Aqui se agregan las views (templates).
 def paneles(request):
@@ -129,16 +130,40 @@ def kits(request):
         'dormitorios_filtro': dormitorios_filtro,
         'banos_filtro': banos_filtro,
         'precio_min': precio_min,
-        'precio_max': precio_max_dataset,         # máximo real de la BD → atributo max del input
-        'precio_max_selected': precio_max_selected,  # valor actual seleccionado
+        'precio_max': precio_max_dataset,
+        'precio_max_selected': precio_max_selected,
     }
     return render(request, "kits.html", context)
 
 def kit_detail(request, pk):
     kit = get_object_or_404(KitConstruccion, pk=pk)
-    return render(request, 'kit_detail.html', {'kit': kit})
+    calificaciones = Calificacion.objects.filter(
+        content_type__model='kitconstruccion',
+        object_id=kit.id
+    ).select_related('usuario').order_by('-fecha')
+
+    promedio = calificaciones.aggregate(promedio=Avg('estrellas'))['promedio']
+
+    return render(request, 'kit_detail.html', {
+        'kit': kit,
+        'calificaciones': calificaciones,
+        'promedio': promedio,
+    })
 
 def paneles_detail(request, pk):
     panel = get_object_or_404(PanelSIP, pk=pk)
-    return render(request, 'paneles_detail.html', {'panel': panel})
+
+    calificaciones = Calificacion.objects.filter(
+        content_type__model='panelsip',
+        object_id=panel.id
+    ).select_related('usuario').order_by('-fecha')
+
+    promedio = calificaciones.aggregate(promedio=Avg('estrellas'))['promedio']
+
+    return render(request, 'paneles_detail.html', {
+        'panel': panel,
+        'calificaciones': calificaciones,
+        'promedio': promedio,
+    })
+
 

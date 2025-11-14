@@ -4,24 +4,27 @@
 
 {% block link %}
 <link rel="stylesheet" href="{% static 'store/style/detalles.css' %}">
+<link rel="stylesheet" href="{% static 'coment/calificar.css' %}">
 {% endblock %}
 
 {% block title %}{{ panel.nombre }}{% endblock %}
 
 {% block content %}
+
 <nav class="nav-breadcrumb" aria-label="breadcrumb">
-      <ol class="breadcrumb">
-        <li class="breadcrumb-item"><a href="{% url 'home' %}">Inicio</a></li>
-        <li class="breadcrumb-item"><a href="{% url 'paneles' %}">Paneles Sip</a></li>
-        <li class="breadcrumb-item active" aria-current="page">{{panel.nombre }}</li>
-      </ol>
-    </nav>
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item"><a href="{% url 'home' %}">Inicio</a></li>
+    <li class="breadcrumb-item"><a href="{% url 'paneles' %}">Paneles Sip</a></li>
+    <li class="breadcrumb-item active" aria-current="page">{{ panel.nombre }}</li>
+  </ol>
+</nav>
+
 <div class="product-container">
 
   <!-- Imagen principal -->
   <div class="product-image">
     {% if panel.imagenes.all %}
-      <img src="{{panel.imagenes.first.imagen.url  }}" alt="{{panel.nombre}}" />
+      <img src="{{ panel.imagenes.first.imagen.url }}" alt="{{ panel.nombre }}">
     {% else %}
       <div class="placeholder">
         <span>Imagen no disponible</span>
@@ -31,26 +34,33 @@
 
   <!-- Información del producto -->
   <div class="product-info">
+
     <h1 class="product-title">{{ panel.nombre }}</h1>
-    <p class="product-price">Desde: <span>${{ panel.precio|floatformat:0|punto_miles }}</span> IVA Incl.</p>
+
+    <p class="product-price">
+      Desde: <span>${{ panel.precio|floatformat:0|punto_miles }}</span> IVA Incl.
+    </p>
+
     <strong class="d-block mt-3 mb-4 p-2">
       {% if panel.inventario.first.modo_stock == 'pedido' %}
-          Disponible Bajo Pedido
-        {% else %}
-
-        {% endif %}
+        Disponible Bajo Pedido
+      {% else %}
+        Stock Disponible
+      {% endif %}
     </strong>
+
     <form action="" method="post">
       {% csrf_token %}
       <button class="btn-cart">Añadir al carrito</button>
     </form>
 
-    <a href="{% url 'calificar_producto' 'store' 'panelsip' panel.id %}" class="btn btn-outline-warning mt-3">
-      Calificar este producto ★
+    <a href="{% url 'calificar_producto' 'store' 'panelsip' panel.id %}" 
+       class="btn btn-outline-warning mt-3">
+       Calificar este producto ★
     </a>
 
     <!-- Descripción -->
-    {% if kit.descripcion %}
+    {% if panel.descripcion %}
       <ul class="product-description">
         {% for linea in panel.descripcion.splitlines %}
           <li>{{ linea }}</li>
@@ -58,61 +68,125 @@
       </ul>
     {% endif %}
 
-    
-<!-- Información adicional opcional -->
-<div class="product-extra">
-  <h3>Información adicional</h3>
-  <table>
-    {% if panel.tipo_obs %}
-      <tr>
-        <th>Tipo de obs</th>
-        <td>{{ panel.tipo_obs }}</td>
-      </tr>
-    {% endif %}
+    <!-- Información adicional -->
+    <div class="product-extra">
+      <h3>Información adicional</h3>
+      <table>
+        {% if panel.tipo_obs %}
+        <tr>
+          <th>Tipo de obs</th>
+          <td>{{ panel.tipo_obs }}</td>
+        </tr>
+        {% endif %}
 
-    {% if panel.madera_union %}
-      <tr>
-        <th>Madera unión</th>
-        <td>{{ panel.madera_union }}</td>
-      </tr>
-    {% endif %}
+        {% if panel.madera_union %}
+        <tr>
+          <th>Madera unión</th>
+          <td>{{ panel.madera_union }}</td>
+        </tr>
+        {% endif %}
 
-    {% if panel.espesor %}
-      <tr>
-        <th>Espesor</th>
-        <td>{{ panel.espesor }}</td>
-      </tr>
-    {% endif %}
+        {% if panel.espesor %}
+        <tr>
+          <th>Espesor</th>
+          <td>{{ panel.espesor }}</td>
+        </tr>
+        {% endif %}
 
-    {% if panel.largo %}
-      <tr>
-        <th>Largo</th>
-        <td>{{ panel.largo }}</td>
-      </tr>
-    {% endif %}
+        {% if panel.largo %}
+        <tr>
+          <th>Largo</th>
+          <td>{{ panel.largo }}</td>
+        </tr>
+        {% endif %}
 
-    {% if panel.ancho %}
-      <tr>
-        <th>Ancho</th>
-        <td>{{ panel.ancho }}</td>
-      </tr>
-    {% endif %}
+        {% if panel.ancho %}
+        <tr>
+          <th>Ancho</th>
+          <td>{{ panel.ancho }}</td>
+        </tr>
+        {% endif %}
 
-    {% if panel.categorias.all %}
-      <tr>
-        <th>Categorías</th>
-        <td>
-          {% for categoria in panel.categorias.all %}
-            {{ categoria.nombre }}{% if not forloop.last %}, {% endif %}
-          {% endfor %}
-        </td>
-      </tr>
-    {% endif %}
-  </table>
-</div>
+        {% if panel.categorias.all %}
+        <tr>
+          <th>Categorías</th>
+          <td>
+            {% for categoria in panel.categorias.all %}
+              {{ categoria.nombre }}{% if not forloop.last %}, {% endif %}
+            {% endfor %}
+          </td>
+        </tr>
+        {% endif %}
+      </table>
+    </div>
+
     <div class="back-link">
       <a href="{% url 'paneles' %}">← Volver al listado de Paneles</a>
     </div>
+
   </div>
 </div>
+
+<div class="cont">
+<hr class="mt-5 mb-4">
+
+<div class="comentarios-container">
+
+  <h2>Calificaciones de clientes</h2>
+
+  {% if promedio %}
+    <div class="promedio-block">
+      <span class="promedio-num">{{ promedio|floatformat:1 }}</span>
+      <span class="promedio-stars">
+        {% for i in "12345" %}
+          {% if forloop.counter <= promedio %}
+            ★
+          {% elif promedio|floatformat:0 == forloop.counter|stringformat:"i" %}
+            ★
+          {% else %}
+            ☆
+          {% endif %}
+        {% endfor %}
+      </span>
+    </div>
+  {% else %}
+    <p>Aún no hay calificaciones para este producto.</p>
+  {% endif %}
+
+  <div class="comentarios-list">
+    {% for c in calificaciones %}
+      <div class="comentario-item">
+
+        <div class="comentario-header">
+          <strong>
+            {% if c.usuario %}
+              {{ c.usuario.username }}
+            {% else %}
+              Anónimo
+            {% endif %}
+          </strong>
+          <span>{{ c.fecha_creacion|date:"d/m/Y H:i" }}</span>
+        </div>
+
+        <div class="comentario-stars">
+          {% for i in "12345" %}
+            {% if forloop.counter <= c.estrellas %}
+              ★
+            {% else %}
+              ☆
+            {% endif %}
+          {% endfor %}
+        </div>
+
+        <p class="comentario-text">{{ c.comentario }}</p>
+
+      </div>
+    {% empty %}
+      <p>No hay comentarios aún.</p>
+    {% endfor %}
+  </div>
+
+</div>
+</div>
+
 {% endblock %}

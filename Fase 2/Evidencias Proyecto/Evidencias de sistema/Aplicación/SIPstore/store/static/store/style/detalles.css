@@ -207,3 +207,112 @@
 .average-rating {
   font-size: 1.1rem;
 }
+
+
+/*A PARTIR DE ACA SOLO ES PARA COMENTARIOS*/
+
+.cont{
+  padding: 40px;
+}
+
+.comentarios-container {
+    margin-top: 3rem;
+    padding: 1.5rem;
+    background: var(--bs-light, #f8f9fa);
+    border-radius: 12px;
+    border: 1px solid rgba(0,0,0,0.08);
+    box-shadow: 0 2px 10px rgba(0,0,0,0.06);
+}
+
+.comentarios-container h2 {
+    font-size: 1.8rem;
+    font-weight: 600;
+    margin-bottom: 1.5rem;
+}
+
+.promedio-block {
+    display: flex;
+    align-items: center;
+    gap: 0.7rem;
+    margin-bottom: 1.8rem;
+}
+
+.promedio-num {
+    font-size: 2.4rem;
+    font-weight: 700;
+    color: #f39c12;
+}
+
+.promedio-stars {
+    font-size: 1.7rem;
+    color: #f1c40f;
+}
+
+.comentarios-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1.4rem;
+}
+
+.comentario-item {
+    padding: 1.4rem 1.2rem;
+    background: white;
+    border-radius: 10px;
+    border: 1px solid rgba(0,0,0,0.08);
+    box-shadow: 0 1px 6px rgba(0,0,0,0.05);
+    transition: transform 0.15s ease, box-shadow 0.2s ease;
+}
+
+.comentario-item:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 14px rgba(0,0,0,0.08);
+}
+
+.comentario-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.6rem;
+}
+
+.comentario-header strong {
+    font-size: 1.1rem;
+    color: #333;
+}
+
+.comentario-header span {
+    font-size: 0.9rem;
+    color: #888;
+}
+
+.comentario-stars {
+    font-size: 1.5rem;
+    color: #f1c40f;
+    letter-spacing: 2px;
+    margin-bottom: 0.7rem;
+}
+
+.comentario-text {
+    font-size: 1rem;
+    line-height: 1.5;
+    color: #444;
+    white-space: pre-line;
+}
+
+@media (max-width: 768px) {
+    .comentarios-container {
+        padding: 1rem;
+    }
+
+    .promedio-num {
+        font-size: 2rem;
+    }
+
+    .comentario-item {
+        padding: 1rem;
+    }
+
+    .comentario-stars {
+        font-size: 1.3rem;
+    }
+}

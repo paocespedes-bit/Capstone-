@@ -4,6 +4,7 @@
 
 {% block link %}
 <link rel="stylesheet" href="{% static 'store/style/detalles.css' %}">
+<link rel="stylesheet" href="{% static 'coment/calificar.css' %}">
 {% endblock %}
 
 {% block title %}{{ kit.nombre }}{% endblock %}
@@ -26,13 +27,17 @@
   <!-- Información del producto -->
   <div class="product-info">
     <h1 class="product-title">{{ kit.nombre }}</h1>
-    <p class="product-price">Desde: <span>${{ kit.precio|floatformat:0|punto_miles }}</span> IVA Incl.</p>
+
+    <p class="product-price">
+      Desde: <span>${{ kit.precio|floatformat:0|punto_miles }}</span> IVA Incl.
+    </p>
+
     <strong class="d-block mt-3 mb-4 p-2">
       {% if kit.inventario.first.modo_stock == 'pedido' %}
           Disponible Bajo Pedido
-        {% else %}
-          Stock Disponible ({{kit.inventario.first.disponible}})
-        {% endif %}
+      {% else %}
+          Stock Disponible ({{ kit.inventario.first.disponible }})
+      {% endif %}
     </strong>
 
     <form action="" method="post">
@@ -40,7 +45,8 @@
       <button class="btn-cart">Añadir al carrito</button>
     </form>
 
-    <a href="{% url 'calificar_producto' 'store' 'kitconstruccion' kit.id %}" class="btn btn-outline-warning mt-3">
+    <a href="{% url 'calificar_producto' 'store' 'kitconstruccion' kit.id %}"
+       class="btn btn-outline-warning mt-3">
       Calificar este producto ★
     </a>
 
@@ -53,49 +59,107 @@
       </ul>
     {% endif %}
 
-    <!-- Información adicional opcional -->
-<div class="product-extra">
-  <h3>Información adicional</h3>
-  <table>
-    {% if kit.m2 %}
-      <tr>
-        <th>Metros cuadrados</th>
-        <td>{{ kit.m2 }}</td>
-      </tr>
-    {% endif %}
+    <!-- Información adicional -->
+    <div class="product-extra">
+      <h3>Información adicional</h3>
+      <table>
+        {% if kit.m2 %}
+          <tr>
+            <th>Metros cuadrados</th>
+            <td>{{ kit.m2 }}</td>
+          </tr>
+        {% endif %}
 
-    {% if kit.dormitorios %}
-      <tr>
-        <th>Dormitorios</th>
-        <td>{{ kit.dormitorios }}</td>
-      </tr>
-    {% endif %}
+        {% if kit.dormitorios %}
+          <tr>
+            <th>Dormitorios</th>
+            <td>{{ kit.dormitorios }}</td>
+          </tr>
+        {% endif %}
 
-    {% if kit.banos %}
-      <tr>
-        <th>Baños</th>
-        <td>{{ kit.banos }}</td>
-      </tr>
-    {% endif %}
+        {% if kit.banos %}
+          <tr>
+            <th>Baños</th>
+            <td>{{ kit.banos }}</td>
+          </tr>
+        {% endif %}
 
-    {% if kit.categorias.all %}
-      <tr>
-        <th>Categoría</th>
-        <td>
-          {% for categoria in kit.categorias.all %}
-            {{ categoria.nombre }}{% if not forloop.last %}, {% endif %}
-          {% endfor %}
-        </td>
-      </tr>
-    {% endif %}
-  </table>
-</div>
-<!-- Botón volver -->
+        {% if kit.categorias.all %}
+          <tr>
+            <th>Categoría</th>
+            <td>
+              {% for categoria in kit.categorias.all %}
+                {{ categoria.nombre }}{% if not forloop.last %}, {% endif %}
+              {% endfor %}
+            </td>
+          </tr>
+        {% endif %}
+      </table>
+    </div>
+
+    <!-- Botón volver -->
     <div class="back-link">
       <a href="{% url 'kits' %}">← Volver al listado de kits</a>
     </div>
   </div>
 </div>
 
-    
+<hr class="mt-5 mb-4">
+
+<div class="comentarios-container">
+
+  <h2>Calificaciones de clientes</h2>
+
+  {% if promedio %}
+    <div class="promedio-block">
+      <span class="promedio-num">{{ promedio|floatformat:1 }}</span>
+      <span class="promedio-stars">
+        {% for i in "12345" %}
+          {% if forloop.counter <= promedio %}
+            ★
+          {% elif promedio|floatformat:0 == forloop.counter|stringformat:"i" %}
+            ★
+          {% else %}
+            ☆
+          {% endif %}
+        {% endfor %}
+      </span>
+    </div>
+  {% else %}
+    <p>Aún no hay calificaciones para este producto.</p>
+  {% endif %}
+  
+  <div class="comentarios-list">
+    {% for c in calificaciones %}
+      <div class="comentario-item">
+        <div class="comentario-header">
+          <strong>
+            {% if c.usuario %}
+              {{ c.usuario.username }}
+            {% else %}
+              Anónimo
+            {% endif %}
+          </strong>
+          <span>{{ c.fecha|date:"d/m/Y H:i" }}</span>
+        </div>
+
+        <div class="comentario-stars">
+          {% for i in "12345" %}
+            {% if forloop.counter <= c.estrellas %}
+              ★
+            {% else %}
+              ☆
+            {% endif %}
+          {% endfor %}
+        </div>
+
+        <p class="comentario-text">{{ c.comentario }}</p>
+      </div>
+    {% empty %}
+      <p>No hay comentarios aún.</p>
+    {% endfor %}
+  </div>
+
+</div>
+
 {% endblock %}
