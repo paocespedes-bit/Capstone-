@@ -42,6 +42,8 @@ INSTALLED_APPS = [
     'cart',
     'quote',
     'accounts',
+    'django_crontab',
+    
     
 ]
 
@@ -54,6 +56,10 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     # 'django.middleware.locale.LocaleMiddleware',
+]
+
+CRONJOBS = [
+    ('0 3 * * *', 'store.cleanup.eliminar_resenas_no_revisadas'),
 ]
 
 ROOT_URLCONF = 'sipstore.urls'

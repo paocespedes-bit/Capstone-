@@ -50,20 +50,7 @@
             <a class="nav-link" href="{% url 'quote' %}">Cotiza Estructura</a>
           </li>
         </ul>
-        <!-- ! Barra busqueda
-          
-            <div class="search-wrapper d-flex align-items-center">
-              <div class="search-box">
-                <input
-                  type="text"
-                  class="form-control search-input"
-                  placeholder="Buscar"
-                />
-                <button class="btn btn-primary search-button">
-                  <i class="bi bi-search"></i>
-                </button>
-              </div>
-            </div> -->
+
         <!-- !Boton carrito  -->
         <a href="{% url 'carrito' %}" class="btn btn-success cart-button position-relative">
           <i class="bi bi-cart3"></i> Carrito
@@ -85,49 +72,82 @@
 
   <!-- !Footer -->
   <footer class="bg-primary text-white mt-4 rounded-top">
-    <div class="container py-4">
-      <div class="row text-center text-md-start">
-        <div class="col-md-4 mb-3">
-          <img src="{% static 'img/logoVertical.png' %}" alt="SIPSTORE" class="log mb-2" />
-          <p class="mb-1">Ubicación</p>
+  <div class="container py-4">
+    <div class="row text-center text-md-start">
+
+      <!-- Logo / Ubicación -->
+      <div class="col-md-3 mb-3 d-flex flex-column align-items-center">
+        <img src="{% static 'img/logoVertical.png' %}" alt="SIPSTORE" class="log mb-2" />
+        <p class="mb-1">Ubicación</p>
+      </div>
+
+      <!-- Servicios -->
+      <div class="col-md-3 mb-3 d-flex flex-column align-items-center">
+        <p class="fw-bold mb-2">Servicios</p>
+        <a class="a-foot d-block mb-1" href="{% url 'kits' %}">Kit de Construcción</a>
+        <a class="a-foot d-block mb-1" href="{% url 'paneles' %}">Paneles SIP</a>
+        <a class="a-foot d-block mb-1" href="{% url 'quote' %}">Cotizar Estructura</a>
+      </div>
+
+      <!-- Contacto -->
+      <div class="col-md-3 mb-3 d-flex flex-column align-items-start">
+        <p class="fw-bold mb-2">Contacto</p>
+        <p class="mb-1 tex"><i class="bi bi-telephone-fill"></i> +569 6405 74XX</p>
+        <p class="mb-2 tex"><i class="bi bi-envelope-at-fill"></i> correoejemplo@gmail.com</p>
+        <div class="d-flex gap-2">
+          <a class="a-foot d-flex align-items-center boton-red" href="#"><i class="bi bi-whatsapp"></i> Whatsapp</a>
+          <a class="a-foot d-flex align-items-center boton-red" href="#"><i class="bi bi-facebook"></i> Facebook</a>
         </div>
-        <div class="col-md-4 mb-3">
-          <p class="fw-bold mb-2">Servicios</p>
-          <a class="a-foot d-block mb-1" href="{% url 'kits' %}">Kit de Construccion</a>
-          <a class="a-foot d-block mb-1" href="{% url 'paneles' %}">Paneles SIP</a>
-          <a class="a-foot d-block mb-1" href="{% url 'quote' %}">Cotizar Estructura</a>
-        </div>
-        <div class="col-md-4 mb-3">
-          <p class="fw-bold mb-2">Contacto</p>
-          <p class="mb-1 tex">
-            <i class="bi bi-telephone-fill"></i> +569 6405 74XX
-          </p>
-          <p class="mb-2 tex">
-            <i class="bi bi-envelope-at-fill"></i>
-            correoejemplo@gmail.com
-          </p>
-          <div class="d-flex justify-content-center justify-content-md-start gap-2">
-            <a class="a-foot d-flex align-items-center boton-red" href="#">
-              <i class="bi bi-whatsapp"></i>Whatsapp
-            </a>
-            <a class="a-foot d-flex align-items-center boton-red" href="#">
-              <i class="bi bi-facebook"></i>Facebook
-            </a>
+      </div>
+
+      <!-- Reseñas -->
+      <div class="col-md-3 mb-3 d-flex flex-column align-items-end">
+        <div class="footer-resenas w-100">
+          <!-- Mostrar últimas reseñas -->
+          <div class="mostrar-resena">
+            <h6 class="fw-bold text-center">Reseñas</h6>
+            <div class="resenas-scroll">
+              {% if ultimas_resenas %}
+                  {% for resena in ultimas_resenas %}
+                      <div class="mb-2 border-bottom pb-1">
+                          <p class="mb-1"><strong>{{ resena.autor|default:"Cliente" }}:</strong></p>
+                          <p style="font-size: 0.9rem;">{{ resena.texto }}</p>
+                      </div>
+                  {% endfor %}
+              {% else %}
+                  <p style="font-size: 0.9rem;">No hay reseñas aún</p>
+              {% endif %}
+            </div>
+          </div>
+
+          <!-- Formulario para ingresar reseña -->
+          <div class="ingresar-resena-footer mt-2">
+            <h6 class="fw-bold text-center">Ingresa tu reseña</h6>
+            <form action="{% url 'agregar_resena' %}" method="post">
+              {% csrf_token %}
+              <input type="text" name="autor" class="form-control form-control-sm" placeholder="Tu nombre (opcional)">
+              <textarea name="texto" class="form-control form-control-sm" rows="2" placeholder="Escribe tu reseña..." required></textarea>
+              <button type="submit">Enviar</button>
+            </form>
           </div>
         </div>
       </div>
-      <div class="row mt-3 border-top pt-3 text-center">
-        <div class="col-12 col-md-6 mb-2 mb-md-0 ultimo">
-          <h1 class="fw-bold mb-2" style="font-size: 1rem;">Derechos Reservados</h1>
-        </div>
-        <div class="col-12 col-md-6 ultimo">
-          <img class="medio_pago" src="{% static 'core/img/mercado_pago.svg' %}" alt="mercado_pago" style="width: 87px; height: 50px;">
-          <img class="medio_pago" src="{% static 'core/img/visa.svg' %}" alt="visa">
-          <img class="medio_pago" src="{% static 'core/img/mastercard.svg' %}" alt="master_card">
-        </div>
+
+    </div>
+
+    <!-- Derechos reservados y medios de pago -->
+    <div class="row mt-3 border-top pt-3 text-center">
+      <div class="col-12 col-md-6 mb-2 mb-md-0 ultimo">
+        <h1 class="fw-bold mb-2" style="font-size: 1rem;">Derechos Reservados</h1>
+      </div>
+      <div class="col-12 col-md-6 ultimo">
+        <img class="medio_pago" src="{% static 'core/img/mercado_pago.svg' %}" alt="mercado_pago">
+        <img class="medio_pago" src="{% static 'core/img/visa.svg' %}" alt="visa">
+        <img class="medio_pago" src="{% static 'core/img/mastercard.svg' %}" alt="master_card">
       </div>
     </div>
-  </footer>
+  </div>
+</footer>
 
   <button id="btnTop">↑</button>
 
@@ -143,9 +163,9 @@
   <script>
     const urlModificar = '{% url "modificar_ajax" "ACCION_PLACEHOLDER" %}';
     const CSRF_TOKEN = "{{ csrf_token }}";
-</script>
-<script src="{% static 'cart/js/carrito.js' %}"></script>
-<script src="{% static 'cart/js/notifications.js' %}"></script>
+  </script>
+  <script src="{% static 'cart/js/carrito.js' %}"></script>
+  <script src="{% static 'cart/js/notifications.js' %}"></script>
   {% block script %}{% endblock %}
 </body>
 
