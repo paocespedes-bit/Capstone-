@@ -5,8 +5,8 @@ document.addEventListener("DOMContentLoaded", function () {
   const currentModuloImage = document.getElementById("currentModuloImage");
   const imageMap = {
     Piso: "piso.png",
-    "Muros Interiores": "muros.png",
-    "Muros Exteriores": "muros.png",
+    "Muros Interiores": "muros_int.png",
+    "Muros Exteriores": "muros_ext.png",
     Cielo: "cielo.png",
     Aberturas: "aberturas.png",
   };
