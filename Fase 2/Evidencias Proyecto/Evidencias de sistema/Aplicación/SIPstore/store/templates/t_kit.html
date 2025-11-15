@@ -1,69 +1,108 @@
-{% load static%}
-
+{% load static %}
 {% load myfilters %}
-<!-- !css -->
+
 {% block link %}
 <link rel="stylesheet" href="{% static 'store/style/tarjeta.css' %}" />
 <link rel="stylesheet" href="{% static 'css/all.min.css' %}" />
 {% endblock %}
-<!-- !cloqueo de contenido -->
+
 {% block content %}
-<!-- !Tarjetas de productos -->
+
 {% for kit in kits %}
-{% if kit.inventario.first.modo_stock == 'stock' and kit.inventario.first.disponible > 0  or kit.inventario.first.modo_stock == 'pedido' %}
+{% if kit.inventario.first.modo_stock == 'stock' and kit.inventario.first.disponible > 0 or kit.inventario.first.modo_stock == 'pedido' %}
+
 <div class="contenedor-card" data-url="{% url 'kit_detail' kit.pk %}">
-  <div class="card" >
+  <div class="card">
+
     {% if kit.imagenes.all %}
-    <img src="{{kit.imagenes.first.imagen.url  }}" alt="{{kit.nombre}}" />
+      <img src="{{ kit.imagenes.first.imagen.url }}" alt="{{ kit.nombre }}" />
     {% else %}
-    <img src="{% static 'img/SinImagen.png' %}" alt="Imagen no disponible" />
+      <img src="{% static 'img/SinImagen.png' %}" alt="Imagen no disponible" />
     {% endif %}
-    <!-- !Oferta  -->
-    <!-- <div class="oferta">-10%</div> -->
-    <!-- !--------------------- -->
+
     <div class="card-body">
-      <div class="card-title">{{kit.nombre}}</div>
-      <!-- !Estrellas -->
-      <!-- <div class="stars">★★★★★</div> -->
-      <!-- !--------------------- -->
+
+      <!-- Título -->
+      <div class="card-title">{{ kit.nombre }}</div>
+
+      <!-- ⭐ PROMEDIO DE ESTRELLAS -->
+      <div class="stars">
+        {% if kit.promedio %}
+          {% for i in "12345" %}
+            {% if forloop.counter <= kit.promedio %}
+              <span class="star llena">★</span>
+            {% else %}
+              <span class="star vacia">☆</span>
+            {% endif %}
+          {% endfor %}
+          <span class="promedio-num">({{ kit.promedio|floatformat:1 }})</span>
+        {% else %}
+          <span class="sin-calificacion">Sin calificaciones</span>
+        {% endif %}
+      </div>
+
+      <!-- Disponibilidad -->
       <div class="card-description">
         {% if kit.inventario.first.modo_stock == 'pedido' %}
           Disponible bajo pedido
         {% else %}
-          Stock Disponible ({{kit.inventario.first.disponible}})
+          Stock Disponible ({{ kit.inventario.first.disponible }})
         {% endif %}
-
       </div>
+
+      <!-- Precios -->
       <div class="prices">
-        <p class="price">${{kit.precio|floatformat:0|punto_miles}}</p> 
-        <!-- !Precio anterior -->
-        <p class="tachado">${{kit.precio|floatformat:0|punto_miles}}</p>
+        <p class="price">${{ kit.precio|floatformat:0|punto_miles }}</p>
+        <p class="tachado">${{ kit.precio|floatformat:0|punto_miles }}</p>
       </div>
 
+      <!-- Acciones -->
       <div class="actions">
+
         <div class="quantity">
-          <button type="button" class="btn rounded-circle custom-icon-btn btn-menos"><i class="bi bi-dash-lg"></i></button>
-            <span class="cantidad-input" data-max="{% if kit.inventario.first.modo_stock == 'stock' %}{{ kit.inventario.first.disponible }}{% else %}9999{% endif %}">1</span>
-          <button type="button" class="btn rounded-circle custom-icon-btn btn-mas"><i class="bi bi-plus-lg"></i></button>
+          <button type="button" class="btn rounded-circle custom-icon-btn btn-menos">
+            <i class="bi bi-dash-lg"></i>
+          </button>
+
+          <span class="cantidad-input"
+                data-max="{% if kit.inventario.first.modo_stock == 'stock' %}{{ kit.inventario.first.disponible }}{% else %}9999{% endif %}">
+            1
+          </span>
+
+          <button type="button" class="btn rounded-circle custom-icon-btn btn-mas">
+            <i class="bi bi-plus-lg"></i>
+          </button>
         </div>
-        <button class="add-cart add-btn add-btn-ajax" id="add-btn-{{ kit.id }}" data-id="{{ kit.id }}" data-ctid="{{ kit|content_type }}" data-url="{% url 'add_ajax' %}"
-        >Añadir al Carrito&nbsp;<i class="bi bi-cart3"></i></button >
+
+        <button class="add-cart add-btn add-btn-ajax"
+                id="add-btn-{{ kit.id }}"
+                data-id="{{ kit.id }}"
+                data-ctid="{{ kit|content_type }}"
+                data-url="{% url 'add_ajax' %}">
+          Añadir al Carrito&nbsp;<i class="bi bi-cart3"></i>
+        </button>
+
       </div>
     </div>
+
+    <!-- Expansión inferior -->
     <div class="expansion">
-      <p class="info"><i class="fa-solid fa-ruler-combined"></i>m²<br>{{kit.m2}}</p>
-      <p class="info"><i class="fa-solid fa-shower"></i>Baños<br>{{kit.banos}}</p>
-      <p class="info"><i class="fa-solid fa-bed"></i>Habitaciones<br>{{kit.dormitorios}}</p>
+      <p class="info"><i class="fa-solid fa-ruler-combined"></i>m²<br>{{ kit.m2 }}</p>
+      <p class="info"><i class="fa-solid fa-shower"></i>Baños<br>{{ kit.banos }}</p>
+      <p class="info"><i class="fa-solid fa-bed"></i>Habitaciones<br>{{ kit.dormitorios }}</p>
     </div>
+
   </div>
 </div>
+
 {% endif %}
 {% empty %}
-<p>No kits de construccion disponibles</p>
-{% endfor %} 
-{% include 'toast.html' %}
+<p>No kits de construcción disponibles</p>
+{% endfor %}
+
+{% include "toast.html" %}
 {% endblock %}
-<!-- ! Para los js  -->
+
 {% block script %}
 <script src="{% static 'store/js/mas_menos.js' %}"></script>
 <script src="{% static 'store/js/click.js' %}"></script>
