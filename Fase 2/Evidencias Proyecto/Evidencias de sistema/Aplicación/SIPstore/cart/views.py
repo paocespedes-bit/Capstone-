@@ -11,8 +11,9 @@ from django.contrib import messages
 from django.urls import reverse
 from django.conf import settings
 from django.views.decorators.csrf import csrf_exempt
-from store.signals import enviar_alerta_stock_multiple
+from store.signals import enviar_alerta_stock_multiple, enviar_boleta_por_correo
 import mercadopago
+from control.utils.boleta import generar_boleta_pdf
 
 
 
@@ -186,6 +187,14 @@ def crear_pedido(request):
 
             pedido.monto_total = monto_total
             pedido.save()
+
+            # 📝 Generar PDF de la boleta
+            detalles = pedido.detalles.all()
+            pdf_buffer = generar_boleta_pdf(pedido, detalles)
+
+            # ✉️ Enviar boleta al correo del cliente
+            enviar_boleta_por_correo(pedido, pdf_buffer)
+
 
             carrito.limpiar()
 

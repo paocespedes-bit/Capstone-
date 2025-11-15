@@ -1,5 +1,6 @@
 from django.core.mail import send_mail
 from django.conf import settings
+from django.core.mail import EmailMessage
 
 def enviar_alerta_stock_bajo(nombre_producto, cantidad, email_admin=None):
     """
@@ -46,3 +47,31 @@ def enviar_alerta_stock_multiple(productos_alerta, email_admin=None):
         send_mail(subject, message, settings.DEFAULT_FROM_EMAIL, [destinatario])
     else:
         print(f"[ALERTA STOCK MÚLTIPLE]\n{message}")
+
+def enviar_boleta_por_correo(pedido, pdf_buffer):
+    """
+    Envía la boleta PDF al correo del cliente.
+    """
+    asunto = f"Boleta de tu compra #{pedido.id}"
+    mensaje = (
+        f"Hola {pedido.comprador},\n\n"
+        "Gracias por tu compra en SIPstore.\n"
+        "Adjuntamos tu boleta electrónica en formato PDF.\n\n"
+        "Saludos,\nSIPstore."
+    )
+
+    email = EmailMessage(
+        asunto,
+        mensaje,
+        settings.DEFAULT_FROM_EMAIL,
+        [pedido.correo_cli],     # correo del cliente
+    )
+
+    # Adjuntar PDF
+    email.attach(
+        f"boleta_{pedido.id}.pdf",  # nombre del archivo
+        pdf_buffer.getvalue(),      # contenido en bytes
+        "application/pdf"           # tipo MIME
+    )
+
+    email.send()
