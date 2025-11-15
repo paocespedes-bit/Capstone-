@@ -46,6 +46,20 @@ body {
   background-image: var(--bs-navbar-toggler-icon-bg);
 }
 
+.user-info p{
+  color: #fff;
+  text-transform: capitalize;
+  text-align: center;
+  justify-content: center;
+  justify-items: center;
+  margin-bottom: 0;
+
+}
+.username{
+  font-weight: bold;
+  font-size: x-large;
+}
+
 @media (min-width: 768px) {
   
 
