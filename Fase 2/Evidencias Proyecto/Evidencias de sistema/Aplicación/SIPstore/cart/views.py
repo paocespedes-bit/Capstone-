@@ -18,13 +18,29 @@ def carrito(request):
     carrito = Carrito(request)
     productos_completos = carrito.obtener_productos_completos()
     locales = Local.objects.all()
+    contiene_kit_bool = contiene_kit(carrito)
     
     context = {
         "public_key": settings.MERCADOPAGO_PUBLIC_KEY,
         'productos_carrito': productos_completos,
-        'locales': locales,
-    }
+        'locales': locales,   
+        'contiene_kit':contiene_kit_bool,
+        }
     return render(request, "carrito.html", context)
+
+def contiene_kit(carrito):
+    try:
+        kit_ct = ContentType.objects.get_for_model(KitConstruccion)
+
+        for item in carrito.carrito.values():
+            if str(item["content_type_id"]) == str(kit_ct.id):
+                return True
+
+        return False
+
+    except Exception as e:
+        print("Error detectando kit:", e)
+        return False
 
 
 def obtener_producto_concreto(producto_id, content_type_id):

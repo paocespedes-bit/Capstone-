@@ -92,3 +92,4 @@ class Carrito:
                 print(f"Error al cargar producto {item.get('producto_id','Desconocido')}: {e}")
                 
         return productos_completos    
+    

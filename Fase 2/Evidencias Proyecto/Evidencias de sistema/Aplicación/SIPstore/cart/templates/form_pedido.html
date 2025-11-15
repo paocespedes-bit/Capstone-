@@ -13,7 +13,8 @@
 
                     <div class="mb-3">
                         <label for="localSelect" class="form-label">Local de Retiro</label>
-                        <select name="localSelect" class="form-select" id="localSelect" onchange="showLocalCard(this.value)" required>
+                        <select name="localSelect" class="form-select" id="localSelect"
+                            onchange="showLocalCard(this.value)" required>
                             <option value="" selected disabled>Selecciona un local...</option>
                             {% for local in locales %}
                             <option value="{{ local.id }}" data-nombre="{{ local.nombre }}"
@@ -46,11 +47,23 @@
 
                     <div class="form-check">
                         <input class="form-check-input" type="radio" name="paymentMethod" id="paymentStore"
-                            value="store" required>
+                            value="store" required {% if contiene_kit %}disabled{% endif %}>
+
                         <label class="form-check-label" for="paymentStore">
                             <strong class="text-secondary">Pago en tienda</strong> (Paga al momento de retirar)
+
+                            <br>
+
+                            <!-- Este div SIEMPRE existe -->
+                            <div id="bloqueoPagoTienda" style="display: none;">
+                                <p class="text-danger fw-bold" style="font-size: small;">
+                                    No disponible porque tu carrito incluye un Kit de Autoconstrucción
+                                </p>
+                            </div>
                         </label>
                     </div>
+
+
                 </fieldset>
                 <fieldset class="p-3 border rounded">
                     <legend class="float-none w-auto px-2 fs-6 text-success">Información Cliente (para boleta)</legend>
@@ -58,7 +71,7 @@
                     <div class="row g-3">
                         <div class="col-md-6">
                             <label for="clientName" class="form-label">Nombre Cliente</label>
-                            <input type="text" class="form-control" id="clientName"  name="clientName" required>
+                            <input type="text" class="form-control" id="clientName" name="clientName" required>
                         </div>
                         <div class="col-md-6">
                             <label for="clientRut" class="form-label">RUT</label>
@@ -82,24 +95,36 @@
                     </div>
                 </fieldset>
                 <fieldset class="p-3 border rounded mt-4">
-    <legend class="float-none w-auto px-2 fs-6 text-primary">Información de Retiro</legend>
+                    <legend class="float-none w-auto px-2 fs-6 text-primary">Información de Retiro</legend>
 
-    <div class="row g-3">
-        <div class="col-md-6">
-            <label class="form-label">Fecha de Compra</label>
-            <input type="text" class="form-control" value="{{ fecha_pedido }}" readonly>
-        </div>
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label class="form-label">Fecha de Compra</label>
+                            <input type="text" class="form-control" value="{{ fecha_pedido }}" readonly>
+                        </div>
 
-        <div class="col-md-6">
-            <label class="form-label">Fecha Estimada de Retiro</label>
-            <input type="text" class="form-control text-success fw-bold" value="{{ fecha_retiro }}" readonly>
-            <div class="form-text">Tu pedido estará disponible para retiro en 5 días.</div>
-        </div>
-    </div>
-</fieldset>
+                        <div class="col-md-6">
+                            <label class="form-label">Fecha Estimada de Retiro</label>
+                            <input type="text" class="form-control text-success fw-bold" value="{{ fecha_retiro }}"
+                                readonly>
+                            <div class="form-text">Tu pedido estará disponible para retiro en 5 días.</div>
+                        </div>
+                    </div>
+                </fieldset>
             </form>
         </div>
     </div>
 </div>
 
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const contieneKit = {{ contiene_kit|yesno:"true,false" }};
+        const divBloqueo = document.getElementById("bloqueoPagoTienda");
+        const inputPagoTienda = document.getElementById("paymentStore");
 
+        if (contieneKit) {
+            inputPagoTienda.disabled = true;   // desactiva el método
+            divBloqueo.style.display = "block"; // muestra el mensaje
+        }
+    });
+</script>
