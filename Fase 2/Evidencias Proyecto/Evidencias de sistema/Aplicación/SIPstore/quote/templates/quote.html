@@ -59,9 +59,16 @@
           <h5 class="card-title mb-3">Guardar o enviar tu cotización</h5>
           <input type="email" id="correoCliente" placeholder="Tu correo electrónico"
             class="form-control mb-3 text-center" style="max-width: 300px; margin: 0 auto;" />
-          <button class="btn btn-primary w-75 mb-3" onclick="enviarCotizacion()">
+
+          <button 
+            class="btn btn-primary w-75 mb-3"
+            id="btnEnviarCot"
+            data-url="{% url 'enviar_cotizacion' %}"
+            onclick="enviarCotizacion()"
+          >
             <i class="bi bi-envelope-fill"></i> Enviar cotización por correo
           </button>
+
           <div class="btn-group">
             <a href="{% url 'descargar_cotizacion' 'txt' %}" class="btn btn-outline-secondary">
               <i class="bi bi-filetype-txt"></i> TXT

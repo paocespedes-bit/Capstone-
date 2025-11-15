@@ -12,6 +12,8 @@ from docx import Document
 from cart.carrito import Carrito
 from store.models import PanelSIP
 from django.contrib.contenttypes.models import ContentType
+from reportlab.pdfgen import canvas
+from reportlab.lib.pagesizes import letter
 
 def quote(request):
     modulos = {
@@ -353,3 +355,107 @@ def agregar_al_carrito(request):
         return JsonResponse({"success": True, "message": "Productos agregados al carrito correctamente."})
 
     return JsonResponse({"success": False, "message": "Método no permitido."})
+
+def generar_pdf_cotizacion(resultados, total_general):
+    buffer = BytesIO()
+    p = canvas.Canvas(buffer, pagesize=letter)
+
+    p.setFont("Helvetica-Bold", 14)
+    p.drawString(50, 750, "COTIZACIÓN PANEL SIP")
+
+    p.setFont("Helvetica", 10)
+    y = 720
+
+    for r in resultados:
+        p.drawString(50, y, f"{r['nombre']} ({r['solicitado_por']})")
+        y -= 15
+        p.drawString(60, y, f"Área: {r['area']} m² | Cantidad: {r['cantidad']} | Valor unit: ${r['valor']} | Total: ${r['total']}")
+        y -= 25
+
+        if y < 50:
+            p.showPage()
+            y = 750
+
+    p.setFont("Helvetica-Bold", 12)
+    p.drawString(50, y, f"TOTAL GENERAL: ${round(total_general, 2)}")
+
+    p.showPage()
+    p.save()
+    pdf = buffer.getvalue()
+    buffer.close()
+    return pdf
+
+def enviar_cotizacion_por_correo(correo, resultados, total_general):
+    pdf_bytes = generar_pdf_cotizacion(resultados, total_general)
+
+    email = EmailMessage(
+        subject="Tu cotización de Paneles SIP",
+        body="Adjuntamos la cotización solicitada.\n\nGracias por cotizar con nosotros.",
+        from_email="no-reply@tuempresa.cl",
+        to=[correo],
+    )
+
+    email.attach("cotizacion.pdf", pdf_bytes, "application/pdf")
+    email.send()
+
+@csrf_exempt
+def enviar_cotizacion(request):
+    if request.method != "POST":
+        return JsonResponse({"error": "Método no permitido"}, status=405)
+
+    # Leer JSON del body
+    try:
+        data = json.loads(request.body.decode("utf-8"))
+    except:
+        return JsonResponse({"error": "JSON inválido"}, status=400)
+
+    correo = data.get("correo")
+    if not correo:
+        return JsonResponse({"error": "Correo no recibido"}, status=400)
+
+    # Obtener productos guardados previamente en la sesión
+    productos = request.session.get("productos_calculo")
+    if not productos:
+        return JsonResponse({"error": "No hay datos de cotización"}, status=400)
+
+    # Calcular total
+    total_general = sum(item["total"] for item in productos)
+
+    # Crear PDF
+    from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer
+    from reportlab.lib.styles import getSampleStyleSheet
+    from reportlab.lib.pagesizes import A4
+    from reportlab.lib.units import cm
+
+    buffer = BytesIO()
+    pdf = SimpleDocTemplate(buffer, pagesize=A4)
+    styles = getSampleStyleSheet()
+    story = []
+
+    story.append(Paragraph("<b>Cotización de Paneles SIP</b>", styles["Title"]))
+    story.append(Spacer(1, 12))
+
+    for p in productos:
+        line = (
+            f"<b>{p['nombre']}</b>: {p['cantidad']} unidad(es) – "
+            f"Total: ${p['total']}"
+        )
+        story.append(Paragraph(line, styles["Normal"]))
+        story.append(Spacer(1, 6))
+
+    story.append(Spacer(1, 12))
+    story.append(Paragraph(f"<b>Total General:</b> ${total_general}", styles["Heading2"]))
+
+    pdf.build(story)
+    buffer.seek(0)
+
+    # Enviar email con PDF adjunto
+    email = EmailMessage(
+        subject="Tu cotización de Paneles SIP",
+        body="Adjuntamos tu cotización en formato PDF.",
+        to=[correo],
+    )
+    email.attach("cotizacion.pdf", buffer.read(), "application/pdf")
+    email.send()
+
+    return JsonResponse({"message": "Cotización enviada correctamente al correo."})
