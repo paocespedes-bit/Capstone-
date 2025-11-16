@@ -321,16 +321,17 @@ def descargar_cotizacion(request, formato):
     
     
 @csrf_exempt
+
 def agregar_al_carrito(request):
+
     if request.method == 'POST':
         productos = request.session.get("productos_calculo", [])
-
+        
         if not productos:
             return JsonResponse({"success": False, "message": "No hay productos para agregar al carrito."})
-
+        
         carrito = Carrito(request)
 
-        
         content_type = ContentType.objects.get_for_model(PanelSIP)
 
         for item in productos:
@@ -342,14 +343,14 @@ def agregar_al_carrito(request):
                         "nombre": producto.nombre,
                         "precio_actual": producto.precio_actual,
                         "content_type_id": content_type.id,
+                        "is_from_quote": True,
                     }, item["cantidad"])
             except Exception as e:
                 print(f"⚠️ Error al agregar {item['nombre']} al carrito: {e}")
                 continue
 
-        
         del request.session["productos_calculo"]
 
         return JsonResponse({"success": True, "message": "Productos agregados al carrito correctamente."})
-
+    
     return JsonResponse({"success": False, "message": "Método no permitido."})

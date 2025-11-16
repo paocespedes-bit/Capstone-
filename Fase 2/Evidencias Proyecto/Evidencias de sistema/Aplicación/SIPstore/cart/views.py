@@ -31,15 +31,19 @@ def carrito(request):
 def contiene_kit(carrito):
     try:
         kit_ct = ContentType.objects.get_for_model(KitConstruccion)
+        kit_ct_id = str(kit_ct.id)
 
         for item in carrito.carrito.values():
-            if str(item["content_type_id"]) == str(kit_ct.id):
+            if str(item["content_type_id"]) == kit_ct_id:
+                return True
+            
+            if item.get("is_from_quote", False):
                 return True
 
         return False
 
     except Exception as e:
-        print("Error detectando kit:", e)
+        print("Error detectando restricción de pago (Kit o Cotización):", e)
         return False
 
 
@@ -72,26 +76,28 @@ def agregar_producto(request):
         producto_id = data.get('id')
         content_type_id = data.get('ctid')
         cantidad = int(data.get('cantidad', 1))
+        is_from_quote = data.get('is_from_quote', False)
 
         producto = obtener_producto_concreto(producto_id, content_type_id)
         if not producto:
             return JsonResponse({"error": "Producto no encontrado."}, status=404)
-        
+
         producto_dict = {
             'id': producto.id,
             'nombre': producto.nombre,
             'precio_actual': producto.precio_actual,
             'content_type_id': content_type_id,
+            'is_from_quote': is_from_quote,
         }
-        
+
         carrito = Carrito(request)
         carrito.agregar(producto_dict, cantidad)
-        
+
         response_data = generar_respuesta(carrito)
         response_data["mensaje"] = f"'{producto.nombre}' (x{cantidad}) agregado al carrito."
-        
+
         return JsonResponse(response_data)
-    
+
     except Exception as e:
         return JsonResponse({"error": str(e)}, status=500)
 

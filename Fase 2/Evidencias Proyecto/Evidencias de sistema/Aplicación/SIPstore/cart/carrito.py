@@ -2,6 +2,7 @@ from store.models import PanelSIP, KitConstruccion
 from django.contrib.contenttypes.models import ContentType
 
 class Carrito:
+
     def __init__(self, request):
         self.request = request
         self.session = request.session
@@ -23,12 +24,15 @@ class Carrito:
                 "content_type_id": producto_dict['content_type_id'],
                 "nombre": producto_dict['nombre'],
                 "precio_unitario": precio_unitario,
+                "is_from_quote": producto_dict.get('is_from_quote', False),
                 "cantidad": cantidad,
                 "acumulado": precio_unitario * cantidad,
             }
         else:
             self.carrito[id_str]["cantidad"] += cantidad
-            self.carrito[id_str]["acumulado"] += self.carrito[id_str]["precio_unitario"] * self.carrito[id_str]["cantidad"]
+            self.carrito[id_str]["acumulado"] = self.carrito[id_str]["precio_unitario"] * self.carrito[id_str]["cantidad"]
+            if producto_dict.get('is_from_quote', False):
+                self.carrito[id_str]["is_from_quote"] = True
             
         self.guardar_carrito()
     
