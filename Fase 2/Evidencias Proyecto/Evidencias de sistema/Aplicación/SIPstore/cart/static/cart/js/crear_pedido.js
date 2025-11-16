@@ -1,5 +1,8 @@
 document.addEventListener('DOMContentLoaded', function() {
-    document.getElementById('btn-finish-order').addEventListener('click', function() {
+
+    document.getElementById('btn-finish-order').addEventListener('click', function(event) {
+        event.preventDefault();   // ⬅️ EVITA EL SUBMIT REAL DEL FORMULARIO
+
         const form = document.getElementById('pedidoForm');
         const formData = new FormData(form);
 
@@ -12,12 +15,17 @@ document.addEventListener('DOMContentLoaded', function() {
         })
         .then(response => response.json())
         .then(data => {
-            if (data.ok) {
-                window.location.href = data.redirect;
-            } else {
+
+            // ❌ MUESTRA ERROR EN ALERT, NO REDIRIGE
+            if (!data.ok) {
                 alert(data.error || "Error al guardar el pedido");
+                return;  // ⬅️ IMPORTANTE: DETENER LA EJECUCIÓN
             }
+
+            // ✔️ SI TODO CORRECTO → REDIRIGIR
+            window.location.href = data.redirect;
         })
         .catch(error => console.error("❌ Error en fetch:", error));
     });
+
 });
