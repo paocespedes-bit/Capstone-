@@ -5,7 +5,9 @@ function enviarCotizacion() {
     return;
   }
 
-  fetch("{% url 'enviar_cotizacion' %}", {
+  const url = document.getElementById("btnEnviarCot").dataset.url;
+
+  fetch(url, {
     method: "POST",
     headers: {"Content-Type": "application/json"},
     body: JSON.stringify({correo})

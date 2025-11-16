@@ -4,7 +4,7 @@ from django.contrib.contenttypes.models import ContentType
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from .forms import CategoriaForm, PanelSIPForm, KitConstruccionForm, ImagenProductoForm, LocalForm
-from store.models import PanelSIP, KitConstruccion, Categoria, imagenProducto,Inventario
+from store.models import PanelSIP, KitConstruccion, Categoria, imagenProducto, Inventario
 from .models import Pedido,DetallePedido,Local
 from datetime import date
 from django.utils import timezone
@@ -18,6 +18,7 @@ from control.utils.email_utils import enviar_correo_estado
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.http import require_POST
+from store.signals import enviar_alerta_stock_bajo
 
 
 # !Views principales
@@ -501,13 +502,12 @@ def eliminar_imagenes_panel(request, panel_id):
 # !======================
 # !EDITAR
 # !======================
-
 @login_required
 def editar_panel(request, pk):
     panel = get_object_or_404(PanelSIP, pk=pk)
 
     if request.method == 'POST':
-        # Guardar datos del panel
+        # Actualizar datos del panel
         panel.nombre = request.POST.get('nombre')
         panel.precio = request.POST.get('precio')
         panel.descripcion = request.POST.get('descripcion')
@@ -517,30 +517,35 @@ def editar_panel(request, pk):
         panel.largo = request.POST.get('largo')
         panel.ancho = request.POST.get('ancho')
         panel.save()
-        
-        # Guardar relaciones Many-to-Many
+
+        # Categorías
         panel.categorias.set(request.POST.getlist('categorias'))
 
-        # Actualizar Inventario
-        inventario = panel.inventario.first() 
-        
+        # Inventario
+        inventario = panel.inventario.first()
         if inventario:
-            modo_stock = request.POST.get('modo_stock')
+            inventario.modo_stock = request.POST.get('modo_stock', 'pedido')
             cantidad_str = request.POST.get('cantidad')
-            
-            inventario.modo_stock = modo_stock if modo_stock else 'pedido'
-            
+
             if inventario.modo_stock == 'stock' and cantidad_str:
                 try:
-                    inventario.disponible = int(cantidad_str) 
+                    inventario.disponible = int(cantidad_str)
                 except ValueError:
                     pass
 
             inventario.save()
-        
+
+            # 🚨 Lógica de alerta directa
+            if inventario.disponible < 10:
+                enviar_alerta_stock_bajo(
+                    nombre_producto=panel.nombre,
+                    cantidad=inventario.disponible,
+                    email_admin="tonopanelessip@gmail.com"  # <-- cambia este correo
+                )
+
         return redirect(f"{reverse('stock')}?tab=paneles")
 
-    return redirect(f"{reverse('stock')}?tab=paneles") 
+    return redirect(f"{reverse('stock')}?tab=paneles")
 
 @login_required
 def editar_kit(request, pk):

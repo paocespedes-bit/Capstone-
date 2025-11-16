@@ -5,6 +5,7 @@ from django.core.paginator import Paginator
 from coment.models import Calificacion
 
 #! Aqui se agregan las views (templates).
+
 def paneles(request):
     # filtros desde GET
     tipo_obs_filtro = request.GET.get('tipo_obs', '').strip()
@@ -23,8 +24,14 @@ def paneles(request):
         paneles_sip = paneles_sip.filter(tipo_obs=tipo_obs_filtro)
 
     if espesor_OSB_filtro:
-        paneles_sip = paneles_sip.filter(espesor=espesor_OSB_filtro)
-
+        # Normaliza coma decimal y convierte a número
+        espesor_normalizado = espesor_OSB_filtro.replace(",", ".")
+        try:
+            espesor_decimal = float(espesor_normalizado)
+            paneles_sip = paneles_sip.filter(espesor=espesor_decimal)
+        except ValueError:
+            # Si el valor no es numérico, se ignora el filtro
+            pass
     if madera_union_filtro:
         paneles_sip = paneles_sip.filter(madera_union=madera_union_filtro)
 
