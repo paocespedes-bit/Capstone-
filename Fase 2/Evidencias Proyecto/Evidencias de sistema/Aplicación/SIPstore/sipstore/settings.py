@@ -152,11 +152,11 @@ MERCADOPAGO_ACCESS_TOKEN = os.getenv('MERCADOPAGO_ACCESS_TOKEN')
 SENDGRID_API_KEY = os.getenv("SENDGRID_API_KEY")
 
 EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
-EMAIL_HOST = "smtp.gmail.com"
+EMAIL_HOST = "smtp.sendgrid.net"
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
-EMAIL_HOST_USER = "tonopanelessip@gmail.com"
-EMAIL_HOST_PASSWORD = "pfdf qtdy icoi zcdo"  # contraseña de aplicación
+EMAIL_HOST_USER = "apikey"  # palabra literal
+EMAIL_HOST_PASSWORD = os.getenv("SENDGRID_API_KEY")
 DEFAULT_FROM_EMAIL = "tonopanelessip@gmail.com"
 
 
