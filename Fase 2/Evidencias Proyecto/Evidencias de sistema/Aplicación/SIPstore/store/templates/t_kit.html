@@ -74,13 +74,13 @@
           </button>
         </div>
 
-        <button class="add-cart add-btn add-btn-ajax" id="add-btn-{{ kit.id }}"
-          data-id="{{ kit.id }}" 
-          data-ctid="{{ kit|content_type }}"
-          data-is-kit="true"
-          data-url="{% url 'add_ajax' %}">Añadir al Carrito&nbsp;<i class="bi bi-cart3"></i>
+        <button class="add-cart add-btn add-btn-ajax"
+                id="add-btn-{{ kit.id }}"
+                data-id="{{ kit.id }}"
+                data-ctid="{{ kit|content_type }}"
+                data-url="{% url 'add_ajax' %}">
+          Añadir al Carrito&nbsp;<i class="bi bi-cart3"></i>
         </button>
-
 
       </div>
     </div>
