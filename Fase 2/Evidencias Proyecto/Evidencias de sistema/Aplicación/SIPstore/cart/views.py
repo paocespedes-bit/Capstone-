@@ -143,9 +143,49 @@ def crear_pedido(request):
 
         local = Local.objects.get(id=local_id) if local_id else None
 
-        # 🟩 Pago en tienda: crea pedido completo (CORRECCIÓN AQUÍ)
+        # -------------------------------------------------------------------------
+        # 🟥 VALIDACIÓN CLAVE: NO PERMITIR "PAGO EN TIENDA" SI HAY KITS O COTIZACIONES
+        # -------------------------------------------------------------------------
+        contiene_kit_o_cot = False
+
+        for item in carrito.carrito.values():
+
+            # Si fue marcado desde JS / template
+            if item.get("is_quote") or item.get("is_kit"):
+                contiene_kit_o_cot = True
+                break
+
+            # Validación alterna usando ContentType (por si no vienen los flags)
+            try:
+                ctid = item.get("content_type_id")
+                if ctid:
+                    ct = ContentType.objects.get_for_id(ctid)
+                    model = ct.model.lower()
+                    app = ct.app_label.lower()
+
+                    if "kit" in model:
+                        contiene_kit_o_cot = True
+                        break
+
+                    if "quote" in model or app == "quote":
+                        contiene_kit_o_cot = True
+                        break
+
+            except:
+                pass
+
+        # 🔒 Si el usuario intenta pagar en tienda, lo bloqueamos
+        if contiene_kit_o_cot and metodo_pago == 'store':
+            return JsonResponse({
+                "ok": False,
+                "error": "Los kits y las cotizaciones SOLO pueden pagarse con tarjeta (Mercado Pago)."
+            }, status=400)
+        # -------------------------------------------------------------------------
+
+
+        # 🟩 Pago en tienda: crea pedido completo
         if metodo_pago == 'store':
-            # --- (El resto de la creación del Pedido y DetallePedido es correcto) ---
+
             pedido = Pedido.objects.create(
                 local=local,
                 nombre_local=local.nombre if local else None,
@@ -177,21 +217,19 @@ def crear_pedido(request):
             pedido.monto_total = monto_total
             pedido.save()
             carrito.limpiar()
-            # ------------------------------------------------------------------------
-            
-            # 👇 CORRECCIÓN: Usar reverse() para la URL base y construir el parámetro GET
+
             redirect_url = f"{reverse('pago_exitoso')}?pedido_id={pedido.id}"
 
             return JsonResponse({
                 "ok": True,
                 "pedido_id": pedido.id,
-                "redirect": redirect_url  # Redirección con pedido_id por GET
+                "redirect": redirect_url
             })
 
-        # 🟦 Pago online: guardar pedido temporal (para Mercado Pago) (El resto de la función es correcto)
+
+        # 🟦 Pago online (Mercado Pago): pedido temporal
         temp_id = str(timezone.now().timestamp())
 
-        # 🧩 Agregamos el precio actual en cada ítem
         items_temp = []
         for item in carrito.carrito.values():
             try:
@@ -207,7 +245,6 @@ def crear_pedido(request):
                 "content_type_id": item.get("content_type_id"),
             })
 
-        # 🧠 Guardamos la info temporalmente
         PENDING_ORDERS[temp_id] = {
             "local_id": local_id,
             "comprador": comprador,
@@ -225,6 +262,7 @@ def crear_pedido(request):
     except Exception as e:
         print("❌ ERROR crear_pedido:", str(e))
         return JsonResponse({"error": f"Error al crear pedido temporal: {str(e)}"}, status=500)
+
 
 
 # ==============================================

@@ -401,3 +401,46 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   }
 });
+
+// --- Inicio: restricción para kits y cotizaciones ---
+function carritoContieneKitsOCot() {
+  // revisa elementos renderizados en el carrito
+  const items = document.querySelectorAll('.item-card, .cart-item, .producto-carrito'); // adapta selectors si los usas distintos
+  for (const it of items) {
+    if (it.dataset.isKit === "true" || it.dataset.isKit === "True" || it.dataset.isKit === true) return true;
+    if (it.dataset.isQuote === "true" || it.dataset.isQuote === "True" || it.dataset.isQuote === true) return true;
+    // fallback: si el add-btn que creó el item dejó data-ctid con modelo 'kit', podrías inspeccionar it.dataset.ctModel aquí
+  }
+  // fallback2: si tu backend deja una flag global en window
+  if (window.CARRITO && window.CARRITO.tiene_quote_or_kit) return true;
+  return false;
+}
+
+function aplicarRestriccionPagoUI() {
+  const bloquear = carritoContieneKitsOCot();
+  const storeRadio = document.getElementById('paymentStore'); // id desde tu form_pedido.html
+  const onlineRadio = document.getElementById('paymentOnline');
+  if (!storeRadio || !onlineRadio) return;
+
+  if (bloquear) {
+    storeRadio.disabled = true;
+    if (storeRadio.checked) onlineRadio.checked = true;
+    // opcional: mostrar aviso pequeño
+    const aviso = document.querySelector('#aviso-pago-restriccion') || document.createElement('div');
+    aviso.id = 'aviso-pago-restriccion';
+    aviso.className = 'small text-danger mt-2';
+    aviso.textContent = 'Este carrito contiene kits o cotizaciones — solo pago con tarjeta disponible.';
+    storeRadio.closest('.form-check')?.appendChild(aviso);
+  } else {
+    storeRadio.disabled = false;
+    const aviso = document.getElementById('aviso-pago-restriccion');
+    if (aviso) aviso.remove();
+  }
+}
+
+// Ejecutar al cargar y después de cada actualización dinámica del carrito
+document.addEventListener('DOMContentLoaded', function() {
+  aplicarRestriccionPagoUI();
+  // Si tienes funciones que actualizan el carrito por AJAX, llama aplicarRestriccionPagoUI() al final de cada update.
+});
+// --- Fin: restricción para kits y cotizaciones ---
