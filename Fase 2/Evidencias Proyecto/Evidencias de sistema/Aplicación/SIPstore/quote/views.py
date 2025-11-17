@@ -1,4 +1,5 @@
 from django.shortcuts import render
+from sipstore import settings
 from store.models import PanelSIP, Categoria
 from django.db.models import Q
 from django.views.decorators.csrf import csrf_exempt
@@ -16,12 +17,15 @@ from reportlab.pdfgen import canvas
 from reportlab.lib.pagesizes import letter
 
 def quote(request):
+    
+    print(settings.SENDGRID_API_KEY)
     modulos = {
         # !Ojo con las categorias tienen que tener estos mismos nombres
         'piso': 'Piso',
         'cielo': 'Cielo',
         'muros_int': 'Muros Internos',
         'muros_ext': 'Muros Externos', 
+        
     }
 
     contexto = {}
@@ -357,34 +361,66 @@ def agregar_al_carrito(request):
     return JsonResponse({"success": False, "message": "Método no permitido."})
 
 def generar_pdf_cotizacion(resultados, total_general):
-    buffer = BytesIO()
-    p = canvas.Canvas(buffer, pagesize=letter)
+    """
+    Genera el PDF de la cotización usando ReportLab. 
+    Devuelve los bytes del PDF para adjuntarlos a un correo.
+    
+    IMPORTANTE: Esta función incluye manejo de errores para evitar el 
+    Error 500 si hay problemas con los datos de entrada.
+    """
+    try:
+        buffer = BytesIO()
+        # Inicializa el lienzo (canvas) con el buffer y el tamaño de página
+        p = canvas.Canvas(buffer, pagesize=letter)
 
-    p.setFont("Helvetica-Bold", 14)
-    p.drawString(50, 750, "COTIZACIÓN PANEL SIP")
+        p.setFont("Helvetica-Bold", 14)
+        p.drawString(50, 750, "COTIZACIÓN PANEL SIP")
 
-    p.setFont("Helvetica", 10)
-    y = 720
+        p.setFont("Helvetica", 10)
+        y = 720
 
-    for r in resultados:
-        p.drawString(50, y, f"{r['nombre']} ({r['solicitado_por']})")
-        y -= 15
-        p.drawString(60, y, f"Área: {r['area']} m² | Cantidad: {r['cantidad']} | Valor unit: ${r['valor']} | Total: ${r['total']}")
-        y -= 25
+        # --- Iteración y Dibujo de Resultados ---
+        for r in resultados:
+            # Línea de detalle principal
+            p.drawString(50, y, f"{r['nombre']} ({r['solicitado_por']})")
+            y -= 15
+            
+            # Línea de detalle secundario (asegúrate que los valores sean strings o números)
+            p.drawString(60, y, f"Área: {r['area']} m² | Cantidad: {r['cantidad']} | Valor unit: ${r['valor']} | Total: ${r['total']}")
+            y -= 25
 
-        if y < 50:
-            p.showPage()
-            y = 750
+            # Salto de página si el contenido está muy abajo
+            if y < 50:
+                p.showPage()
+                y = 750
+        
+        # --- Total General ---
+        p.setFont("Helvetica-Bold", 12)
+        # Asegúrate de que total_general sea un número
+        p.drawString(50, y, f"TOTAL GENERAL: ${round(total_general, 2)}")
 
-    p.setFont("Helvetica-Bold", 12)
-    p.drawString(50, y, f"TOTAL GENERAL: ${round(total_general, 2)}")
-
-    p.showPage()
-    p.save()
-    pdf = buffer.getvalue()
-    buffer.close()
-    return pdf
-
+        # Finaliza el documento
+        p.showPage()
+        p.save()
+        
+        # Obtiene los bytes del buffer
+        pdf = buffer.getvalue()
+        buffer.close()
+        
+        # ¡IMPORTANTE! El nombre de la variable de retorno es 'pdf'
+        return pdf
+    
+    except KeyError as e:
+        # Maneja el error si falta alguna clave en el diccionario 'r'
+        # Esto sucede si, por ejemplo, falta 'nombre' en un resultado.
+        print(f"Error 500: Clave faltante en 'resultados': {e}")
+        # Relanza la excepción para que el framework la capture y muestre el stack trace
+        raise e
+    except Exception as e:
+        # Maneja cualquier otro error (ej. ReportLab, tipo de datos inválido)
+        print(f"Error 500: Fallo general en generar_pdf_cotizacion: {e}")
+        raise e
+    
 def enviar_cotizacion_por_correo(correo, resultados, total_general):
     pdf_bytes = generar_pdf_cotizacion(resultados, total_general)
 
@@ -403,59 +439,53 @@ def enviar_cotizacion(request):
     if request.method != "POST":
         return JsonResponse({"error": "Método no permitido"}, status=405)
 
-    # Leer JSON del body
+    # 1. Leer y validar JSON
     try:
         data = json.loads(request.body.decode("utf-8"))
-    except:
+    except json.JSONDecodeError:
         return JsonResponse({"error": "JSON inválido"}, status=400)
 
     correo = data.get("correo")
     if not correo:
         return JsonResponse({"error": "Correo no recibido"}, status=400)
 
-    # Obtener productos guardados previamente en la sesión
+    # 2. Obtener datos de la sesión
     productos = request.session.get("productos_calculo")
     if not productos:
         return JsonResponse({"error": "No hay datos de cotización"}, status=400)
 
-    # Calcular total
+    # 3. Calcular total
     total_general = sum(item["total"] for item in productos)
 
-    # Crear PDF
-    from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer
-    from reportlab.lib.styles import getSampleStyleSheet
-    from reportlab.lib.pagesizes import A4
-    from reportlab.lib.units import cm
+    # 4. Generar PDF
+    # La generación del PDF utiliza tu función previamente revisada con manejo de errores.
+    # Si esta función falla (por KeyError, ReportLab, etc.), se relanzará una excepción aquí.
+    try:
+        # Llamamos a la función dedicada para generar los bytes del PDF
+        pdf_bytes = generar_pdf_cotizacion(productos, total_general)
+    except Exception as e:
+        print(f"ERROR: Fallo al generar el PDF: {e}")
+        # Devolvemos 500 si la generación del PDF falla (pero el error interno ya está loggeado)
+        return JsonResponse({"error": "Fallo al generar el archivo PDF de la cotización."}, status=500)
 
-    buffer = BytesIO()
-    pdf = SimpleDocTemplate(buffer, pagesize=A4)
-    styles = getSampleStyleSheet()
-    story = []
-
-    story.append(Paragraph("<b>Cotización de Paneles SIP</b>", styles["Title"]))
-    story.append(Spacer(1, 12))
-
-    for p in productos:
-        line = (
-            f"<b>{p['nombre']}</b>: {p['cantidad']} unidad(es) – "
-            f"Total: ${p['total']}"
+    # 5. Enviar email con PDF adjunto (Nueva sección de manejo de errores)
+    try:
+        email = EmailMessage(
+            subject="Tu cotización de Paneles SIP",
+            body="Adjuntamos tu cotización en formato PDF.\n\nGracias por cotizar con nosotros.",
+            from_email=settings.DEFAULT_FROM_EMAIL, # Es una buena práctica definir from_email
+            to=[correo],
         )
-        story.append(Paragraph(line, styles["Normal"]))
-        story.append(Spacer(1, 6))
+        # Adjuntamos los bytes del PDF
+        email.attach("cotizacion.pdf", pdf_bytes, "application/pdf")
+        email.send()
 
-    story.append(Spacer(1, 12))
-    story.append(Paragraph(f"<b>Total General:</b> ${total_general}", styles["Heading2"]))
+    except Exception as e:
+        # Captura errores de conexión SMTP, autenticación o configuración de correo
+        print(f"ERROR: Fallo al enviar el correo (SMTP/Configuración): {e}")
+        # Devolvemos 500 al cliente con un mensaje útil
+        return JsonResponse({"error": "Fallo al conectar o enviar el correo. Revisa la configuración SMTP del servidor."}, status=500)
 
-    pdf.build(story)
-    buffer.seek(0)
-
-    # Enviar email con PDF adjunto
-    email = EmailMessage(
-        subject="Tu cotización de Paneles SIP",
-        body="Adjuntamos tu cotización en formato PDF.",
-        to=[correo],
-    )
-    email.attach("cotizacion.pdf", buffer.read(), "application/pdf")
-    email.send()
-
+    # 6. Respuesta de éxito
     return JsonResponse({"message": "Cotización enviada correctamente al correo."})
+
