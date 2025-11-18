@@ -97,7 +97,7 @@
 
                     {% if kits.has_previous %}
                     <li class="page-item">
-                        <a class="page-link" href="?page={{ kits.previous_page_number }}">Anterior</a>
+                        <a class="page-link" href="?page={{ kits.previous_page_number }}&tab=kits">Anterior</a>
                     </li>
                     {% else %}
                     <li class="page-item disabled">
@@ -108,13 +108,13 @@
                     {% for i in kits.paginator.page_range %}
                     {% if kits.number == i %}
                     <li class="page-item active" aria-current="page"><span class="page-link">{{ i }}</span></li>
-                    {% elif i > kits.number|add:'-3' and i < kits.number|add:'3' %} <li class="page-item"><a class="page-link" href="?page={{ i }}">{{ i }}</a></li>
+                    {% elif i > kits.number|add:'-3' and i < kits.number|add:'3' %} <li class="page-item"><a class="page-link" href="?page={{ i }}&tab=kits">{{ i }}</a></li>
                         {% endif %}
                         {% endfor %}
 
                         {% if kits.has_next %}
                         <li class="page-item">
-                            <a class="page-link" href="?page={{ kits.next_page_number }}">Siguiente</a>
+                            <a class="page-link" href="?page={{ kits.next_page_number }}&tab=kits">Siguiente</a>
                         </li>
                         {% else %}
                         <li class="page-item disabled">
@@ -139,7 +139,7 @@
 
                     {% if categorias.has_previous %}
                     <li class="page-item">
-                        <a class="page-link" href="?page={{ categorias.previous_page_number }}">Anterior</a>
+                        <a class="page-link" href="?page={{ categorias.previous_page_number }}&tab=cat">Anterior</a>
                     </li>
                     {% else %}
                     <li class="page-item disabled">
@@ -150,13 +150,13 @@
                     {% for i in categorias.paginator.page_range %}
                     {% if categorias.number == i %}
                     <li class="page-item active" aria-current="page"><span class="page-link">{{ i }}</span></li>
-                    {% elif i > categorias.number|add:'-3' and i < categorias.number|add:'3' %} <li class="page-item"><a class="page-link" href="?page={{ i }}">{{ i }}</a></li>
+                    {% elif i > categorias.number|add:'-3' and i < categorias.number|add:'3' %} <li class="page-item"><a class="page-link" href="?page={{ i }}&tab=cat">{{ i }}</a></li>
                         {% endif %}
                         {% endfor %}
 
                         {% if categorias.has_next %}
                         <li class="page-item">
-                            <a class="page-link" href="?page={{ categorias.next_page_number }}">Siguiente</a>
+                            <a class="page-link" href="?page={{ categorias.next_page_number }}&tab=cat">Siguiente</a>
                         </li>
                         {% else %}
                         <li class="page-item disabled">
@@ -182,7 +182,7 @@
 
                     {% if locales.has_previous %}
                     <li class="page-item">
-                        <a class="page-link" href="?page={{ locales.previous_page_number }}">Anterior</a>
+                        <a class="page-link" href="?page={{ locales.previous_page_number }}&tab=loc">Anterior</a>
                     </li>
                     {% else %}
                     <li class="page-item disabled">
@@ -193,13 +193,13 @@
                     {% for i in locales.paginator.page_range %}
                     {% if locales.number == i %}
                     <li class="page-item active" aria-current="page"><span class="page-link">{{ i }}</span></li>
-                    {% elif i > locales.number|add:'-3' and i < locales.number|add:'3' %} <li class="page-item"><a class="page-link" href="?page={{ i }}">{{ i }}</a></li>
+                    {% elif i > locales.number|add:'-3' and i < locales.number|add:'3' %} <li class="page-item"><a class="page-link" href="?page={{ i }}&tab=loc">{{ i }}</a></li>
                         {% endif %}
                         {% endfor %}
 
                         {% if locales.has_next %}
                         <li class="page-item">
-                            <a class="page-link" href="?page={{ locales.next_page_number }}">Siguiente</a>
+                            <a class="page-link" href="?page={{ locales.next_page_number }}&tab=loc">Siguiente</a>
                         </li>
                         {% else %}
                         <li class="page-item disabled">

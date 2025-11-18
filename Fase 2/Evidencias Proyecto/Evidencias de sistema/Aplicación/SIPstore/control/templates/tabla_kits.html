@@ -116,7 +116,7 @@
                                 data-nombre="{{ kit.nombre }}" data-precio="{{ kit.precio }}"
                                 data-descripcion="{{ kit.descripcion }}" data-m2="{{ kit.m2 }}"
                                 data-dormitorios="{{ kit.dormitorios }}" data-banos="{{ kit.banos }}"
-                                data-categorias="{{ kit.categorias.all|join:',' }}">
+                                data-categorias="{% for c in kit.categorias.all %}{{ c.id }}{% if not forloop.last %},{% endif %}{% endfor %}">
                             Editar
                         </button>
                         <button type="button" class="btn btn-danger" data-bs-toggle="modal"

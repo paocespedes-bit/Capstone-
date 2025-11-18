@@ -547,36 +547,60 @@ def editar_panel(request, pk):
 
     return redirect(f"{reverse('stock')}?tab=paneles")
 
+
 @login_required
 def editar_kit(request, pk):
     kit = get_object_or_404(KitConstruccion, pk=pk)
-    
-    if request.method == "POST":
-        form = KitConstruccionForm(request.POST, instance=kit)
-        if form.is_valid():
-            form.save()
-            
-            # Actualizar Inventario
-            inventario = kit.inventario.first()
-            
-            if inventario:
-                modo_stock = request.POST.get('modo_stock')
-                cantidad_str = request.POST.get('cantidad')
-                
-                inventario.modo_stock = modo_stock if modo_stock else 'pedido'
-                
-                if inventario.modo_stock == 'stock' and cantidad_str:
-                    try:
-                        inventario.disponible = int(cantidad_str)
-                    except ValueError:
-                        pass
-                
-                inventario.save()
-                
-            return redirect(f"{reverse('stock')}?tab=kits")
-        
+
+    if request.method != "POST":
         return redirect(f"{reverse('stock')}?tab=kits")
-        
+
+    form = KitConstruccionForm(request.POST, instance=kit)
+    if not form.is_valid():
+        # opcional: puedes mostrar mensajes de error en la UI, por ahora redirect
+        messages.error(request, "Formulario inválido. Revisa los datos.")
+        return redirect(f"{reverse('stock')}?tab=kits")
+
+    # Guardar campos del modelo (excepto M2/ManyToMany/otros si necesitas manejo especial)
+    kit = form.save(commit=False)
+
+    # Si tu form no mapea correctamente some fields (ej. precio con coma), puedes parsearlos aquí.
+    # kit.precio = form.cleaned_data.get('precio')  # si es necesario
+
+    kit.save()  # guarda cambios básicos
+
+    # --- Guardar categorías (ManyToMany) explícitamente ---
+    # En el template tienes <input name="categorias" value="ID"> repetidos,
+    # así que recogemos la lista y seteamos la relación.
+    categorias_ids = request.POST.getlist('categorias')
+    try:
+        # set() acepta lista de ids o queryset. Si lista vacía -> desasigna todas
+        kit.categorias.set(categorias_ids)
+    except Exception as e:
+        # logging opcional
+        pass
+
+    # --- Actualizar / crear Inventario asociado ---
+    inventario = kit.inventario.first()  # tu relación inversa actual
+    modo_stock = request.POST.get('modo_stock')
+    cantidad_str = request.POST.get('cantidad')
+
+    if inventario:
+        inventario.modo_stock = modo_stock or inventario.modo_stock or 'pedido'
+        if inventario.modo_stock == 'stock' and cantidad_str:
+            try:
+                inventario.disponible = int(cantidad_str)
+            except (ValueError, TypeError):
+                # keep previous value if parse falla
+                pass
+        inventario.save()
+    else:
+        # Si no existe inventario y quieres crearlo, descomenta y ajusta según tu modelo Inventario:
+        # from control.models import Inventario
+        # Inventario.objects.create(product=kit, disponible=(int(cantidad_str) if cantidad_str and cantidad_str.isdigit() else 0), modo_stock=(modo_stock or 'pedido'))
+        pass
+
+    messages.success(request, f"Kit #{kit.id} actualizado.")
     return redirect(f"{reverse('stock')}?tab=kits")
 
 @login_required

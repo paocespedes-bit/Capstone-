@@ -44,31 +44,31 @@ class PanelSIPForm(forms.ModelForm):
 
 # Formulario KitConstruccion
 class KitConstruccionForm(forms.ModelForm):
-    # Campos de stock que NO son parte directa del modelo KitConstruccion
+
     modo_stock = forms.ChoiceField(
         choices=[('stock', 'Con stock'), ('pedido', 'Por pedido')],
         widget=forms.RadioSelect(attrs={'class': 'form-check-input'}),
         label='Stock'
     )
+
     cantidad = forms.IntegerField(
         min_value=0,
         required=False,
         label='Cantidad disponible',
         widget=forms.NumberInput(attrs={'class': 'form-control input-cantidad-inventario'})
     )
-    
+
+    # 🔥 ESTA LÍNEA ES LA QUE SOLUCIONA TU PROBLEMA
+    categorias = forms.ModelMultipleChoiceField(
+        queryset=Categoria.objects.all(),
+        widget=forms.CheckboxSelectMultiple(),
+        required=False
+    )
+
     class Meta:
         model = KitConstruccion
         fields = ['nombre', 'precio', 'descripcion', 'm2', 'dormitorios', 'banos', 'categorias']
-        widgets = {
-            'nombre': forms.TextInput(attrs={'class': 'form-control'}),
-            'precio': forms.NumberInput(attrs={'class': 'form-control'}),
-            'descripcion': forms.Textarea(attrs={'class': 'form-control', 'rows': 3}),
-            'm2': forms.NumberInput(attrs={'class': 'form-control'}),
-            'dormitorios': forms.NumberInput(attrs={'class': 'form-control'}),
-            'banos': forms.NumberInput(attrs={'class': 'form-control'}),
-            'categorias': forms.CheckboxSelectMultiple()
-        }
+        
 
 # Formulario de Imagen (ModelForm normal)
 class ImagenProductoForm(forms.ModelForm):
