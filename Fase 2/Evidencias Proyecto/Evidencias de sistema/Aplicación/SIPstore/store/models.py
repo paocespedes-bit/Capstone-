@@ -136,6 +136,15 @@ class Comentario(models.Model):
 
     def __str__(self):
         return f"Comentario de {self.autor} en {self.producto.nombre}"
+    
+class Resena(models.Model):
+    autor = models.CharField(max_length=200, null=True, blank=True)
+    texto = models.TextField()
+    fecha_comentario = models.DateTimeField(default=timezone.now)
+    revisado = models.BooleanField(default=False)  
+
+    def __str__(self):
+        return f"{self.autor} - {self.texto[:30]}"
 
 
 

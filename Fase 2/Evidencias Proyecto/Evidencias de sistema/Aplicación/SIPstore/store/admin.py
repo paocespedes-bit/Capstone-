@@ -7,7 +7,8 @@ from .models import (
     imagenProducto,
     Oferta,
     Comentario,
-    Inventario
+    Inventario,
+    Resena
 )
 
 class ImagenProductoInline(GenericTabularInline):
@@ -64,3 +65,10 @@ class ComentarioAdmin(admin.ModelAdmin):
     list_display = ('autor', 'producto', 'estrellas', 'fecha_comentario')
     list_filter = ('estrellas', 'fecha_comentario')
     search_fields = ('autor', 'texto', 'producto__nombre')
+
+@admin.register(Resena)
+class ResenaAdmin(admin.ModelAdmin):
+    list_display = ('autor', 'texto', 'fecha_comentario', 'revisado')
+    list_filter = ('revisado', 'fecha_comentario')
+    search_fields = ('autor', 'texto')
+    list_editable = ('revisado',)  
