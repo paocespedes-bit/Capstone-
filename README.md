@@ -8,11 +8,13 @@
 -   **Dolor que resuelve:** Ventas limitadas a horarios físicos, errores en control de inventario y lentitud en cotizaciones.
     
 -   **Propuesta de Valor:** Proporcionar a los clientes una **experiencia de compra intuitiva, rápida y confiable**, mientras que la empresa logra un aumento en las ventas y una mayor eficiencia interna.
-***
+----------
+
 ## 2. Objetivos Clave
 
 Desarrollar una **Plataforma de Ventas Online** completa que incluya e-commerce, **gestión de inventario en tiempo real**, **cotizador automático** según dimensiones (mts), y un panel administrativo para la gestión integral del negocio.
-***
+----------
+
 ## 3. Estructura del Repositorio
 ![Portada](Fase%202/Evidencias%20Proyecto/Evidencias%20de%20documentacion/Imagenes%20mockup/Estructura_github.png)
 Este repositorio se organiza en tres fases principales (Fase 1, Fase 2 y Fase 3), cada una correspondiente a etapas específicas del desarrollo del proyecto.
@@ -23,7 +25,7 @@ Dentro de cada fase existen tres tipos de evidencias:
 - Evidencias del Proyecto (solo Fase 2)
 
 A continuación, se detalla la función de cada carpeta y los tipos de archivos que contiene.
-***
+----------
 ### Fase 1
 Contiene las evidencias iniciales del proyecto.
 
@@ -42,11 +44,13 @@ Corresponde al cierre del proyecto.
 ***
 -   **Evidencias Individuales:** Diario de reflexión final y plantilla de evaluación.
 -   **Evidencias Grupales:** Presentación final del proyecto
-***
+----------
+
 ## 4. Ejecución
 
 Para ejecutar el proyecto de manera local es necesario leer las instrucciones dentro del ***README*** de evidencias del sistema (aplicación) ubicada en **FASE 2**
-***
+----------
+
 ## 5. Equipo del Proyecto
 
 - Paolo Cespedes
